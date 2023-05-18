@@ -1,0 +1,24 @@
+name: datasci
+channels:
+- defaults
+- conda-forge
+dependencies:
+- psycopg2
+- scikit-learn
+- black
+- jupyter
+- lxml
+- flake8
+- seaborn
+- pandas
+- numpy
+- python=3.9.12
+- ipython
+- jupyterlab
+- faker
+- beautifulsoup4
+- scipy
+- statsmodels
+- selenium
+- matplotlib
+- pre-commit
