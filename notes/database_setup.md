@@ -27,5 +27,5 @@ export PGDS_PORT="MY PORT NO."
 - Is external access to volume required?
 
 ```sh
-docker run --name pgds -d -p 5432:5432 -e POSTGRES_PASSWORD='MY PASSWORD' postgres
+docker run --name pgds -d -p MY_PORT:5432 -e POSTGRES_PASSWORD='MY PASSWORD' postgres
 ```
