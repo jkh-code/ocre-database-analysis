@@ -40,15 +40,13 @@ class Topsy:
             )
         except pg2.OperationalError as err:
             print(
-                f"\nERROR: Unable to connect to "
-                + f"`{self.conn_parameters['dbname']}`..."
+                f"\nERROR: Unable to connect to `{self.conn_parameters['dbname']}`..."
             )
             Topsy._print_pg2_exception(err)
             sys.exit(1)
 
         print(
-            f"Creating cursor object in database "
-            + f"`{self.conn_parameters['dbname']}`..."
+            f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
         )
         self.cur = self.conn.cursor()
 
