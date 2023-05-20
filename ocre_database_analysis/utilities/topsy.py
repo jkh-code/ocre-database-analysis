@@ -99,6 +99,8 @@ class Topsy:
 
     @staticmethod
     def print_pg2_exception(err: Exception) -> None:
+        """Print line number, error, SQLSTATE code, and PG message to
+        console."""
         _, _, err_traceback = sys.exc_info()
         line_num = err_traceback.tb_lineno
 
