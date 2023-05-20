@@ -44,7 +44,7 @@ class Topsy:
             print(
                 f"\nERROR: Unable to connect to `{self.conn_parameters['dbname']}`..."
             )
-            Topsy._print_pg2_exception(err)
+            Topsy.print_pg2_exception(err)
             sys.exit(1)
 
         print(
@@ -54,19 +54,6 @@ class Topsy:
 
         # Setting autocommit to avoid ActiveSqlTransaction error
         self.conn.autocommit = True
-
-        return None
-
-    @staticmethod
-    def _print_pg2_exception(err: Exception) -> None:
-        _, _, err_traceback = sys.exc_info()
-        line_num = err_traceback.tb_lineno
-
-        print(f"psycopg2 ERROR on line number: {line_num}")
-        print(f"psycopg2 ERROR:\n{err}")
-
-        print(f"psycopg2 ERROR SQLSTATE code: {err.pgcode}")
-        print(f"psycopg2 ERROR PG MESSAGE:\n{err.pgerror}")
 
         return None
 
@@ -109,6 +96,19 @@ class Topsy:
     def insert_data(self):
         """Insert data into specified table."""
         pass
+
+    @staticmethod
+    def print_pg2_exception(err: Exception) -> None:
+        _, _, err_traceback = sys.exc_info()
+        line_num = err_traceback.tb_lineno
+
+        print(f"psycopg2 ERROR on line number: {line_num}")
+        print(f"psycopg2 ERROR:\n{err}")
+
+        print(f"psycopg2 ERROR SQLSTATE code: {err.pgcode}")
+        print(f"psycopg2 ERROR PG MESSAGE:\n{err.pgerror}")
+
+        return None
 
 
 if __name__ == "__main__":
