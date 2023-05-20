@@ -32,20 +32,13 @@ class Topsy:
         }
 
         print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
-        try:
-            self.conn = pg2.connect(
-                dbname=self.conn_parameters["dbname"],
-                user=self.conn_parameters["username"],
-                password=self.conn_parameters["password"],
-                host=self.conn_parameters["host"],
-                port=self.conn_parameters["port"],
-            )
-        except pg2.OperationalError as err:
-            print(
-                f"\nERROR: Unable to connect to `{self.conn_parameters['dbname']}`..."
-            )
-            Topsy.print_pg2_exception(err)
-            sys.exit(1)
+        self.conn = pg2.connect(
+            dbname=self.conn_parameters["dbname"],
+            user=self.conn_parameters["username"],
+            password=self.conn_parameters["password"],
+            host=self.conn_parameters["host"],
+            port=self.conn_parameters["port"],
+        )
 
         print(
             f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
