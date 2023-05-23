@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     # Connecting and closing connection
     try:
-        temp = Topsy("delme")
+        temp = Topsy("ocre")
     except ValueError as err:
         print(err)
         print(f"Unable to connect to `{temp.conn_parameters['dbname']}`.")
@@ -181,13 +181,14 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     # Creating new schema
-    # try:
-    #     # temp.create_new_schema("fail")
-    #     # temp.create_new_schema([])
-    #     # temp.create_new_schema(["success"])
-    #     temp.create_new_schema(["raw", "stg", "fnd", "rpt"])
-    # except ValueError as err:
-    #     print(err)
-    #     sys.exit(1)
+    try:
+        # temp.create_new_schema("fail")
+        # temp.create_new_schema([])
+        # temp.create_new_schema(["success"])
+        # temp.create_new_schema(["raw", "stg", "fnd", "rpt"])
+        temp.create_new_schema(["raw_web_scrape"])
+    except ValueError as err:
+        print(err)
+        sys.exit(1)
 
     temp.close_connection()
