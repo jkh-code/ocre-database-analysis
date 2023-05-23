@@ -3,8 +3,12 @@ import psycopg2 as pg2
 from psycopg2 import sql
 from os import environ
 import sys
+from pathlib import Path
+from pathlib import PosixPath, WindowsPath
 
 from typing import Union, List
+
+import ocre_database_analysis.constants as c
 
 
 # TODO: Document class with docstring (https://realpython.com/documenting-python-code/#class-docstrings)
@@ -129,9 +133,29 @@ class Topsy:
 
         return None
 
-    def create_new_table(self):
-        """Create new table in specified schema."""
-        pass
+    def create_new_table(self, file_path: Union[PosixPath, WindowsPath]) -> None:
+        """Create new SQL table from file path."""
+        print("\nTrying to create new table...")
+
+        if type(file_path) not in (PosixPath, WindowsPath):
+            raise ValueError(
+                "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
+            )
+        if not file_path.exists():
+            raise ValueError("VALUE ERROR: `file_path` does not exists.")
+        if file_path.suffix != ".sql":
+            raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
+
+        print(f"Creating new table defined in file {file_path}...")
+        with open(file_path, "r", encoding="UTF-8") as f:
+            print(f"Reading {file_path}...")
+            query = f.read()
+
+        print(f"Executing query...")
+        self.cur.execute(query)
+        print(f"Table created...")
+
+        return None
 
     def insert_data(self):
         """Insert data into specified table."""
@@ -181,14 +205,23 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     # Creating new schema
-    try:
-        # temp.create_new_schema("fail")
-        # temp.create_new_schema([])
-        # temp.create_new_schema(["success"])
-        # temp.create_new_schema(["raw", "stg", "fnd", "rpt"])
-        temp.create_new_schema(["raw_web_scrape"])
-    except ValueError as err:
-        print(err)
-        sys.exit(1)
+    # try:
+    #     # temp.create_new_schema("fail")
+    #     # temp.create_new_schema([])
+    #     # temp.create_new_schema(["success"])
+    #     # temp.create_new_schema(["raw", "stg", "fnd", "rpt"])
+    #     temp.create_new_schema(["raw_web_scrape"])
+    # except ValueError as err:
+    #     print(err)
+    #     sys.exit(1)
+
+    # Creating new table
+    # try:
+    #     # temp.create_new_table("/will/fail")
+    #     path_file = c.SQL_FOLDER / "create" / "create_raw_browse_pages.sql"
+    #     temp.create_new_table(path_file)
+    # except ValueError as err:
+    #     print(err)
+    #     sys.exit(1)
 
     temp.close_connection()
