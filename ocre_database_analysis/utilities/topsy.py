@@ -14,9 +14,10 @@ class Topsy:
 
     def __init__(self, dbname: Union[None, str] = None) -> None:
         """Initialize client."""
+        if (type(dbname) != str) or (dbname != None):
+            raise ValueError("VALUE ERROR:`db_name` must be a string or None.")
 
         # Creating connection parameters
-        # TODO: Add error handling on `dbname` (check it is a string)
         if not dbname:
             dbname_ = environ["PGDS_DBNAME"]
         else:
