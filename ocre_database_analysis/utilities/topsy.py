@@ -1,3 +1,4 @@
+from multiprocessing import Value
 import psycopg2 as pg2
 from psycopg2 import sql
 from os import environ
@@ -107,9 +108,26 @@ class Topsy:
 
         return None
 
-    def create_new_schema(self):
+    def create_new_schema(self, schema_names: List[str]) -> None:
         """Create new schemas in active database."""
-        pass
+        print("Trying to create new schema(s)...")
+
+        if (type(schema_names) != list) or (not schema_names):
+            raise ValueError("VALUE ERROR: `schema_names` must be a non-empty list.")
+        if not all(type(item) == str for item in schema_names):
+            raise ValueError(
+                "VALUE ERROR: all items in `schema_names` must be strings."
+            )
+
+        for name in schema_names:
+            print(f"Creating schema `{name}` in `{self.conn.info.dbname}`...")
+            query_create_schema = "CREATE SCHEMA IF NOT EXISTS {schema_name};"
+            query_create_schema = sql.SQL(query_create_schema).format(
+                schema_name=sql.Identifier(name)
+            )
+            self.cur.execute(query_create_schema)
+
+        return None
 
     def create_new_table(self):
         """Create new table in specified schema."""
@@ -143,7 +161,7 @@ if __name__ == "__main__":
 
     # Connecting and closing connection
     try:
-        temp = Topsy()
+        temp = Topsy("delme")
     except ValueError as err:
         print(err)
         print(f"Unable to connect to `{temp.conn_parameters['dbname']}`.")
@@ -163,9 +181,13 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     # Creating new schema
-    try:
-        pass
-    except:
-        pass
+    # try:
+    #     # temp.create_new_schema("fail")
+    #     # temp.create_new_schema([])
+    #     # temp.create_new_schema(["success"])
+    #     temp.create_new_schema(["raw", "stg", "fnd", "rpt"])
+    # except ValueError as err:
+    #     print(err)
+    #     sys.exit(1)
 
     temp.close_connection()
