@@ -1,4 +1,3 @@
-from argon2 import Type
 import psycopg2 as pg2
 from os import environ
 import sys
@@ -66,9 +65,9 @@ class Topsy:
         num_dbs = len(db_names)
 
         if type(db_names) != list:
-            raise TypeError("TYPE ERROR:`db_names` argument must be a list.")
+            raise ValueError("VALUE ERROR:`db_names` argument must be a list.")
         if not all(type(item) == str for item in db_names):
-            raise TypeError("TYPE ERROR: all items in `db_names` must be strings.")
+            raise ValueError("VALUE ERROR: all items in `db_names` must be strings.")
         if num_dbs > 1 and switch == True:
             raise ValueError(
                 "VALUE ERROR: `switch` cannot be `True` when multiple databases are created."
@@ -116,7 +115,7 @@ if __name__ == "__main__":
     temp = Topsy()
 
     try:
-        temp.create_new_database(["hello"], switch=True)
+        temp.create_new_database("hello", switch=True)
     except TypeError as err:
         print(err)
         temp.close_connection()
