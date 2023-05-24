@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from pathlib import PosixPath, WindowsPath
 
-from typing import Union, List
+from typing import Union
 
 import ocre_database_analysis.constants as c
 
@@ -72,7 +72,7 @@ class Topsy:
 
         return None
 
-    def create_new_database(self, db_names: List[str], switch: bool = False) -> None:
+    def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
         """Create new database with option to switch to newly created
         database."""
         print("\nCreating new databases...")
@@ -112,7 +112,7 @@ class Topsy:
 
         return None
 
-    def create_new_schema(self, schema_names: List[str]) -> None:
+    def create_new_schema(self, schema_names: list[str]) -> None:
         """Create new schemas in active database."""
         print("Trying to create new schema(s)...")
 
@@ -157,9 +157,35 @@ class Topsy:
 
         return None
 
-    def insert_data(self):
+    def insert_data(
+        self, file_path: Union[PosixPath, WindowsPath], data=list[dict]
+    ) -> None:
         """Insert data into specified table."""
-        pass
+        print("\nTrying to insert data...")
+
+        if type(file_path) not in (PosixPath, WindowsPath):
+            raise ValueError(
+                "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
+            )
+        if not file_path.exists():
+            raise ValueError("VALUE ERROR: `file_path` does not exists.")
+        if file_path.suffix != ".sql":
+            raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
+        if (type(data) != list) or (
+            not all(type(item) == dict for item in data) or (not data)
+        ):
+            raise ValueError("VALUE ERROR: `data` must be a list of dicts.")
+
+        print(f"Inserting data using file {file_path}...")
+        with open(file_path, "r", encoding="UTF-8") as f:
+            print(f"Reading {file_path}...")
+            query = f.read()
+
+        print(f"Executing query...")
+        self.cur.executemany(query, data)
+        print(f"Data inserted...")
+
+        return None
 
     @staticmethod
     def print_pg2_exception(err: Exception) -> None:
@@ -223,5 +249,60 @@ if __name__ == "__main__":
     # except ValueError as err:
     #     print(err)
     #     sys.exit(1)
+
+    # Inserting data
+    # data_test = [
+    #     {
+    #         "page_id_": 1,
+    #         "page_url_": "start=0",
+    #         "start_coin_id_": 1,
+    #         "end_coin_id_": 20,
+    #         "page_html_": "sample",
+    #     },
+    #     {
+    #         "page_id_": 2,
+    #         "page_url_": "start=20",
+    #         "start_coin_id_": 21,
+    #         "end_coin_id_": 40,
+    #         "page_html_": "sample",
+    #     },
+    #     {
+    #         "page_id_": 3,
+    #         "page_url_": "start=40",
+    #         "start_coin_id_": 41,
+    #         "end_coin_id_": 60,
+    #         "page_html_": "sample",
+    #     },
+    #     {
+    #         "page_id_": 4,
+    #         "page_url_": "start=60",
+    #         "start_coin_id_": 61,
+    #         "end_coin_id_": 80,
+    #         "page_html_": "sample",
+    #     },
+    #     {
+    #         "page_id_": 5,
+    #         "page_url_": "start=80",
+    #         "start_coin_id_": 81,
+    #         "end_coin_id_": 100,
+    #         "page_html_": "sample",
+    #     },
+    # ]
+    data_test = [
+        {
+            "page_id_": 99,
+            "page_url_": "start=99",
+            "start_coin_id_": 99,
+            "end_coin_id_": 99,
+            "page_html_": "sample",
+        }
+    ]
+
+    try:
+        path_file = c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql"
+        temp.insert_data(path_file, data_test)
+    except ValueError as err:
+        print(err)
+        sys.exit(1)
 
     temp.close_connection()
