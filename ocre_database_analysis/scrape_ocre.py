@@ -24,28 +24,24 @@ if __name__ == "__main__":
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
-    # TODO: Replace test file with HTML
     # Scraping Browse tab results
     # Accessing HTML for first page
-    # try:
-    #     print(f"\nExtracting HTML from {c.OCRE_BROWSE_PAGE + '0'} ...")
-    #     response = requests.get(c.OCRE_BROWSE_PAGE + "0")
-    #     response.raise_for_status()
-    # except requests.exceptions.RequestException as err:
-    #     print(
-    #         f"\nREQUESTS ERROR: Encountered error trying to connect to {c.OCRE_BROWSE_PAGE}"
-    #     )
-    #     print(err)
-    #     temp.close_connection()
-    #     sys.exit(1)
-    path_browse_sample = c.DATA_FOLDER / "ocre_browse_results_sample.html"
-    print(f"\nExtracting HTML from {path_browse_sample} ...")
+    try:
+        page_url = c.OCRE_BROWSE_PAGE + "0"
+        print(f"\nExtracting HTML from {page_url} ...")
+        response = requests.get(page_url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as err:
+        print(
+            f"\nREQUESTS ERROR: Encountered error trying to connect to {c.OCRE_BROWSE_PAGE}"
+        )
+        print(err)
+        client.close_connection()
+        sys.exit(1)
 
     # Converting HTML into soup
     print("Converting HTML into Soup...")
-    # soup = BeautifulSoup(response.text, "lxml")
-    with open(path_browse_sample, "r", encoding="UTF-8") as f:
-        soup = BeautifulSoup(f, "lxml")
+    soup = BeautifulSoup(response.text, "lxml")
 
     # Extract display records and pagination data
     data_display_records = (
@@ -66,7 +62,7 @@ if __name__ == "__main__":
     # Save raw data to postgres database
     data = {
         "page_id_": page_id,
-        "page_url_": str(path_browse_sample),
+        "page_url_": page_url,
         "start_coin_id_": start_coin_id,
         "end_coin_id_": end_coin_id,
         "page_html_": str(soup),
