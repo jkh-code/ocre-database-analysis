@@ -1,5 +1,3 @@
-from http import client
-from os import path
 import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
@@ -14,6 +12,7 @@ import ocre_database_analysis.constants as c
 
 if __name__ == "__main__":
     # Connect to postgres database and create client
+    client = None  # Defined here to turn off false positive error from pylance
     try:
         client = Topsy("ocre")
     except ValueError as err:
@@ -25,53 +24,67 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scraping Browse tab results
-    # Accessing HTML for first page
-    try:
-        page_url = c.OCRE_BROWSE_PAGE + "0"
-        print(f"\nExtracting HTML from {page_url} ...")
-        response = requests.get(page_url)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as err:
-        print(
-            f"\nREQUESTS ERROR: Encountered error trying to connect to {c.OCRE_BROWSE_PAGE}"
+    curr_page_id = 1
+    max_num_pages = None
+    break_loop = False
+
+    while not break_loop:
+        url_start_idx = (curr_page_id - 1) * 20
+        url_page = c.OCRE_BROWSE_PAGE + str(url_start_idx)
+
+        # Scraping HTML
+        print(f"\nWorking on page #{curr_page_id} ...")
+        print(f"Extracting HTML from {url_page} ...")
+        try:
+            response = requests.get(url_page)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as err:
+            print(
+                f"\nREQUESTS ERROR: Encountered error trying to connect to {c.OCRE_BROWSE_PAGE}"
+            )
+            print(err)
+            client.close_connection()
+            sys.exit(1)
+
+        # Converting HTML into soup
+        print("Converting HTML into Soup...")
+        soup = BeautifulSoup(response.text, "lxml")
+
+        # Extract display records data
+        print("Extracting displayed records data...")
+        data_display_records = (
+            soup.find("div", class_="paging_div row").contents[0].text.strip().split()
         )
-        print(err)
-        client.close_connection()
-        sys.exit(1)
+        data_display_records = [
+            int(item) for item in data_display_records[2 : 6 + 1 : 2]
+        ]
+        if curr_page_id == 1:
+            start_coin_id, end_coin_id, max_coin_id = data_display_records
+            max_num_pages = (max_coin_id // 20) + int(max_coin_id % 20 != 0)
+        else:
+            start_coin_id, end_coin_id, _ = data_display_records
 
-    # Converting HTML into soup
-    print("Converting HTML into Soup...")
-    soup = BeautifulSoup(response.text, "lxml")
+        # Save raw data to postgres database
+        print("Saving data to database...")
+        data = {
+            "page_id_": curr_page_id,
+            "page_url_": url_page,
+            "start_coin_id_": start_coin_id,
+            "end_coin_id_": end_coin_id,
+            "page_html_": str(soup),
+        }
+        client.insert_data(
+            c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql", [data]
+        )
 
-    # Extract display records and pagination data
-    data_display_records = (
-        soup.find("div", class_="paging_div row").contents[0].text.strip().split()
-    )
-    data_display_records = [int(item) for item in data_display_records[2 : 6 + 1 : 2]]
-    start_coin_id, end_coin_id, max_coin_id = data_display_records
+        # Toggle break condition
+        if curr_page_id == max_num_pages:
+            break_loop = True
 
-    page_id = int(
-        soup.find("div", class_="paging_div row")
-        .find("div", class_="col-md-6 page-nos")
-        .text.strip()
-    )
+        # Increment page index
+        curr_page_id += 1
 
-    # Calculate num pages to scrape
-    num_pages = (max_coin_id // 20) + int(max_coin_id % 20 != 0)
-
-    # Save raw data to postgres database
-    data = {
-        "page_id_": page_id,
-        "page_url_": page_url,
-        "start_coin_id_": start_coin_id,
-        "end_coin_id_": end_coin_id,
-        "page_html_": str(soup),
-    }
-    client.insert_data(c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql", [data])
-
-    # repeat for additional pages
-    # TODO: Rewrite code above to be more modular
-    # TODO: Write code for this section
+    print("\nFinished scraping Browse results...")
 
     # Disconnect from postgres database
     client.close_connection()
