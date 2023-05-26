@@ -158,7 +158,7 @@ class Topsy:
         return None
 
     def insert_data(
-        self, file_path: Union[PosixPath, WindowsPath], data=list[dict]
+        self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
         print("\nTrying to insert data...")
