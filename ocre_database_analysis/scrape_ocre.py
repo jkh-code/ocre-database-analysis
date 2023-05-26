@@ -10,6 +10,32 @@ import ocre_database_analysis.constants as c
 # TODO: Replace print statements with logging
 
 
+class ScrapeOcre:
+    """Scrape OCRE website and process HTML."""
+
+    def __init__(self) -> None:
+        pass
+
+    def connect_to_database(self):
+        pass
+
+    def disconnect_from_database(self):
+        pass
+
+    def scrape_browse_results(self):
+        # TODO: Add sample option that allows scraping of subset of pages
+        pass
+
+    def process_browse_results(self):
+        pass
+
+    def scrape_canonical_uris(self):
+        pass
+
+    def process_canonical_uris(self):
+        pass
+
+
 if __name__ == "__main__":
     # Connect to postgres database and create client
     client = None  # Defined here to turn off false positive error from pylance
