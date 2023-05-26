@@ -148,7 +148,7 @@ class Topsy:
 
         print(f"Creating new table defined in file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading {file_path}...")
+            print("Reading file...")
             query = f.read()
 
         print(f"Executing query...")
@@ -178,7 +178,7 @@ class Topsy:
 
         print(f"Inserting data using file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading {file_path}...")
+            print(f"Reading file...")
             query = f.read()
 
         print(f"Executing query...")
