@@ -1,4 +1,5 @@
-from multiprocessing import Value
+from __future__ import annotations
+
 import psycopg2 as pg2
 from psycopg2 import sql
 from os import environ
@@ -201,6 +202,21 @@ class Topsy:
         print(f"psycopg2 ERROR PG MESSAGE:\n{err.pgerror}")
 
         return None
+
+    @staticmethod
+    def try_postgres_connection(db_name: str) -> Topsy:
+        client = None  # Defined here to turn off false positive error from pylance
+        try:
+            client = Topsy(db_name)
+        except ValueError as err:
+            print(err)
+            print(f"Unable to connect to `{client.conn_parameters['dbname']}`.")
+            sys.exit(1)
+        except pg2.OperationalError as err:
+            Topsy.print_pg2_exception(err)
+            sys.exit(1)
+
+        return client
 
 
 if __name__ == "__main__":
