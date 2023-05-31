@@ -6,6 +6,8 @@ import requests
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
+from typing import Union
+
 
 # TODO: Replace print statements with logging
 
@@ -13,11 +15,19 @@ import ocre_database_analysis.constants as c
 class ScrapeOcre:
     """Scrape OCRE website and process HTML."""
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, db_name: str, sample: Union[None, int] = None) -> None:
+        """Construct instance of class."""
+        self.db_name = db_name
+        self.sample = sample
+        self.client = None
 
-    def connect_to_database(self):
-        pass
+        return None
+
+    def connect_to_database(self) -> None:
+        """Connect to database using Topsy instance."""
+        self.client = Topsy(self.db_name)
+
+        return None
 
     def disconnect_from_database(self):
         pass

@@ -33,6 +33,8 @@ docker run --name pgds -d -p MY_PORT:5432 -e POSTGRES_PASSWORD='MY PASSWORD' pos
 
 
 ## Creating database
+Running `create_ocre_database.py` script will create the database structure.
+
 - Create `ocre` database
 - Create schemas
     - `raw_web_scrape`
