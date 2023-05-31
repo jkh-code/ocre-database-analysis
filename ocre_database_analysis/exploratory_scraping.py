@@ -12,7 +12,7 @@ import ocre_database_analysis.constants as c
 # TODO: write the scrape_browse_results() function to pass the cursor to the get_browse_fields() and get_unique_object_count() functions to perform their own tasks. --THIS WILL NOT WORK-- Once the cursor is exhausted it cannot be replenished. Then have two function "get" functions have scrape_browse_results() function in it.
 
 
-def scrape_browse_results_fields(db_name: str) -> None:
+def scrape_browse_results(db_name: str) -> Topsy:
     print("Start scraping of Browse results fields...")
 
     # Try connection and return client
@@ -27,6 +27,12 @@ def scrape_browse_results_fields(db_name: str) -> None:
 
     print("Querying database...")
     client.cur.execute(query)
+
+    return client
+
+
+def get_browse_fields(db_name: str) -> None:
+    client = scrape_browse_results(db_name)
 
     # Determining unique Browse results fields
     unique_fields = dict()
@@ -55,18 +61,22 @@ def scrape_browse_results_fields(db_name: str) -> None:
     print(
         f"\nFound the following unique fields on the following pages: {sorted_unique_fields}"
     )
-    path_save_results = c.DATA_FOLDER / "unique_browse_fields.txt"
+    path_save_results = c.DATA_FOLDER / "unique_browse_fields.csv"
     print(f"Writing results to file {path_save_results}")
     with open(path_save_results, "w", encoding="UTF-8") as f:
-        f.write("item\tfirst_page_seen\tapi_start_value\n")
+        f.write("item, first_page_seen, api_start_value\n")
         for field, page_num in sorted_unique_fields:
             api_start_value = (page_num - 1) * 20
-            f.write(f"{field}\t{page_num}\t{api_start_value}\n")
+            f.write(f'"{field}", {page_num}, {api_start_value}\n')
 
     client.close_connection()
 
     return None
 
 
+def get_unique_object_counts(db_name: str) -> None:
+    pass
+
+
 if __name__ == "__main__":
-    scrape_browse_results_fields("ocre")
+    get_browse_fields("ocre")

@@ -1,7 +1,0 @@
-item	first_page_seen	api_start_value
-Date	1	0
-Denomination	1	0
-Mint	1	0
-Obverse	1	0
-Reference	330	6580
-Reverse	1	0
