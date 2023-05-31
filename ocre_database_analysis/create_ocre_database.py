@@ -21,13 +21,9 @@ def create_ocre_database(db_to_create_name: str) -> None:
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
-    # Create database
     client.create_new_database([db_to_create_name], switch=True)
-
-    # Create schemas
     client.create_new_schema(SCHEMA_NAMES)
 
-    # Create tables
     path_create = c.SQL_FOLDER / "create"
     for table in TABLE_CREATION_ORDER:
         path_create_file = path_create / ("create_" + table + ".sql")
