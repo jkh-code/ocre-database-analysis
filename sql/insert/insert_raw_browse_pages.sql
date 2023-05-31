@@ -1,4 +1,4 @@
-INSERT INTO ocre.raw_web_scrape.raw_browse_pages (
+INSERT INTO raw_web_scrape.raw_browse_pages (
     page_id, page_url, start_coin_id, end_coin_id, page_html
 )
 VALUES (
