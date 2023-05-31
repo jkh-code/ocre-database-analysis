@@ -1,6 +1,4 @@
-import psycopg2 as pg2
 from bs4 import BeautifulSoup
-import sys
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
