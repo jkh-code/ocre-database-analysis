@@ -20,13 +20,7 @@ def scrape_browse_results(db_name: str) -> Topsy:
 
     # Loading data from postgres
     file_path = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
-    print(f"\nQuerying `{db_name}` using file {file_path}")
-    with open(file_path, "r", encoding="UTF-8") as f:
-        print(f"Reading file...")
-        query = f.read()
-
-    print("Querying database...")
-    client.cur.execute(query)
+    client.query_data(file_path)
 
     return client
 
