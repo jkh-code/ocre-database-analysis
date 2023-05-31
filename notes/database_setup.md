@@ -29,3 +29,15 @@ export PGDS_PORT="MY PORT NO."
 ```sh
 docker run --name pgds -d -p MY_PORT:5432 -e POSTGRES_PASSWORD='MY PASSWORD' postgres
 ```
+
+
+
+## Creating database
+- Create `ocre` database
+- Create schemas
+    - `raw_web_scrape`
+    - `stg_web_scrape`
+- Create tables
+    - `ocre.raw_web_scrape.raw_browse_pages`
+    - `ocre.stg_web_scrape.stg_browse_pages`
+    - `ocre.raw_web_scrape.raw_canonical_uris`
