@@ -1,0 +1,277 @@
+"hoard: 1", first appears on page 5 at API start value of 80
+"object: 1", first appears on page 1 at API start value of 0
+"object: 1; hoard: 1", first appears on page 6 at API start value of 100
+"object: 1; hoards: 3", first appears on page 8 at API start value of 140
+"objects: 10", first appears on page 1 at API start value of 0
+"objects: 101", first appears on page 1597 at API start value of 31920
+"objects: 102", first appears on page 1597 at API start value of 31920
+"objects: 103", first appears on page 1201 at API start value of 24000
+"objects: 104", first appears on page 476 at API start value of 9500
+"objects: 105", first appears on page 1879 at API start value of 37560
+"objects: 106", first appears on page 1883 at API start value of 37640
+"objects: 108", first appears on page 339 at API start value of 6760
+"objects: 10; hoards: 2", first appears on page 19 at API start value of 360
+"objects: 10; hoards: 4", first appears on page 3 at API start value of 40
+"objects: 10; hoards: 7", first appears on page 3 at API start value of 40
+"objects: 11", first appears on page 12 at API start value of 220
+"objects: 110", first appears on page 290 at API start value of 5780
+"objects: 111", first appears on page 45 at API start value of 880
+"objects: 112", first appears on page 355 at API start value of 7080
+"objects: 112; hoards: 2", first appears on page 26 at API start value of 500
+"objects: 113", first appears on page 1592 at API start value of 31820
+"objects: 116", first appears on page 162 at API start value of 3220
+"objects: 118", first appears on page 124 at API start value of 2460
+"objects: 119", first appears on page 341 at API start value of 6800
+"objects: 11; hoard: 1", first appears on page 13 at API start value of 240
+"objects: 11; hoards: 2", first appears on page 12 at API start value of 220
+"objects: 11; hoards: 4", first appears on page 24 at API start value of 460
+"objects: 12", first appears on page 7 at API start value of 120
+"objects: 121", first appears on page 1241 at API start value of 24800
+"objects: 122", first appears on page 1021 at API start value of 20400
+"objects: 123", first appears on page 1760 at API start value of 35180
+"objects: 124", first appears on page 1587 at API start value of 31720
+"objects: 1246", first appears on page 1975 at API start value of 39480
+"objects: 1251", first appears on page 1969 at API start value of 39360
+"objects: 126", first appears on page 1776 at API start value of 35500
+"objects: 129", first appears on page 1882 at API start value of 37620
+"objects: 12; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 12; hoards: 2", first appears on page 1 at API start value of 0
+"objects: 12; hoards: 4", first appears on page 3 at API start value of 40
+"objects: 12; hoards: 5", first appears on page 3 at API start value of 40
+"objects: 13", first appears on page 21 at API start value of 400
+"objects: 130", first appears on page 1832 at API start value of 36620
+"objects: 132", first appears on page 1024 at API start value of 20460
+"objects: 133", first appears on page 1182 at API start value of 23620
+"objects: 134", first appears on page 1247 at API start value of 24920
+"objects: 135", first appears on page 39 at API start value of 760
+"objects: 136", first appears on page 1020 at API start value of 20380
+"objects: 13; hoard: 1", first appears on page 9 at API start value of 160
+"objects: 13; hoards: 2", first appears on page 19 at API start value of 360
+"objects: 13; hoards: 3", first appears on page 1 at API start value of 0
+"objects: 13; hoards: 5", first appears on page 17 at API start value of 320
+"objects: 14", first appears on page 15 at API start value of 280
+"objects: 1433", first appears on page 2016 at API start value of 40300
+"objects: 145", first appears on page 1249 at API start value of 24960
+"objects: 14; hoard: 1", first appears on page 20 at API start value of 380
+"objects: 14; hoards: 3", first appears on page 5 at API start value of 80
+"objects: 14; hoards: 6", first appears on page 18 at API start value of 340
+"objects: 14; hoards: 8", first appears on page 17 at API start value of 320
+"objects: 15", first appears on page 21 at API start value of 400
+"objects: 150", first appears on page 1935 at API start value of 38680
+"objects: 159", first appears on page 1252 at API start value of 25020
+"objects: 15; hoard: 1", first appears on page 4 at API start value of 60
+"objects: 15; hoards: 4", first appears on page 21 at API start value of 400
+"objects: 16", first appears on page 28 at API start value of 540
+"objects: 160", first appears on page 1248 at API start value of 24940
+"objects: 161", first appears on page 1971 at API start value of 39400
+"objects: 163", first appears on page 1319 at API start value of 26360
+"objects: 168", first appears on page 1556 at API start value of 31100
+"objects: 16; hoard: 1", first appears on page 22 at API start value of 420
+"objects: 16; hoards: 2", first appears on page 1 at API start value of 0
+"objects: 17", first appears on page 16 at API start value of 300
+"objects: 170", first appears on page 1556 at API start value of 31100
+"objects: 173", first appears on page 1555 at API start value of 31080
+"objects: 17; hoards: 2", first appears on page 21 at API start value of 400
+"objects: 17; hoards: 3", first appears on page 6 at API start value of 100
+"objects: 17; hoards: 4", first appears on page 12 at API start value of 220
+"objects: 17; hoards: 5", first appears on page 28 at API start value of 540
+"objects: 17; hoards: 6", first appears on page 18 at API start value of 340
+"objects: 17; hoards: 9", first appears on page 17 at API start value of 320
+"objects: 18", first appears on page 11 at API start value of 200
+"objects: 180", first appears on page 1587 at API start value of 31720
+"objects: 182", first appears on page 1585 at API start value of 31680
+"objects: 184", first appears on page 1241 at API start value of 24800
+"objects: 186", first appears on page 1592 at API start value of 31820
+"objects: 188", first appears on page 1241 at API start value of 24800
+"objects: 189", first appears on page 1826 at API start value of 36500
+"objects: 18; hoards: 3", first appears on page 25 at API start value of 480
+"objects: 18; hoards: 4", first appears on page 19 at API start value of 360
+"objects: 18; hoards: 7", first appears on page 25 at API start value of 480
+"objects: 19", first appears on page 20 at API start value of 380
+"objects: 191", first appears on page 1066 at API start value of 21300
+"objects: 196", first appears on page 1243 at API start value of 24840
+"objects: 198", first appears on page 36 at API start value of 700
+"objects: 19; hoards: 13", first appears on page 17 at API start value of 320
+"objects: 19; hoards: 5", first appears on page 3 at API start value of 40
+"objects: 19; hoards: 6", first appears on page 8 at API start value of 140
+"objects: 2", first appears on page 1 at API start value of 0
+"objects: 20", first appears on page 28 at API start value of 540
+"objects: 200", first appears on page 1242 at API start value of 24820
+"objects: 203", first appears on page 1971 at API start value of 39400
+"objects: 205", first appears on page 40 at API start value of 780
+"objects: 20; hoard: 1", first appears on page 20 at API start value of 380
+"objects: 20; hoards: 2", first appears on page 19 at API start value of 360
+"objects: 20; hoards: 3", first appears on page 11 at API start value of 200
+"objects: 20; hoards: 4", first appears on page 7 at API start value of 120
+"objects: 21", first appears on page 23 at API start value of 440
+"objects: 211", first appears on page 1556 at API start value of 31100
+"objects: 211; hoards: 14", first appears on page 14 at API start value of 260
+"objects: 214", first appears on page 1244 at API start value of 24860
+"objects: 21; hoards: 19", first appears on page 17 at API start value of 320
+"objects: 21; hoards: 2", first appears on page 4 at API start value of 60
+"objects: 21; hoards: 7", first appears on page 17 at API start value of 320
+"objects: 21; hoards: 8", first appears on page 31 at API start value of 600
+"objects: 22", first appears on page 1 at API start value of 0
+"objects: 222", first appears on page 1066 at API start value of 21300
+"objects: 224", first appears on page 1588 at API start value of 31740
+"objects: 227", first appears on page 1592 at API start value of 31820
+"objects: 22; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 23", first appears on page 22 at API start value of 420
+"objects: 23; hoards: 16", first appears on page 18 at API start value of 340
+"objects: 23; hoards: 5", first appears on page 6 at API start value of 100
+"objects: 23; hoards: 7", first appears on page 18 at API start value of 340
+"objects: 23; hoards: 9", first appears on page 17 at API start value of 320
+"objects: 24", first appears on page 16 at API start value of 300
+"objects: 2431", first appears on page 2016 at API start value of 40300
+"objects: 249", first appears on page 45 at API start value of 880
+"objects: 25", first appears on page 21 at API start value of 400
+"objects: 251", first appears on page 33 at API start value of 640
+"objects: 252", first appears on page 1264 at API start value of 25260
+"objects: 255", first appears on page 1774 at API start value of 35460
+"objects: 25; hoards: 3", first appears on page 25 at API start value of 480
+"objects: 26", first appears on page 23 at API start value of 440
+"objects: 26; hoards: 7", first appears on page 17 at API start value of 320
+"objects: 26; hoards: 8", first appears on page 3 at API start value of 40
+"objects: 27", first appears on page 15 at API start value of 280
+"objects: 27; hoard: 1", first appears on page 25 at API start value of 480
+"objects: 27; hoards: 13", first appears on page 18 at API start value of 340
+"objects: 27; hoards: 6", first appears on page 9 at API start value of 160
+"objects: 27; hoards: 7", first appears on page 3 at API start value of 40
+"objects: 28", first appears on page 15 at API start value of 280
+"objects: 28; hoards: 3", first appears on page 14 at API start value of 260
+"objects: 29", first appears on page 26 at API start value of 500
+"objects: 296", first appears on page 1592 at API start value of 31820
+"objects: 29; hoards: 14", first appears on page 17 at API start value of 320
+"objects: 29; hoards: 17", first appears on page 18 at API start value of 340
+"objects: 2; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 2; hoards: 2", first appears on page 13 at API start value of 240
+"objects: 3", first appears on page 2 at API start value of 20
+"objects: 30", first appears on page 29 at API start value of 560
+"objects: 303", first appears on page 1977 at API start value of 39520
+"objects: 30; hoards: 7", first appears on page 20 at API start value of 380
+"objects: 31", first appears on page 14 at API start value of 260
+"objects: 313", first appears on page 1555 at API start value of 31080
+"objects: 31; hoards: 10", first appears on page 14 at API start value of 260
+"objects: 31; hoards: 4", first appears on page 19 at API start value of 360
+"objects: 32", first appears on page 15 at API start value of 280
+"objects: 320", first appears on page 1971 at API start value of 39400
+"objects: 326", first appears on page 1249 at API start value of 24960
+"objects: 327", first appears on page 1777 at API start value of 35520
+"objects: 32; hoards: 11", first appears on page 12 at API start value of 220
+"objects: 33", first appears on page 125 at API start value of 2480
+"objects: 333", first appears on page 1913 at API start value of 38240
+"objects: 33; hoards: 6", first appears on page 6 at API start value of 100
+"objects: 34", first appears on page 15 at API start value of 280
+"objects: 34; hoards: 13", first appears on page 17 at API start value of 320
+"objects: 35", first appears on page 39 at API start value of 760
+"objects: 35; hoard: 1", first appears on page 26 at API start value of 500
+"objects: 35; hoards: 15", first appears on page 7 at API start value of 120
+"objects: 35; hoards: 6", first appears on page 19 at API start value of 360
+"objects: 36", first appears on page 208 at API start value of 4140
+"objects: 37", first appears on page 25 at API start value of 480
+"objects: 378", first appears on page 1258 at API start value of 25140
+"objects: 37; hoard: 1", first appears on page 26 at API start value of 500
+"objects: 38", first appears on page 16 at API start value of 300
+"objects: 39", first appears on page 36 at API start value of 700
+"objects: 3; hoard: 1", first appears on page 3 at API start value of 40
+"objects: 3; hoards: 2", first appears on page 17 at API start value of 320
+"objects: 4", first appears on page 1 at API start value of 0
+"objects: 40", first appears on page 45 at API start value of 880
+"objects: 402", first appears on page 15 at API start value of 280
+"objects: 40; hoard: 1", first appears on page 23 at API start value of 440
+"objects: 41", first appears on page 45 at API start value of 880
+"objects: 411", first appears on page 1977 at API start value of 39520
+"objects: 42", first appears on page 24 at API start value of 460
+"objects: 424", first appears on page 1258 at API start value of 25140
+"objects: 42; hoard: 1", first appears on page 25 at API start value of 480
+"objects: 43", first appears on page 435 at API start value of 8680
+"objects: 43; hoard: 1", first appears on page 23 at API start value of 440
+"objects: 44", first appears on page 33 at API start value of 640
+"objects: 45", first appears on page 367 at API start value of 7320
+"objects: 46", first appears on page 113 at API start value of 2240
+"objects: 46; hoard: 1", first appears on page 26 at API start value of 500
+"objects: 46; hoards: 12", first appears on page 11 at API start value of 200
+"objects: 47", first appears on page 125 at API start value of 2480
+"objects: 48", first appears on page 286 at API start value of 5700
+"objects: 49", first appears on page 34 at API start value of 660
+"objects: 4; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 4; hoards: 2", first appears on page 10 at API start value of 180
+"objects: 5", first appears on page 5 at API start value of 80
+"objects: 50", first appears on page 28 at API start value of 540
+"objects: 51", first appears on page 45 at API start value of 880
+"objects: 52", first appears on page 45 at API start value of 880
+"objects: 53", first appears on page 286 at API start value of 5700
+"objects: 531", first appears on page 1977 at API start value of 39520
+"objects: 54", first appears on page 11 at API start value of 200
+"objects: 55", first appears on page 36 at API start value of 700
+"objects: 56", first appears on page 45 at API start value of 880
+"objects: 56; hoards: 2", first appears on page 24 at API start value of 460
+"objects: 57", first appears on page 73 at API start value of 1440
+"objects: 577", first appears on page 1969 at API start value of 39360
+"objects: 58", first appears on page 1009 at API start value of 20160
+"objects: 59", first appears on page 11 at API start value of 200
+"objects: 5; hoard: 1", first appears on page 4 at API start value of 60
+"objects: 5; hoards: 2", first appears on page 3 at API start value of 40
+"objects: 5; hoards: 3", first appears on page 31 at API start value of 600
+"objects: 5; hoards: 4", first appears on page 7 at API start value of 120
+"objects: 6", first appears on page 1 at API start value of 0
+"objects: 60", first appears on page 38 at API start value of 740
+"objects: 61", first appears on page 912 at API start value of 18220
+"objects: 62", first appears on page 358 at API start value of 7140
+"objects: 62; hoard: 1", first appears on page 23 at API start value of 440
+"objects: 62; hoards: 6", first appears on page 18 at API start value of 340
+"objects: 63", first appears on page 1892 at API start value of 37820
+"objects: 64", first appears on page 289 at API start value of 5760
+"objects: 65", first appears on page 44 at API start value of 860
+"objects: 66", first appears on page 1257 at API start value of 25120
+"objects: 67", first appears on page 123 at API start value of 2440
+"objects: 68", first appears on page 11 at API start value of 200
+"objects: 69", first appears on page 358 at API start value of 7140
+"objects: 6; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 6; hoards: 2", first appears on page 9 at API start value of 160
+"objects: 6; hoards: 3", first appears on page 1 at API start value of 0
+"objects: 6; hoards: 5", first appears on page 12 at API start value of 220
+"objects: 7", first appears on page 2 at API start value of 20
+"objects: 70", first appears on page 416 at API start value of 8300
+"objects: 71", first appears on page 290 at API start value of 5780
+"objects: 72", first appears on page 1157 at API start value of 23120
+"objects: 73", first appears on page 1257 at API start value of 25120
+"objects: 74", first appears on page 62 at API start value of 1220
+"objects: 75", first appears on page 1055 at API start value of 21080
+"objects: 76", first appears on page 29 at API start value of 560
+"objects: 77", first appears on page 290 at API start value of 5780
+"objects: 78", first appears on page 1021 at API start value of 20400
+"objects: 79", first appears on page 412 at API start value of 8220
+"objects: 7; hoard: 1", first appears on page 7 at API start value of 120
+"objects: 7; hoards: 2", first appears on page 10 at API start value of 180
+"objects: 7; hoards: 3", first appears on page 6 at API start value of 100
+"objects: 7; hoards: 4", first appears on page 20 at API start value of 380
+"objects: 8", first appears on page 1 at API start value of 0
+"objects: 80", first appears on page 45 at API start value of 880
+"objects: 81", first appears on page 553 at API start value of 11040
+"objects: 82", first appears on page 1027 at API start value of 20520
+"objects: 83", first appears on page 45 at API start value of 880
+"objects: 84", first appears on page 377 at API start value of 7520
+"objects: 85", first appears on page 1251 at API start value of 25000
+"objects: 86", first appears on page 1020 at API start value of 20380
+"objects: 86; hoard: 1", first appears on page 26 at API start value of 500
+"objects: 88", first appears on page 16 at API start value of 300
+"objects: 89", first appears on page 1542 at API start value of 30820
+"objects: 8; hoard: 1", first appears on page 3 at API start value of 40
+"objects: 8; hoards: 2", first appears on page 17 at API start value of 320
+"objects: 8; hoards: 3", first appears on page 9 at API start value of 160
+"objects: 9", first appears on page 11 at API start value of 200
+"objects: 90", first appears on page 431 at API start value of 8600
+"objects: 91", first appears on page 439 at API start value of 8760
+"objects: 92", first appears on page 1760 at API start value of 35180
+"objects: 93", first appears on page 984 at API start value of 19660
+"objects: 94", first appears on page 1182 at API start value of 23620
+"objects: 95", first appears on page 1956 at API start value of 39100
+"objects: 96", first appears on page 1055 at API start value of 21080
+"objects: 97", first appears on page 1597 at API start value of 31920
+"objects: 98; hoard: 1", first appears on page 26 at API start value of 500
+"objects: 99", first appears on page 1594 at API start value of 31860
+"objects: 9; hoard: 1", first appears on page 1 at API start value of 0
+"objects: 9; hoards: 2", first appears on page 8 at API start value of 140
+"objects: 9; hoards: 3", first appears on page 3 at API start value of 40
+"objects: 9; hoards: 4", first appears on page 3 at API start value of 40

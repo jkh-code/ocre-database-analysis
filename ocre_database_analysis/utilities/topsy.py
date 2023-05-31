@@ -1,4 +1,5 @@
-from multiprocessing import Value
+from __future__ import annotations
+
 import psycopg2 as pg2
 from psycopg2 import sql
 from os import environ
@@ -148,7 +149,7 @@ class Topsy:
 
         print(f"Creating new table defined in file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading {file_path}...")
+            print("Reading file...")
             query = f.read()
 
         print(f"Executing query...")
@@ -158,7 +159,7 @@ class Topsy:
         return None
 
     def insert_data(
-        self, file_path: Union[PosixPath, WindowsPath], data=list[dict]
+        self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
         print("\nTrying to insert data...")
@@ -178,12 +179,37 @@ class Topsy:
 
         print(f"Inserting data using file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading {file_path}...")
+            print(f"Reading file...")
             query = f.read()
 
         print(f"Executing query...")
         self.cur.executemany(query, data)
         print(f"Data inserted...")
+
+        return None
+
+    def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
+        """Query data using specified file and save results to cursor object."""
+        print("\nTrying to query data...")
+
+        if type(file_path) not in (PosixPath, WindowsPath):
+            raise ValueError(
+                "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
+            )
+        if not file_path.exists():
+            raise ValueError("VALUE ERROR: `file_path` does not exists.")
+        if file_path.suffix != ".sql":
+            raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
+
+        # Loading data from postgres
+        print(f"\nQuerying `{self.conn_parameters['dbname']}` using file {file_path}")
+        with open(file_path, "r", encoding="UTF-8") as f:
+            print(f"Reading file...")
+            query = f.read()
+
+        print("Querying database...")
+        self.cur.execute(query)
+        print(f"Query complete...")
 
         return None
 
@@ -201,6 +227,21 @@ class Topsy:
         print(f"psycopg2 ERROR PG MESSAGE:\n{err.pgerror}")
 
         return None
+
+    @staticmethod
+    def try_postgres_connection(db_name: str) -> Topsy:
+        client = None  # Defined here to turn off false positive error from pylance
+        try:
+            client = Topsy(db_name)
+        except ValueError as err:
+            print(err)
+            print(f"Unable to connect to `{client.conn_parameters['dbname']}`.")
+            sys.exit(1)
+        except pg2.OperationalError as err:
+            Topsy.print_pg2_exception(err)
+            sys.exit(1)
+
+        return client
 
 
 if __name__ == "__main__":
