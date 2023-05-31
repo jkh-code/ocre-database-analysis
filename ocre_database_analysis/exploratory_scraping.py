@@ -6,12 +6,6 @@ from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
 
-# TODO: Convert scrape_browse_results_fields() into scrape_browse_results(). This function will run the same code through "Loading data from postgres" section
-# TODO: Move the contents from the "Determining unique Browse results fields" section to the end of the existing scrape_browse_results_fields() function into its own function, named get_browse_fields()
-# TODO: Create a new function, named get_unique_object_count(), to return a unique list of the number of objects text from the browse pages
-# TODO: write the scrape_browse_results() function to pass the cursor to the get_browse_fields() and get_unique_object_count() functions to perform their own tasks. --THIS WILL NOT WORK-- Once the cursor is exhausted it cannot be replenished. Then have two function "get" functions have scrape_browse_results() function in it.
-
-
 def scrape_browse_results(db_name: str) -> Topsy:
     print("Start scraping of Browse results fields...")
 
@@ -26,6 +20,7 @@ def scrape_browse_results(db_name: str) -> Topsy:
 
 
 def get_browse_fields(db_name: str) -> None:
+    """Scrape browse fields and print to CSV file."""
     client = scrape_browse_results(db_name)
 
     # Determining unique Browse results fields
@@ -69,8 +64,51 @@ def get_browse_fields(db_name: str) -> None:
 
 
 def get_unique_object_counts(db_name: str) -> None:
-    pass
+    """Scrape object counts and print to text file."""
+    client = scrape_browse_results(db_name)
+
+    # Determining unique object count strings
+    unique_text_d = dict()
+    total_rows = client.cur.rowcount
+    print("\nScraping object counts from all pages...")
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+
+        if (curr_row in (1, total_rows)) or (curr_row % 250 == 0):
+            print(f"Scraping page {curr_row} of {total_rows}...")
+
+        soup = BeautifulSoup(row[4], "lxml")
+        all_page_coins = soup.find_all("div", class_="row result-doc")
+        for coin in all_page_coins:
+            right_text = coin.find(
+                "div", class_="col-md-5 col-lg-4 pull-right"
+            ).text.strip()
+            if right_text:
+                if right_text not in unique_text_d.keys():
+                    unique_text_d[right_text] = curr_row
+
+    # Saving data to file
+    sorted_unique_fields = sorted(
+        unique_text_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    print(f"\nFound {len(sorted_unique_fields)} unique object count text...")
+    path_save_results = c.DATA_FOLDER / "unique_object_count_text.txt"
+    print(f"Writing results to file {path_save_results}")
+    with open(path_save_results, "w", encoding="UTF-8") as f:
+        for text, page_num in sorted_unique_fields:
+            api_start_value = (page_num - 1) * 20
+            f.write(
+                f'"{text}", first appears on page {page_num} at API start '
+                + f"value of {api_start_value}\n"
+            )
+
+    client.close_connection()
+
+    return None
 
 
 if __name__ == "__main__":
-    get_browse_fields("ocre")
+    database_name = "ocre"
+
+    get_browse_fields(database_name)
+    get_unique_object_counts(database_name)
