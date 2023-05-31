@@ -188,6 +188,31 @@ class Topsy:
 
         return None
 
+    def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
+        """Query data using specified file and save results to cursor object."""
+        print("\nTrying to query data...")
+
+        if type(file_path) not in (PosixPath, WindowsPath):
+            raise ValueError(
+                "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
+            )
+        if not file_path.exists():
+            raise ValueError("VALUE ERROR: `file_path` does not exists.")
+        if file_path.suffix != ".sql":
+            raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
+
+        # Loading data from postgres
+        print(f"\nQuerying `{self.conn_parameters['dbname']}` using file {file_path}")
+        with open(file_path, "r", encoding="UTF-8") as f:
+            print(f"Reading file...")
+            query = f.read()
+
+        print("Querying database...")
+        self.cur.execute(query)
+        print(f"Query complete...")
+
+        return None
+
     @staticmethod
     def print_pg2_exception(err: Exception) -> None:
         """Print line number, error, SQLSTATE code, and PG message to
