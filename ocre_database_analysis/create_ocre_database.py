@@ -6,7 +6,7 @@ import sys
 
 
 SCHEMA_NAMES = ["raw_web_scrape", "stg_web_scrape"]
-TABLE_CREATION_ORDER = ["raw_browse_pages"]
+TABLE_CREATION_ORDER = ["raw_browse_pages", "stg_coin_summaries"]
 
 
 def create_ocre_database(db_to_create_name: str) -> None:
