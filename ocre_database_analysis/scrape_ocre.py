@@ -15,6 +15,28 @@ from typing import Union
 class ScrapeOcre:
     """Scrape OCRE website and process HTML."""
 
+    # Schemas without `ts` field
+    SCHEMA_RAW_BROWSE_PAGES = {
+        "page_id": None,
+        "page_url": None,
+        "start_coin_id": None,
+        "start_coin_id": None,
+        "page_html": None,
+    }
+    SCHEMA_STG_COIN_SUMMARY = {
+        "coin_id": None,
+        "page_id": None,
+        "coin_name": None,
+        "coin_canonical_uri": None,
+        "coin_date_string": None,
+        "denomination": None,
+        "mint": None,
+        "obverse_description": None,
+        "reverse_description": None,
+        "reference": None,
+        "num_objects_found": None,
+    }
+
     def __init__(self, db_name: str, pages_to_sample: Union[None, int] = None) -> None:
         """Construct instance of class."""
         self.db_name = db_name
@@ -77,6 +99,7 @@ class ScrapeOcre:
 
             # Save raw data to postgres database
             print("Saving data to database...")
+            # TODO: Replace with OcreScrape schema
             data = {
                 "page_id_": curr_page_id,
                 "page_url_": url_page,
@@ -108,6 +131,11 @@ class ScrapeOcre:
         # raw_web_scrape.browse_pages
         path_query = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
         print(path_query)
+        self.client.query_data(path_query)
+        for row in self.client.cur:
+            print(row[0:4])
+            if self.client.cur.rownumber > 6:
+                break
 
     def scrape_canonical_uris(self):
         pass
