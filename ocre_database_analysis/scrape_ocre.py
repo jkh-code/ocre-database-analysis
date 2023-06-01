@@ -1,3 +1,4 @@
+from os import pipe
 import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
@@ -45,19 +46,8 @@ class ScrapeOcre:
             # Scraping HTML
             print(f"\nWorking on page #{curr_page_id} ...")
             print(f"Extracting HTML from {url_page} ...")
-
-            # TODO: Move try-except block to code below inem statement
-            try:
-                response = requests.get(url_page)
-                response.raise_for_status()
-            except requests.exceptions.RequestException as err:
-                print(
-                    f"\nREQUEST ERROR: Encountered error trying to connect to page #{curr_page_id}."
-                )
-                print(f"REQUESTS ERROR: Error on page at {url_page}")
-                print(err)
-                self.disconnect_from_database()
-                sys.exit(1)
+            response = requests.get(url_page)
+            response.raise_for_status()
 
             # Convert HTML into soup
             print("Converting HTML into Soup...")
@@ -133,6 +123,16 @@ if __name__ == "__main__":
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
-    pipeline.scrape_browse_results()
+    # try:
+    #     pipeline.scrape_browse_results()
+    # except requests.exceptions.RequestException as err:
+    #     print(
+    #         f"\nREQUEST ERROR: Encountered error trying to connect to webpage."
+    #     )
+    #     print(err)
+    #     pipeline.disconnect_from_database()
+    #     sys.exit(1)
+
+    pipeline.process_browse_results()
 
     pipeline.disconnect_from_database()
