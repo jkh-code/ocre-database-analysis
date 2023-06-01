@@ -4,7 +4,7 @@ CREATE TABLE stg_web_scrape.stg_coin_summaries (
     page_id INT NOT NULL,
     coin_name VARCHAR NOT NULL,
     coin_canonical_uri VARCHAR NULL,
-    coin_data_string VARCHAR NULL,
+    coin_date_string VARCHAR NULL,
     denomination VARCHAR NULL,
     mint VARCHAR NULL,
     obverse_description TEXT NULL,
