@@ -170,6 +170,8 @@ class ScrapeOcre:
                     if dt:
                         dt = self._convert_dt(dt)
                         if dt in processed_browse_data.keys():
+                            if dt == "reference":
+                                dd = dd.split(", ")
                             processed_browse_data[dt] = dd
 
                 right_text = coin.find(
@@ -194,6 +196,8 @@ class ScrapeOcre:
                 self._insert_using_secondary_client(
                     path_insert_query, [processed_browse_data]
                 )
+
+                # TODO: Status: finished testing process_browse_results() method and need to run/test on full dataset.
 
     def scrape_canonical_uris(self):
         pass
