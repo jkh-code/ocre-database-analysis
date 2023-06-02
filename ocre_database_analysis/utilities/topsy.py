@@ -66,7 +66,7 @@ class Topsy:
 
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
-        print("\nClosing the cursor object...")
+        print("Closing the cursor object...")
         self.cur.close()
         print(f"Closing the connecting to `{self.conn_parameters['dbname']}`...")
         self.conn.close()
@@ -76,7 +76,7 @@ class Topsy:
     def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
         """Create new database with option to switch to newly created
         database."""
-        print("\nCreating new databases...")
+        print("Creating new databases...")
         num_dbs = len(db_names)
 
         if type(db_names) != list:
@@ -136,7 +136,7 @@ class Topsy:
 
     def create_new_table(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Create new SQL table from file path."""
-        print("\nTrying to create new table...")
+        print("Trying to create new table...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -162,7 +162,7 @@ class Topsy:
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
-        print("\nTrying to insert data...")
+        print("Trying to insert data...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -190,7 +190,7 @@ class Topsy:
 
     def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Query data using specified file and save results to cursor object."""
-        print("\nTrying to query data...")
+        print("Trying to query data...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
