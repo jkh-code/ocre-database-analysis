@@ -156,12 +156,10 @@ class Topsy:
         if file_path.suffix != ".sql":
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
-        print(f"Creating new table defined in file {file_path}...")
+        print(f"Creating new table defined in {file_path.name}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print("Reading file...")
             query = f.read()
 
-        print(f"Executing query...")
         self.cur.execute(query)
         print(f"Table created...")
 
@@ -171,7 +169,7 @@ class Topsy:
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
-        print("Trying to insert data...")
+        print(f"Trying to insert data using {file_path.name}...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -186,12 +184,9 @@ class Topsy:
         ):
             raise ValueError("VALUE ERROR: `data` must be a list of dicts.")
 
-        print(f"Inserting data using file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading file...")
             query = f.read()
 
-        print(f"Executing query...")
         self.cur.executemany(query, data)
         print(f"Data inserted...")
 
@@ -199,7 +194,9 @@ class Topsy:
 
     def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Query data using specified file and save results to cursor object."""
-        print("Trying to query data...")
+        print(
+            f"Trying to query `{self.conn_parameters['dbname']}` using {file_path.name}..."
+        )
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -211,12 +208,9 @@ class Topsy:
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
         # Loading data from postgres
-        print(f"\nQuerying `{self.conn_parameters['dbname']}` using file {file_path}")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading file...")
             query = f.read()
 
-        print("Querying database...")
         self.cur.execute(query)
         print(f"Query complete...")
 
