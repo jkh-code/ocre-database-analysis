@@ -189,6 +189,12 @@ class ScrapeOcre:
             if self.client.cur.rownumber > 0:
                 break
 
+    def scrape_canonical_uris(self):
+        pass
+
+    def process_canonical_uris(self):
+        pass
+
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
         keys in ScrapeOcre.SCHEMA_STG_COIN_SUMMARY dict."""
@@ -198,12 +204,6 @@ class ScrapeOcre:
         if tag_ == "date":
             tag_ = "coin_date_string"
         return tag_
-
-    def scrape_canonical_uris(self):
-        pass
-
-    def process_canonical_uris(self):
-        pass
 
     @staticmethod
     def populate_raw_browse_pages_schema(
