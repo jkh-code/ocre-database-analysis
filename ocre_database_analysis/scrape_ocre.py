@@ -10,6 +10,7 @@ from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
 from typing import Union
+from pathlib import PosixPath, WindowsPath
 
 
 # TODO: Replace print statements with logging
@@ -132,18 +133,23 @@ class ScrapeOcre:
         # c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
         # TODO: Change all table names in database such that the table used below is:
         # raw_web_scrape.browse_pages
+        print("Retrieving data from `raw_web_scrape` table...")
         path_query = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
         print(path_query)
         self.client.query_data(path_query)
+
         for row in self.client.cur:
             raw_browse_data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
             ScrapeOcre.populate_raw_browse_pages_schema(raw_browse_data, row)
+
+            print(f"Processing data for `page_id` {raw_browse_data['page_id']}...")
             soup = BeautifulSoup(raw_browse_data["page_html"], "lxml")
             all_page_coins = soup.find_all("div", class_="row result-doc")
             all_coin_ids = range(
                 raw_browse_data["start_coin_id"], raw_browse_data["end_coin_id"] + 1
             )
             for coin_id, coin in zip(all_coin_ids, all_page_coins):
+                print(f"Processing data for `coin_id` {coin_id}...")
                 processed_browse_data = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
 
                 processed_browse_data["coin_id"] = coin_id
@@ -181,13 +187,13 @@ class ScrapeOcre:
                     # When empty
                     processed_browse_data["num_objects_found"] = 0
 
-                print("--------")
-                pprint(processed_browse_data)
-                print("--------")
-                # TODO: Write processed_browse_data to database
-
-            if self.client.cur.rownumber > 0:
-                break
+                # Write processed data to database
+                path_insert_query = (
+                    c.SQL_FOLDER / "insert" / "insert_stg_coin_summaries.sql"
+                )
+                self._insert_using_secondary_client(
+                    path_insert_query, [processed_browse_data]
+                )
 
     def scrape_canonical_uris(self):
         pass
@@ -204,6 +210,16 @@ class ScrapeOcre:
         if tag_ == "date":
             tag_ = "coin_date_string"
         return tag_
+
+    def _insert_using_secondary_client(
+        self, path: Union[PosixPath, WindowsPath], data: list[dict]
+    ) -> None:
+        """Insert data into database using secondary client to preserve
+        existing client."""
+        client_temp = Topsy(self.db_name)
+        client_temp.insert_data(path, data)
+        client_temp.close_connection()
+        return None
 
     @staticmethod
     def populate_raw_browse_pages_schema(
