@@ -26,7 +26,7 @@ def create_ocre_database(db_to_create_name: str) -> None:
 
     path_create = c.SQL_FOLDER / "create"
     for table in TABLE_CREATION_ORDER:
-        path_create_file = path_create / ("create_" + table + ".sql")
+        path_create_file = path_create / (table + ".sql")
         client.create_new_table(path_create_file)
 
     client.close_connection()

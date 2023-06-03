@@ -111,9 +111,7 @@ class ScrapeOcre:
                 str(soup),
             )
             ScrapeOcre.populate_raw_browse_pages_schema(data, scraped_values)
-            path_insert_data_file = (
-                c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql"
-            )
+            path_insert_data_file = c.SQL_FOLDER / "insert" / "raw_browse_pages.sql"
             self.client.insert_data(path_insert_data_file, [data])
 
             # Toggle break condition
@@ -134,7 +132,7 @@ class ScrapeOcre:
         # TODO: Change all table names in database such that the table used below is:
         # raw_web_scrape.browse_pages
         print("Retrieving data from `raw_web_scrape` table...")
-        path_query = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
+        path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
         print(path_query)
         self.client.query_data(path_query)
 
@@ -190,9 +188,7 @@ class ScrapeOcre:
                     processed_browse_data["num_objects_found"] = 0
 
                 # Write processed data to database
-                path_insert_query = (
-                    c.SQL_FOLDER / "insert" / "insert_stg_coin_summaries.sql"
-                )
+                path_insert_query = c.SQL_FOLDER / "insert" / "stg_coin_summaries.sql"
                 self._insert_using_secondary_client(
                     path_insert_query, [processed_browse_data]
                 )
