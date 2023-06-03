@@ -127,10 +127,6 @@ class ScrapeOcre:
     def process_browse_results(self):
         """Process and save Browse results data."""
         # Query data
-        # TODO: Change file names for all SQL files such that file below is:
-        # c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
-        # TODO: Change all table names in database such that the table used below is:
-        # raw_web_scrape.browse_pages
         print("Retrieving data from `raw_web_scrape` table...")
         path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
         print(path_query)
