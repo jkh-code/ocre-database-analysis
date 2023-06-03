@@ -19,7 +19,7 @@ import ocre_database_analysis.constants as c
 class Topsy:
     """Client for working with PostgreSQL databases."""
 
-    def __init__(self, dbname: Union[None, str] = None) -> None:
+    def __init__(self, dbname: Union[None, str] = None, silent: bool = False) -> None:
         """Initialize client."""
 
         # Creating connection parameters
@@ -37,6 +37,7 @@ class Topsy:
             "host": environ["PGDS_HOST"],
             "port": environ["PGDS_PORT"],
         }
+        self.silent = silent
 
         self.conn = None
         self.cur = None
@@ -45,7 +46,9 @@ class Topsy:
         return None
 
     def open_connections(self) -> None:
-        print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
+        if not self.silent:
+            print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
+
         self.conn = pg2.connect(
             dbname=self.conn_parameters["dbname"],
             user=self.conn_parameters["username"],
@@ -54,9 +57,10 @@ class Topsy:
             port=self.conn_parameters["port"],
         )
 
-        print(
-            f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
-        )
+        if not self.silent:
+            print(
+                f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
+            )
         self.cur = self.conn.cursor()
 
         # Setting autocommit to avoid ActiveSqlTransaction error
@@ -66,9 +70,14 @@ class Topsy:
 
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
-        print("\nClosing the cursor object...")
+        if not self.silent:
+            print("Closing the cursor object...")
+
         self.cur.close()
-        print(f"Closing the connecting to `{self.conn_parameters['dbname']}`...")
+
+        if not self.silent:
+            print(f"Closing the connecting to `{self.conn_parameters['dbname']}`...")
+
         self.conn.close()
 
         return None
@@ -76,7 +85,7 @@ class Topsy:
     def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
         """Create new database with option to switch to newly created
         database."""
-        print("\nCreating new databases...")
+        print("Creating new databases...")
         num_dbs = len(db_names)
 
         if type(db_names) != list:
@@ -136,7 +145,7 @@ class Topsy:
 
     def create_new_table(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Create new SQL table from file path."""
-        print("\nTrying to create new table...")
+        print("Trying to create new table...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -147,12 +156,10 @@ class Topsy:
         if file_path.suffix != ".sql":
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
-        print(f"Creating new table defined in file {file_path}...")
+        print(f"Creating new table defined in {file_path.name}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print("Reading file...")
             query = f.read()
 
-        print(f"Executing query...")
         self.cur.execute(query)
         print(f"Table created...")
 
@@ -162,7 +169,7 @@ class Topsy:
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
-        print("\nTrying to insert data...")
+        print(f"Trying to insert data using {file_path.name}...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -177,12 +184,9 @@ class Topsy:
         ):
             raise ValueError("VALUE ERROR: `data` must be a list of dicts.")
 
-        print(f"Inserting data using file {file_path}...")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading file...")
             query = f.read()
 
-        print(f"Executing query...")
         self.cur.executemany(query, data)
         print(f"Data inserted...")
 
@@ -190,7 +194,9 @@ class Topsy:
 
     def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Query data using specified file and save results to cursor object."""
-        print("\nTrying to query data...")
+        print(
+            f"Trying to query `{self.conn_parameters['dbname']}` using {file_path.name}..."
+        )
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -202,12 +208,9 @@ class Topsy:
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
         # Loading data from postgres
-        print(f"\nQuerying `{self.conn_parameters['dbname']}` using file {file_path}")
         with open(file_path, "r", encoding="UTF-8") as f:
-            print(f"Reading file...")
             query = f.read()
 
-        print("Querying database...")
         self.cur.execute(query)
         print(f"Query complete...")
 

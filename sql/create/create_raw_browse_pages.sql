@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS ocre.raw_web_scrape.raw_browse_pages;
-CREATE TABLE ocre.raw_web_scrape.raw_browse_pages (
+DROP TABLE IF EXISTS raw_web_scrape.raw_browse_pages;
+CREATE TABLE raw_web_scrape.raw_browse_pages (
     page_id SERIAL,
     page_url VARCHAR NOT NULL,
     start_coin_id INTEGER NOT NULL,
