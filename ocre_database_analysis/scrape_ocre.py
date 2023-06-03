@@ -102,14 +102,15 @@ class ScrapeOcre:
 
             # Save raw data to postgres database
             print("Saving data to database...")
-            # TODO: Replace with OcreScrape schema
-            data = {
-                "page_id_": curr_page_id,
-                "page_url_": url_page,
-                "start_coin_id_": start_coin_id,
-                "end_coin_id_": end_coin_id,
-                "page_html_": str(soup),
-            }
+            data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
+            scraped_values = (
+                curr_page_id,
+                url_page,
+                start_coin_id,
+                end_coin_id,
+                str(soup),
+            )
+            ScrapeOcre.populate_raw_browse_pages_schema(data, scraped_values)
             path_insert_data_file = (
                 c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql"
             )
