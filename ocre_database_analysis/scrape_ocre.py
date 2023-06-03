@@ -196,8 +196,6 @@ class ScrapeOcre:
                     path_insert_query, [processed_browse_data]
                 )
 
-                # TODO: Status: finished testing process_browse_results() method and need to run/test on full dataset.
-
     def scrape_canonical_uris(self):
         pass
 
