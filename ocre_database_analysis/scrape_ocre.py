@@ -1,4 +1,3 @@
-from multiprocessing import process
 import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
@@ -243,6 +242,7 @@ class ScrapeOcre:
 
 if __name__ == "__main__":
     pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
+    # pipeline = ScrapeOcre("ocre")
 
     try:
         pipeline.connect_to_database()
