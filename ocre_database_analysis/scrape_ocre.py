@@ -102,17 +102,16 @@ class ScrapeOcre:
 
             # Save raw data to postgres database
             print("Saving data to database...")
-            # TODO: Replace with OcreScrape schema
-            data = {
-                "page_id_": curr_page_id,
-                "page_url_": url_page,
-                "start_coin_id_": start_coin_id,
-                "end_coin_id_": end_coin_id,
-                "page_html_": str(soup),
-            }
-            path_insert_data_file = (
-                c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql"
+            data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
+            scraped_values = (
+                curr_page_id,
+                url_page,
+                start_coin_id,
+                end_coin_id,
+                str(soup),
             )
+            ScrapeOcre.populate_raw_browse_pages_schema(data, scraped_values)
+            path_insert_data_file = c.SQL_FOLDER / "insert" / "raw_browse_pages.sql"
             self.client.insert_data(path_insert_data_file, [data])
 
             # Toggle break condition
@@ -128,12 +127,8 @@ class ScrapeOcre:
     def process_browse_results(self):
         """Process and save Browse results data."""
         # Query data
-        # TODO: Change file names for all SQL files such that file below is:
-        # c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
-        # TODO: Change all table names in database such that the table used below is:
-        # raw_web_scrape.browse_pages
         print("Retrieving data from `raw_web_scrape` table...")
-        path_query = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
+        path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
         print(path_query)
         self.client.query_data(path_query)
 
@@ -189,9 +184,7 @@ class ScrapeOcre:
                     processed_browse_data["num_objects_found"] = 0
 
                 # Write processed data to database
-                path_insert_query = (
-                    c.SQL_FOLDER / "insert" / "insert_stg_coin_summaries.sql"
-                )
+                path_insert_query = c.SQL_FOLDER / "insert" / "stg_coin_summaries.sql"
                 self._insert_using_secondary_client(
                     path_insert_query, [processed_browse_data]
                 )

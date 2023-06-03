@@ -41,11 +41,11 @@ class Topsy:
 
         self.conn = None
         self.cur = None
-        self.open_connections()
+        self._open_connections()
 
         return None
 
-    def open_connections(self) -> None:
+    def _open_connections(self) -> None:
         if not self.silent:
             print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
 
@@ -117,7 +117,7 @@ class Topsy:
             print(f"Switching to `{db_name}`...")
             self.close_connection()
             self.conn_parameters["dbname"] = db_name
-            self.open_connections()
+            self._open_connections()
             print(f"Connected to `{self.conn.info.dbname}`...")
 
         return None

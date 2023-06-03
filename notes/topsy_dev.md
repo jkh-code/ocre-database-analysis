@@ -40,7 +40,7 @@ except pg2.OperationalError as err:
 # Creating new table
 # try:
 #     # temp.create_new_table("/will/fail")
-#     path_file = c.SQL_FOLDER / "create" / "create_raw_browse_pages.sql"
+#     path_file = c.SQL_FOLDER / "create" / "raw_browse_pages.sql"
 #     temp.create_new_table(path_file)
 # except ValueError as err:
 #     print(err)
@@ -95,7 +95,7 @@ data_test = [
 ]
 
 try:
-    path_file = c.SQL_FOLDER / "insert" / "insert_raw_browse_pages.sql"
+    path_file = c.SQL_FOLDER / "insert" / "raw_browse_pages.sql"
     temp.insert_data(path_file, data_test)
 except ValueError as err:
     print(err)

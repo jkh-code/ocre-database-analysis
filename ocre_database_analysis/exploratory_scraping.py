@@ -11,7 +11,7 @@ def scrape_browse_results(db_name: str) -> Topsy:
     client = Topsy.try_postgres_connection(db_name)
 
     # Loading data from postgres
-    file_path = c.SQL_FOLDER / "query" / "query_raw_browse_pages.sql"
+    file_path = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
     client.query_data(file_path)
 
     return client
