@@ -4,14 +4,22 @@ from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
 
-def scrape_browse_results(db_name: str) -> Topsy:
+def connect_and_query(db_name: str, table_name: str) -> Topsy:
+    """Connect to specified database, query specified table, and return
+    the Topsy client, which contains the cursor and query results."""
     print("Start scraping of Browse results fields...")
+
+    # Validate table names
+    # TODO: Clean up valid_table_names tables
+    valid_table_names = ("raw_browse_pages", "stg_coin_summaries")
+    if table_name not in valid_table_names:
+        raise ValueError(f"VALUE ERROR: `{table_name}` is not a valid table name!")
 
     # Try connection and return client
     client = Topsy.try_postgres_connection(db_name)
 
     # Loading data from postgres
-    file_path = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
+    file_path = c.SQL_FOLDER / "query" / (table_name + ".sql")
     client.query_data(file_path)
 
     return client
@@ -19,7 +27,8 @@ def scrape_browse_results(db_name: str) -> Topsy:
 
 def get_browse_fields(db_name: str) -> None:
     """Scrape browse fields and print to CSV file."""
-    client = scrape_browse_results(db_name)
+    table_name = "raw_browse_pages"
+    client = connect_and_query(db_name, table_name)
 
     # Determining unique Browse results fields
     unique_fields = dict()
@@ -63,7 +72,8 @@ def get_browse_fields(db_name: str) -> None:
 
 def get_unique_object_counts(db_name: str) -> None:
     """Scrape object counts and print to text file."""
-    client = scrape_browse_results(db_name)
+    table_name = "raw_browse_pages"
+    client = connect_and_query(db_name, table_name)
 
     # Determining unique object count strings
     unique_text_d = dict()
@@ -105,8 +115,20 @@ def get_unique_object_counts(db_name: str) -> None:
     return None
 
 
+def get_uri_header_sections(db_name: str) -> None:
+    """Scrape the sections line from URI headers to determine all possible variations."""
+    # TODO: Correct table_name
+    table_name = "stg_coin_summaries"
+    client = connect_and_query(db_name, table_name)
+
+    client.close_connection()
+    return None
+
+
 if __name__ == "__main__":
     database_name = "ocre"
 
-    get_browse_fields(database_name)
-    get_unique_object_counts(database_name)
+    # get_browse_fields(database_name)
+    # get_unique_object_counts(database_name)
+
+    get_uri_header_sections(database_name)
