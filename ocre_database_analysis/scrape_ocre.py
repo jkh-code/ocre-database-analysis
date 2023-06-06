@@ -39,6 +39,7 @@ class ScrapeOcre:
         "reference": None,
         "num_objects_found": None,
     }
+    SCHEMA_RAW_URI_PAGES = {"coin_id": None, "page_html": None}
 
     def __init__(self, db_name: str, pages_to_sample: Union[None, int] = None) -> None:
         """Construct instance of class."""
@@ -196,18 +197,31 @@ class ScrapeOcre:
         path_query = c.SQL_FOLDER / "query" / "stg_coin_summaries.sql"
         self.client.query_data(path_query)
 
-        # TODO: Finish developing method
+        # Scrape and store raw URI pages' HTML
         for row in self.client.cur:
             data_query = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
             ScrapeOcre.populate_stg_coin_summaries_schema(
                 data_query, row, all_fields=False
             )
-            print(data_query)
-            if self.client.cur.rownumber > 5:
-                break
+            print(f"Scraping Canonical URI page for coin #{data_query['coin_id']}")
 
-        print("...IN DEVELOPMENT...")
-        print("Finish scraping canonical URIs...")
+            # Get HTML using requests library
+            response = requests.get(data_query["coin_canonical_uri"])
+            response.raise_for_status()
+
+            # Convert HTML into soup
+            soup = BeautifulSoup(response.text, "lxml")
+
+            # Insert data into database
+            data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+            ScrapeOcre.populate_raw_uri_pages_schema(
+                data_insert, [data_query["coin_id"], str(soup)]
+            )
+
+            path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
+            self._insert_using_secondary_client(path_insert, [data_insert])
+
+        print("Finished scraping canonical URIs...")
         return None
 
     def process_canonical_uris(self):
@@ -277,6 +291,18 @@ class ScrapeOcre:
                 if key not in ("coin_id", "page_id", "coin_name", "coin_canonical_uri"):
                     data_dict.pop(key)
 
+        return None
+
+    @staticmethod
+    def populate_raw_uri_pages_schema(
+        data_dict: dict, row_of_data: Union[list, tuple]
+    ) -> None:
+        """Populate a raw_uri_pages schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        raw_uri_pages and the timestamp field (`ts`) is omitted."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["page_html"] = row_of_data[1]
         return None
 
 
