@@ -57,7 +57,7 @@ class ScrapeOcre:
         self.client.close_connection()
         return None
 
-    def scrape_browse_results(self):
+    def scrape_browse_results(self) -> None:
         """Scrape Browse results and save HTML to database."""
         curr_page_id = 1
         max_num_pages = None
@@ -124,7 +124,7 @@ class ScrapeOcre:
         print("\nFinished scraping Browse results...")
         return None
 
-    def process_browse_results(self):
+    def process_browse_results(self) -> None:
         """Process and save Browse results data."""
         # Query data
         print("Retrieving data from `raw_web_scrape` table...")
@@ -189,8 +189,26 @@ class ScrapeOcre:
                     path_insert_query, [processed_browse_data]
                 )
 
-    def scrape_canonical_uris(self):
-        pass
+    def scrape_canonical_uris(self) -> None:
+        """Process and save Browse results data."""
+        # Query data
+        print("Retrieving data from `stg_coin_summaries` table...")
+        path_query = c.SQL_FOLDER / "query" / "stg_coin_summaries.sql"
+        self.client.query_data(path_query)
+
+        # TODO: Finish developing method
+        for row in self.client.cur:
+            data_query = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
+            ScrapeOcre.populate_stg_coin_summaries_schema(
+                data_query, row, all_fields=False
+            )
+            print(data_query)
+            if self.client.cur.rownumber > 5:
+                break
+
+        print("...IN DEVELOPMENT...")
+        print("Finish scraping canonical URIs...")
+        return None
 
     def process_canonical_uris(self):
         pass
@@ -230,6 +248,37 @@ class ScrapeOcre:
         data_dict["page_html"] = row_of_data[4]
         return None
 
+    @staticmethod
+    def populate_stg_coin_summaries_schema(
+        data_dict: dict, row_of_data: Union[list, tuple], all_fields: bool = False
+    ) -> None:
+        """Populate a stg_coin_summaries schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        stg_coin_summaries and the timestamp field (`ts`) is omitted,
+        for either all fields or a subset of fields in the table."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["page_id"] = row_of_data[1]
+        data_dict["coin_name"] = row_of_data[2]
+        data_dict["coin_canonical_uri"] = row_of_data[3]
+
+        if all_fields:
+            data_dict["coin_date_string"] = row_of_data[4]
+            data_dict["denomination"] = row_of_data[5]
+            data_dict["mint"] = row_of_data[6]
+            data_dict["obverse_description"] = row_of_data[7]
+            data_dict["reverse_description"] = row_of_data[8]
+            data_dict["reference"] = row_of_data[9]
+            data_dict["num_objects_found"] = row_of_data[10]
+        else:
+            # Convert data_dict.keys() into list to prevent dict
+            # changed size during iteration error
+            for key in list(data_dict.keys()):
+                if key not in ("coin_id", "page_id", "coin_name", "coin_canonical_uri"):
+                    data_dict.pop(key)
+
+        return None
+
 
 if __name__ == "__main__":
     pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
@@ -255,6 +304,7 @@ if __name__ == "__main__":
     #     pipeline.disconnect_from_database()
     #     sys.exit(1)
 
-    pipeline.process_browse_results()
+    # pipeline.process_browse_results()
+    pipeline.scrape_canonical_uris()
 
     pipeline.disconnect_from_database()
