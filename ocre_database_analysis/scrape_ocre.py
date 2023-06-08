@@ -190,6 +190,8 @@ class ScrapeOcre:
                     path_insert_query, [processed_browse_data]
                 )
 
+    # TODO: Update scrape_canonical_uris method to only scrape coins with found objects
+    # TODO: Determine the number of coins with found objects
     def scrape_canonical_uris(self) -> None:
         """Process and save Browse results data."""
 

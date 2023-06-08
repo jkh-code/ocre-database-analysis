@@ -14,6 +14,7 @@ import ocre_database_analysis.constants as c
 
 # TODO: Document class with docstring (https://realpython.com/documenting-python-code/#class-docstrings)
 # TODO: Replace print statements with logging
+# TODO: Remove print/logging statements from Topsy and move to scripts that use Topsy
 
 
 class Topsy:
