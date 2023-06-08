@@ -192,10 +192,25 @@ class ScrapeOcre:
 
     def scrape_canonical_uris(self) -> None:
         """Process and save Browse results data."""
+
+        # Determine coin_id to start at
+        print("Determining coin_id to start scraping URI pages at...")
+        path_max_id = c.SQL_FOLDER / "query" / "raw_uri_pages_max_id.sql"
+        self.client.query_data(path_max_id)
+        query_params = {"start_coin_id": None}
+        for row in self.client.cur:
+            if row[0]:
+                query_params["start_coin_id"] = row[0] + 1
+            else:
+                query_params["start_coin_id"] = 1
+        print(
+            f"Starting URI page scraping at coin_id #{query_params['start_coin_id']}..."
+        )
+
         # Query data
         print("Retrieving data from `stg_coin_summaries` table...")
-        path_query = c.SQL_FOLDER / "query" / "stg_coin_summaries.sql"
-        self.client.query_data(path_query)
+        path_query = c.SQL_FOLDER / "query" / "stg_coin_summaries_filter_coin_id.sql"
+        self.client.query_data(path_query, query_params)
 
         # Scrape and store raw URI pages' HTML
         for row in self.client.cur:
@@ -307,8 +322,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
-    # pipeline = ScrapeOcre("ocre")
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
+    pipeline = ScrapeOcre("ocre")
 
     try:
         pipeline.connect_to_database()
@@ -331,6 +346,8 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     # pipeline.process_browse_results()
+
+    # TODO: modify script so that method below can be re-run for incomplete scrapes
     pipeline.scrape_canonical_uris()
 
     pipeline.disconnect_from_database()
