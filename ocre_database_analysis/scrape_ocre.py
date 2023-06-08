@@ -348,6 +348,24 @@ if __name__ == "__main__":
     # pipeline.process_browse_results()
 
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    pipeline.scrape_canonical_uris()
+    num_retries = 0
+    retry_limit = 5
+    while num_retries <= retry_limit:
+        try:
+            pipeline.scrape_canonical_uris()
+            break
+        except requests.exceptions.ConnectTimeout as err:
+            print("\nREQUESTS CONNECTION TIMEOUT:")
+            print(err)
+        except requests.exceptions.ConnectionError as err:
+            print("\nREQUESTS CONNECTION ERROR:")
+            print(err)
+
+        num_retries += 1
+        print(f"Current retry count: {num_retries} / {retry_limit}")
+        if num_retries <= retry_limit:
+            print("Retrying scrape of Canonical URIs...")
+        else:
+            print("Ending scrape of Canonical URIs...")
 
     pipeline.disconnect_from_database()
