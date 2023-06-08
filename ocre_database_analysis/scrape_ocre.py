@@ -327,6 +327,7 @@ if __name__ == "__main__":
     # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
     pipeline = ScrapeOcre("ocre")
 
+    # Connect
     try:
         pipeline.connect_to_database()
     except ValueError as err:
@@ -337,6 +338,7 @@ if __name__ == "__main__":
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
+    # Scrape Browse results pages
     # try:
     #     pipeline.scrape_browse_results()
     # except requests.exceptions.RequestException as err:
@@ -347,27 +349,33 @@ if __name__ == "__main__":
     #     pipeline.disconnect_from_database()
     #     sys.exit(1)
 
+    # Process Browse results pages
     # pipeline.process_browse_results()
 
+    # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    num_retries = 0
-    retry_limit = 5  # Arbitrary number
-    while num_retries <= retry_limit:
-        try:
-            pipeline.scrape_canonical_uris()
-            break
-        except requests.exceptions.ConnectTimeout as err:
-            print("\nREQUESTS CONNECTION TIMEOUT:")
-            print(err)
-        except requests.exceptions.ConnectionError as err:
-            print("\nREQUESTS CONNECTION ERROR:")
-            print(err)
+    # num_retries = 0
+    # retry_limit = 25  # Arbitrary number
+    # while num_retries <= retry_limit:
+    #     try:
+    #         pipeline.scrape_canonical_uris()
+    #         break
+    #     except requests.exceptions.ConnectTimeout as err:
+    #         print("\nREQUESTS CONNECTION TIMEOUT:")
+    #         print(err)
+    #     except requests.exceptions.ConnectionError as err:
+    #         print("\nREQUESTS CONNECTION ERROR:")
+    #         print(err)
 
-        num_retries += 1
-        print(f"Current retry count: {num_retries} / {retry_limit}")
-        if num_retries <= retry_limit:
-            print("Retrying scrape of Canonical URIs...")
-        else:
-            print("Ending scrape of Canonical URIs...")
+    #     num_retries += 1
+    #     print(f"Current retry count: {num_retries} / {retry_limit}")
+    #     if num_retries <= retry_limit:
+    #         print("Retrying scrape of Canonical URIs...")
+    #     else:
+    #         print("Ending scrape of Canonical URIs...")
 
+    # Process Canonical URI pages
+    # pipeline.process_canonical_uris()
+
+    # Disconnect
     pipeline.disconnect_from_database()
