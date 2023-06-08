@@ -351,7 +351,7 @@ if __name__ == "__main__":
 
     # TODO: modify script so that method below can be re-run for incomplete scrapes
     num_retries = 0
-    retry_limit = 5
+    retry_limit = 5  # Arbitrary number
     while num_retries <= retry_limit:
         try:
             pipeline.scrape_canonical_uris()

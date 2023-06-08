@@ -52,3 +52,5 @@ Running `create_ocre_database.py` script will create the database structure.
     - Redesigning scrape script so that it can be run multiple times from this failure point.
 - Another issue with scraping URI HTML: scraping may take over 11 hours when the full database is scraped.
     - I may want to limit to coins with found objects.
+    - About 11 hours when full database is scraped
+    - About 7-8 hours when only coins with `num_objects_found > 0`.
