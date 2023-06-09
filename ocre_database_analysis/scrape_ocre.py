@@ -41,10 +41,16 @@ class ScrapeOcre:
     }
     SCHEMA_RAW_URI_PAGES = {"coin_id": None, "page_html": None}
 
-    def __init__(self, db_name: str, pages_to_sample: Union[None, int] = None) -> None:
+    def __init__(
+        self,
+        db_name: str,
+        pages_to_sample: Union[None, int] = None,
+        only_found: bool = True,
+    ) -> None:
         """Construct instance of class."""
         self.db_name = db_name
         self.pages_to_sample = pages_to_sample
+        self.only_found = only_found
         self.client = None
         return None
 
@@ -190,8 +196,6 @@ class ScrapeOcre:
                     path_insert_query, [processed_browse_data]
                 )
 
-    # TODO: Update scrape_canonical_uris method to only scrape coins with found objects
-    # TODO: Determine the number of coins with found objects
     def scrape_canonical_uris(self) -> None:
         """Process and save Browse results data."""
 
@@ -211,7 +215,16 @@ class ScrapeOcre:
 
         # Query data
         print("Retrieving data from `stg_coin_summaries` table...")
-        path_query = c.SQL_FOLDER / "query" / "stg_coin_summaries_filter_coin_id.sql"
+        if self.only_found:
+            path_query = (
+                c.SQL_FOLDER
+                / "query"
+                / "stg_coin_summaries_filter_coin_id_and_only_found.sql"
+            )
+        else:
+            path_query = (
+                c.SQL_FOLDER / "query" / "stg_coin_summaries_filter_coin_id.sql"
+            )
         self.client.query_data(path_query, query_params)
 
         # Scrape and store raw URI pages' HTML
@@ -324,8 +337,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
-    pipeline = ScrapeOcre("ocre")
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20, only_found=True)
+    # pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -339,40 +352,38 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    # try:
-    #     pipeline.scrape_browse_results()
-    # except requests.exceptions.RequestException as err:
-    #     print(
-    #         f"\nREQUEST ERROR: Encountered error trying to connect to webpage."
-    #     )
-    #     print(err)
-    #     pipeline.disconnect_from_database()
-    #     sys.exit(1)
+    try:
+        pipeline.scrape_browse_results()
+    except requests.exceptions.RequestException as err:
+        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+        print(err)
+        pipeline.disconnect_from_database()
+        sys.exit(1)
 
     # Process Browse results pages
-    # pipeline.process_browse_results()
+    pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    # num_retries = 0
-    # retry_limit = 25  # Arbitrary number
-    # while num_retries <= retry_limit:
-    #     try:
-    #         pipeline.scrape_canonical_uris()
-    #         break
-    #     except requests.exceptions.ConnectTimeout as err:
-    #         print("\nREQUESTS CONNECTION TIMEOUT:")
-    #         print(err)
-    #     except requests.exceptions.ConnectionError as err:
-    #         print("\nREQUESTS CONNECTION ERROR:")
-    #         print(err)
+    num_retries = 0
+    retry_limit = 25  # Arbitrary number
+    while num_retries <= retry_limit:
+        try:
+            pipeline.scrape_canonical_uris()
+            break
+        except requests.exceptions.ConnectTimeout as err:
+            print("\nREQUESTS CONNECTION TIMEOUT:")
+            print(err)
+        except requests.exceptions.ConnectionError as err:
+            print("\nREQUESTS CONNECTION ERROR:")
+            print(err)
 
-    #     num_retries += 1
-    #     print(f"Current retry count: {num_retries} / {retry_limit}")
-    #     if num_retries <= retry_limit:
-    #         print("Retrying scrape of Canonical URIs...")
-    #     else:
-    #         print("Ending scrape of Canonical URIs...")
+        num_retries += 1
+        print(f"Current retry count: {num_retries} / {retry_limit}")
+        if num_retries <= retry_limit:
+            print("Retrying scrape of Canonical URIs...")
+        else:
+            print("Ending scrape of Canonical URIs...")
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
