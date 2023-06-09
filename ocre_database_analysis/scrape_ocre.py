@@ -366,7 +366,7 @@ if __name__ == "__main__":
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
     # num_retries = 0
-    # retry_limit = 25  # Arbitrary number
+    # retry_limit = 50  # Arbitrary number
     # while num_retries <= retry_limit:
     #     try:
     #         pipeline.scrape_canonical_uris()

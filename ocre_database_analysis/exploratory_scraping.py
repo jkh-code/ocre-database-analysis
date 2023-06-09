@@ -10,9 +10,8 @@ def connect_and_query(db_name: str, table_name: str) -> Topsy:
     print("Start scraping of Browse results fields...")
 
     # Validate table names
-    # TODO: Clean up valid_table_names tables
-    valid_table_names = ("raw_browse_pages", "stg_coin_summaries")
-    if table_name not in valid_table_names:
+    VALID_TABLE_NAMES = ("raw_browse_pages", "raw_uri_pages")
+    if table_name not in VALID_TABLE_NAMES:
         raise ValueError(f"VALUE ERROR: `{table_name}` is not a valid table name!")
 
     # Try connection and return client
@@ -117,9 +116,30 @@ def get_unique_object_counts(db_name: str) -> None:
 
 def get_uri_header_sections(db_name: str) -> None:
     """Scrape the sections line from URI headers to determine all possible variations."""
-    # TODO: Correct table_name
-    table_name = "stg_coin_summaries"
+    print("Scraping header section of URI pages...")
+    table_name = "raw_uri_pages"
     client = connect_and_query(db_name, table_name)
+
+    number_of_header_lines_d = dict()
+    unique_section_text_d = dict()
+    unique_sections_d = dict()
+    total_rows = client.cur.rowcount
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        if (curr_row in (1, total_rows)) or (curr_row % 500 == 0):
+            print(f"Scraping page {curr_row} / {total_rows}...")
+
+        soup = BeautifulSoup(row[1], "lxml")
+        soup_header = soup.body.find_all("div", class_="col-md-12")[1].contents
+        all_tags = [item for item in soup_header if item.name]
+        print(all_tags)  # debug
+
+        num_tags = len(all_tags)
+        if num_tags not in number_of_header_lines_d.keys():
+            number_of_header_lines_d[num_tags] = curr_row
+        print(number_of_header_lines_d)
+
+        break
 
     client.close_connection()
     return None
