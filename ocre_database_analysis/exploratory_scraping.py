@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import re
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
@@ -110,7 +111,6 @@ def get_unique_object_counts(db_name: str) -> None:
             )
 
     client.close_connection()
-
     return None
 
 
@@ -126,20 +126,64 @@ def get_uri_header_sections(db_name: str) -> None:
     total_rows = client.cur.rowcount
     for row in client.cur:
         curr_row = client.cur.rownumber
-        if (curr_row in (1, total_rows)) or (curr_row % 500 == 0):
-            print(f"Scraping page {curr_row} / {total_rows}...")
+        curr_coin_id = row[0]
+        if (curr_row in (1, total_rows)) or (curr_row % 1_000 == 0):
+            print(f"Scraping coin {curr_row} / {total_rows}...")
 
         soup = BeautifulSoup(row[1], "lxml")
         soup_header = soup.body.find_all("div", class_="col-md-12")[1].contents
         all_tags = [item for item in soup_header if item.name]
-        print(all_tags)  # debug
+        path_uri = all_tags[1].find("a")["href"]
 
+        # Check number of tags in header
         num_tags = len(all_tags)
         if num_tags not in number_of_header_lines_d.keys():
-            number_of_header_lines_d[num_tags] = curr_row
-        print(number_of_header_lines_d)
+            number_of_header_lines_d[num_tags] = (curr_coin_id, path_uri)
 
-        break
+        # Check section text
+        section_text = all_tags[2].text.strip().replace("\n", "")
+        section_text = re.sub(" +", " ", section_text)
+        if section_text not in unique_section_text_d.keys():
+            unique_section_text_d[section_text] = (curr_coin_id, path_uri)
+
+        # Check section names
+        section_names = [
+            " ".join(item.split()) for item in all_tags[2].text.split(" | ")
+        ]
+        for section in section_names:
+            if section not in unique_sections_d:
+                unique_sections_d[section] = (curr_coin_id, path_uri)
+
+    # Saving to files
+    print("Writing data to files...")
+    files = (
+        "number_of_header_lines.txt",
+        "unique_section_text.txt",
+        "unique_sections.txt",
+    )
+    data_structures = (
+        number_of_header_lines_d,
+        unique_section_text_d,
+        unique_sections_d,
+    )
+    for d, f in zip(data_structures, files):
+        path_ = c.DATA_FOLDER / f
+        sorted_ = sorted(d.items(), reverse=False, key=lambda x: str(x[0]).lower())
+        with open(path_, "w", encoding="UTF-8") as f:
+            for k, v in sorted_:
+                f.write(f'"{k}" first appears on coin_id {v[0]} at URI {v[1]}\n')
+
+    client.close_connection()
+    return None
+
+
+def get_uri_typological_fields(db_name: str) -> None:
+    """Scrape the fields of the Typological Description section."""
+    print("Scraping fields of the Typological Description section...")
+    table_name = "raw_uri_pages"
+    client = connect_and_query(db_name, table_name)
+
+    # TODO: Develop function
 
     client.close_connection()
     return None
@@ -151,4 +195,5 @@ if __name__ == "__main__":
     # get_browse_fields(database_name)
     # get_unique_object_counts(database_name)
 
-    get_uri_header_sections(database_name)
+    # get_uri_header_sections(database_name)
+    get_uri_typological_fields(database_name)
