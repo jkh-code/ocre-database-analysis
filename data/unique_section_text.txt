@@ -1,0 +1,8 @@
+"" first appears on coin_id 24 at URI http://numismatics.org/ocre/id/ric.1(2).aug.17
+"Examples of this type | Quantitative Analysis" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A
+"Examples of this type | Quantitative Analysis | Annotations" first appears on coin_id 6006 at URI http://numismatics.org/ocre/id/ric.2.tr.315
+"Subtypes |" first appears on coin_id 6618 at URI http://numismatics.org/ocre/id/ric.2_3(2).hdn.45-47
+"Subtypes | Examples of this type | Quantitative Analysis" first appears on coin_id 6592 at URI http://numismatics.org/ocre/id/ric.2_3(2).hdn.2-3
+"Subtypes | Examples of this type | Quantitative Analysis | Annotations" first appears on coin_id 18335 at URI http://numismatics.org/ocre/id/ric.4.gor_iii.209
+"Subtypes | | Annotations" first appears on coin_id 20260 at URI http://numismatics.org/ocre/id/ric.5.gall(2).22
+"| Annotations" first appears on coin_id 8328 at URI http://numismatics.org/ocre/id/ric.3.ant.184

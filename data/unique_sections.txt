@@ -1,0 +1,5 @@
+"" first appears on coin_id 24 at URI http://numismatics.org/ocre/id/ric.1(2).aug.17
+"Annotations" first appears on coin_id 6006 at URI http://numismatics.org/ocre/id/ric.2.tr.315
+"Examples of this type" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A
+"Quantitative Analysis" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A
+"Subtypes" first appears on coin_id 6592 at URI http://numismatics.org/ocre/id/ric.2_3(2).hdn.2-3

@@ -1,0 +1,1 @@
+"3" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A
