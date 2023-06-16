@@ -226,6 +226,10 @@ def get_uri_typological_fields(db_name: str) -> None:
             else:
                 curr_subsection = item
 
+        # debug
+        if curr_row > 5:
+            break
+
     # Saving to file
     path_save = c.DATA_FOLDER / "unique_typological_fields.txt"
     sorted_keys = sorted(
@@ -233,7 +237,9 @@ def get_uri_typological_fields(db_name: str) -> None:
     )
     with open(path_save, "w", encoding="UTF-8") as f:
         for k, v in sorted_keys:
-            f.write(f'Key "{k}" first appears on coin_id {v[1]} at URI {v[2]}.\n')
+            f.write(
+                f'Key "{k}" first appears on coin_id {v[1]} with value {v[0]} at URI {v[2]}.\n'
+            )
 
     client.close_connection()
     return None
