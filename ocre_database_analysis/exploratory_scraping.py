@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 import re
+from collections import deque
+
+from pprint import pprint
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
@@ -179,7 +182,58 @@ def get_uri_typological_fields(db_name: str) -> None:
     table_name = "raw_uri_pages"
     client = connect_and_query(db_name, table_name)
 
-    # TODO: Develop function
+    # Determining unique typological fields
+    unique_fields_d = dict()
+    total_rows = client.cur.rowcount
+    print("Scraping fields from all results...")
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        curr_coin_id = row[0]
+        curr_coin_html = row[1]
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(curr_coin_html, "lxml")
+        path_uri = hf.retrieve_uri_path(soup)
+
+        soup_typological = soup.find("div", class_="metadata_section")
+        stripped_str = soup_typological.ul.stripped_strings
+        stripped_str = deque(stripped_str)
+
+        curr_subsection = str()
+        while len(stripped_str) > 0:
+            item = stripped_str.popleft()
+            item = item.replace(" ", "_").lower()
+
+            if item == "(uncertain)":
+                continue
+
+            if ":" in item:
+                key = (
+                    (curr_subsection + "_") if curr_subsection else "_"
+                ) + item.replace(":", "")
+                value = stripped_str.popleft()
+                value = value.replace("\n", " ")
+                value = re.sub(" +", " ", value)
+                if key not in unique_fields_d.keys():
+                    unique_fields_d[key] = (value, curr_coin_id, path_uri)
+                else:
+                    key_idx = len([k for k in unique_fields_d.keys() if key in k]) + 1
+                    unique_fields_d[key + f"{key_idx}"] = (
+                        value,
+                        curr_coin_id,
+                        path_uri,
+                    )
+            else:
+                curr_subsection = item
+
+    # Saving to file
+    path_save = c.DATA_FOLDER / "unique_typological_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(f'Key "{k}" first appears on coin_id {v[1]} at URI {v[2]}.\n')
 
     client.close_connection()
     return None

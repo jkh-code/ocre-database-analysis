@@ -1,0 +1,15 @@
+Key "_date_range" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_denomination" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_manufacture" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_material" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_object_type" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "authority_authority" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "authority_issuer" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "geographic_mint" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "geographic_region" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "obverse_legend" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "obverse_portrait" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "obverse_type" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_deity" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_legend" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_type" first appears on coin_id 1 at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
