@@ -3,6 +3,7 @@ import re
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
+import ocre_database_analysis.utilities.helper_functions as hf
 
 
 def connect_and_query(db_name: str, table_name: str) -> Topsy:
@@ -36,9 +37,7 @@ def get_browse_fields(db_name: str) -> None:
     print("\nScraping fields from all results...")
     for row in client.cur:
         curr_row = client.cur.rownumber
-
-        if (curr_row in (1, total_rows)) or (curr_row % 250 == 0):
-            print(f"Scraping page {curr_row} of {total_rows}...")
+        hf.print_update_periodically(curr_row, total_rows, 250)
 
         soup = BeautifulSoup(row[4], "lxml")
         all_page_coins = soup.find_all("div", class_="row result-doc")
@@ -81,9 +80,7 @@ def get_unique_object_counts(db_name: str) -> None:
     print("\nScraping object counts from all pages...")
     for row in client.cur:
         curr_row = client.cur.rownumber
-
-        if (curr_row in (1, total_rows)) or (curr_row % 250 == 0):
-            print(f"Scraping page {curr_row} of {total_rows}...")
+        hf.print_update_periodically(curr_row, total_rows, 250)
 
         soup = BeautifulSoup(row[4], "lxml")
         all_page_coins = soup.find_all("div", class_="row result-doc")
@@ -127,8 +124,7 @@ def get_uri_header_sections(db_name: str) -> None:
     for row in client.cur:
         curr_row = client.cur.rownumber
         curr_coin_id = row[0]
-        if (curr_row in (1, total_rows)) or (curr_row % 1_000 == 0):
-            print(f"Scraping coin {curr_row} / {total_rows}...")
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
 
         soup = BeautifulSoup(row[1], "lxml")
         soup_header = soup.body.find_all("div", class_="col-md-12")[1].contents
