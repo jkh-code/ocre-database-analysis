@@ -200,6 +200,7 @@ def get_uri_typological_fields(db_name: str) -> None:
         stripped_str = deque(stripped_str)
 
         curr_subsection = str()
+        row_field_counts_d = dict()
         while len(stripped_str) > 0:
             item = stripped_str.popleft()
             item = item.replace(" ", "_").lower()
@@ -214,23 +215,27 @@ def get_uri_typological_fields(db_name: str) -> None:
                 value = stripped_str.popleft()
                 value = value.replace("\n", " ")
                 value = re.sub(" +", " ", value)
+
+                if key not in row_field_counts_d.keys():
+                    row_field_counts_d[key] = 1
+                else:
+                    row_field_counts_d[key] += 1
+
                 if key not in unique_fields_d.keys():
                     unique_fields_d[key] = (value, curr_coin_id, path_uri)
                 else:
-                    key_idx = len([k for k in unique_fields_d.keys() if key in k]) + 1
-                    unique_fields_d[key + f"{key_idx}"] = (
-                        value,
-                        curr_coin_id,
-                        path_uri,
-                    )
+                    if row_field_counts_d[key] > 1:
+                        key_idx = row_field_counts_d[key]
+                        unique_fields_d[key + f"{key_idx}"] = (
+                            value,
+                            curr_coin_id,
+                            path_uri,
+                        )
             else:
                 curr_subsection = item
 
-        # debug
-        if curr_row > 5:
-            break
-
     # Saving to file
+    print("Saving unique fields to file...")
     path_save = c.DATA_FOLDER / "unique_typological_fields.txt"
     sorted_keys = sorted(
         unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
@@ -238,7 +243,7 @@ def get_uri_typological_fields(db_name: str) -> None:
     with open(path_save, "w", encoding="UTF-8") as f:
         for k, v in sorted_keys:
             f.write(
-                f'Key "{k}" first appears on coin_id {v[1]} with value {v[0]} at URI {v[2]}.\n'
+                f'Key "{k}" first appears on coin_id {v[1]} with value "{v[0]}" at URI {v[2]}.\n'
             )
 
     client.close_connection()
