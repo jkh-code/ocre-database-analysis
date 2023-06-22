@@ -196,43 +196,13 @@ def get_uri_typological_fields(db_name: str) -> None:
         path_uri = hf.retrieve_uri_path(soup)
 
         soup_typological = soup.find("div", class_="metadata_section")
-        stripped_str = soup_typological.ul.stripped_strings
-        stripped_str = deque(stripped_str)
+        # stripped_str = soup_typological.ul.stripped_strings
+        # stripped_str = deque(stripped_str)
 
         curr_subsection = str()
         row_field_counts_d = dict()
-        while len(stripped_str) > 0:
-            item = stripped_str.popleft()
-            item = item.replace(" ", "_").lower()
 
-            if item == "(uncertain)":
-                continue
-
-            if ":" in item:
-                key = (
-                    (curr_subsection + "_") if curr_subsection else "_"
-                ) + item.replace(":", "")
-                value = stripped_str.popleft()
-                value = value.replace("\n", " ")
-                value = re.sub(" +", " ", value)
-
-                if key not in row_field_counts_d.keys():
-                    row_field_counts_d[key] = 1
-                else:
-                    row_field_counts_d[key] += 1
-
-                if key not in unique_fields_d.keys():
-                    unique_fields_d[key] = (value, curr_coin_id, path_uri)
-                else:
-                    if row_field_counts_d[key] > 1:
-                        key_idx = row_field_counts_d[key]
-                        unique_fields_d[key + f"{key_idx}"] = (
-                            value,
-                            curr_coin_id,
-                            path_uri,
-                        )
-            else:
-                curr_subsection = item
+        break
 
     # Saving to file
     print("Saving unique fields to file...")
