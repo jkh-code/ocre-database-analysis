@@ -176,6 +176,35 @@ def get_uri_header_sections(db_name: str) -> None:
     return None
 
 
+def integrate_field_value_pairs(
+    field: str,
+    value: str,
+    row_field_counts_d: dict,
+    unique_fields_d: dict,
+    curr_coin_id: int,
+    path_uri: str,
+):
+    """Integrating field and value pairs into the row_field_counts_d
+    and unique_field_d dicts in place."""
+    # Incrementing row_field_counts_d
+    if field not in row_field_counts_d.keys():
+        row_field_counts_d[field] = 1
+    else:
+        row_field_counts_d[field] += 1
+
+    # Adding field to unique_fields_d
+    if field not in unique_fields_d.keys():
+        unique_fields_d[field] = (value, curr_coin_id, path_uri)
+    else:
+        if row_field_counts_d[field] > 1:
+            key_idx = row_field_counts_d[field]
+            unique_fields_d[field + f"{key_idx}"] = (
+                value,
+                curr_coin_id,
+                path_uri,
+            )
+
+
 def get_uri_typological_fields(db_name: str) -> None:
     """Scrape the fields of the Typological Description section."""
     print("Scraping fields of the Typological Description section...")
@@ -196,13 +225,70 @@ def get_uri_typological_fields(db_name: str) -> None:
         path_uri = hf.retrieve_uri_path(soup)
 
         soup_typological = soup.find("div", class_="metadata_section")
-        # stripped_str = soup_typological.ul.stripped_strings
-        # stripped_str = deque(stripped_str)
+        data_raw = soup_typological.ul
+        data_raw = [item for item in data_raw if item.name]
 
         curr_subsection = str()
         row_field_counts_d = dict()
+        for item in data_raw:
+            all_item_tags = [i for i in item if i.name]
 
-        break
+            if all_item_tags[0].name == "b":
+                field, value = item.text.strip().split(": ", maxsplit=1)
+                field = "_" + field.lower().replace(" ", "_")
+                value = re.sub(" +", " ", value.replace("\n", " "))
+
+                integrate_field_value_pairs(
+                    field,
+                    value,
+                    row_field_counts_d,
+                    unique_fields_d,
+                    curr_coin_id,
+                    path_uri,
+                )
+            elif all_item_tags[0].name == "h4":
+                section_name = all_item_tags[0].text.strip().lower().replace(" ", "_")
+                for li in item.find_all("li"):
+                    if li.contents[0].name == "b":
+                        field = (
+                            li.contents[0]
+                            .text.strip()
+                            .lower()
+                            .replace(" ", "_")
+                            .replace(":", "")
+                        )
+                        field = section_name + "_" + field
+
+                        if "symbol" in field:
+                            value = re.sub(
+                                " +",
+                                " ",
+                                li.text.strip().replace(" - ", " ").replace(",", "", 1),
+                            )
+                            value = value.replace("Symbol: ", "")
+                        else:
+                            value = (
+                                re.sub(
+                                    " +",
+                                    " ",
+                                    li.contents[1].text.strip().replace("\n", " "),
+                                )
+                                if len(li.contents) > 1
+                                else None
+                            )
+
+                        integrate_field_value_pairs(
+                            field,
+                            value,
+                            row_field_counts_d,
+                            unique_fields_d,
+                            curr_coin_id,
+                            path_uri,
+                        )
+
+        # debug
+        if curr_row > 500:
+            break
 
     # Saving to file
     print("Saving unique fields to file...")
