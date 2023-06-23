@@ -1,6 +1,7 @@
+from unittest import result
 from bs4 import BeautifulSoup
 import re
-from collections import deque
+import sys
 
 from pprint import pprint
 
@@ -183,7 +184,7 @@ def integrate_field_value_pairs(
     unique_fields_d: dict,
     curr_coin_id: int,
     path_uri: str,
-):
+) -> None:
     """Integrating field and value pairs into the row_field_counts_d
     and unique_field_d dicts in place."""
     # Incrementing row_field_counts_d
@@ -234,9 +235,14 @@ def get_uri_typological_fields(db_name: str) -> None:
             all_item_tags = [i for i in item if i.name]
 
             if all_item_tags[0].name == "b":
-                field, value = item.text.strip().split(": ", maxsplit=1)
+                result_split = item.text.strip().split(": ", maxsplit=1)
+                if len(result_split) == 1:
+                    field = result_split[0].replace(":", "")
+                    value = None
+                else:
+                    field, value = result_split
+                    value = re.sub(" +", " ", value.replace("\n", " "))
                 field = "_" + field.lower().replace(" ", "_")
-                value = re.sub(" +", " ", value.replace("\n", " "))
 
                 integrate_field_value_pairs(
                     field,
@@ -285,10 +291,6 @@ def get_uri_typological_fields(db_name: str) -> None:
                             curr_coin_id,
                             path_uri,
                         )
-
-        # debug
-        if curr_row > 500:
-            break
 
     # Saving to file
     print("Saving unique fields to file...")
