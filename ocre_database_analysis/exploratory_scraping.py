@@ -204,6 +204,8 @@ def integrate_field_value_pairs(
                 path_uri,
             )
 
+    return None
+
 
 def get_uri_typological_fields(db_name: str) -> None:
     """Scrape the fields of the Typological Description section."""
@@ -309,7 +311,62 @@ def get_uri_typological_fields(db_name: str) -> None:
 
 def get_uri_analysis_fields(db_name: str) -> None:
     """Scrape fields in the Quantitative Analysis section of URI pages."""
-    pass
+    print("Scraping fields of the Quantitative Analysis section...")
+    table_name = "raw_uri_pages"
+    client = connect_and_query(db_name, table_name)
+
+    unique_fields_d = dict()
+    total_rows = client.cur.rowcount
+    print("Scraping fields from all results...")
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        curr_coin_id = row[0]
+        curr_coin_html = row[1]
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(curr_coin_html, "lxml")
+        path_uri = hf.retrieve_uri_path(soup)
+
+        soup_analysis = soup.find("div", class_="row", id="metrical")
+        if not soup_analysis:
+            # When there is not a Quantitative Analysis section
+            continue
+        soup_data = soup_analysis.find("dl", class_="dl-horizontal")
+        if not soup_data:
+            # When there is not data in the Quantitative Analysis section
+            continue
+
+        all_dt = soup_data.find_all("dt")
+        all_dd = soup_data.find_all("dd")
+        row_field_counts_d = dict()
+        for dt, dd in zip(all_dt, all_dd):
+            field = dt.text.strip().lower().replace(" ", "_")
+            field = "average_" + field
+            value = float(dd.text.strip())
+
+            integrate_field_value_pairs(
+                field,
+                value,
+                row_field_counts_d,
+                unique_fields_d,
+                curr_coin_id,
+                path_uri,
+            )
+
+    # Saving to file
+    print("Saving unique fields to file...")
+    path_save = c.DATA_FOLDER / "unique_analysis_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on coin ID #{v[1]} with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    client.close_connection()
+    return None
 
 
 def get_uri_examples_fields(db_name: str) -> None:
@@ -325,5 +382,5 @@ if __name__ == "__main__":
 
     # get_uri_header_sections(database_name)
     # get_uri_typological_fields(database_name)
-    get_uri_analysis_fields(database_name)
-    # get_uri_examples_fields(database_name)
+    # get_uri_analysis_fields(database_name)
+    get_uri_examples_fields(database_name)
