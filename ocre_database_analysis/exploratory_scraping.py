@@ -1,4 +1,3 @@
-from unittest import result
 from bs4 import BeautifulSoup
 import re
 import sys
@@ -308,6 +307,16 @@ def get_uri_typological_fields(db_name: str) -> None:
     return None
 
 
+def get_uri_analysis_fields(db_name: str) -> None:
+    """Scrape fields in the Quantitative Analysis section of URI pages."""
+    pass
+
+
+def get_uri_examples_fields(db_name: str) -> None:
+    """Scrape fields in the example section of URI pages."""
+    pass
+
+
 if __name__ == "__main__":
     database_name = "ocre"
 
@@ -315,4 +324,6 @@ if __name__ == "__main__":
     # get_unique_object_counts(database_name)
 
     # get_uri_header_sections(database_name)
-    get_uri_typological_fields(database_name)
+    # get_uri_typological_fields(database_name)
+    get_uri_analysis_fields(database_name)
+    # get_uri_examples_fields(database_name)
