@@ -197,7 +197,9 @@ class ScrapeOcre:
                 )
 
     def scrape_canonical_uris(self) -> None:
-        """Process and save Browse results data."""
+        """Use processed `stg_coin_summaries` table data to scrape
+        canonical URI pages and store raw data in `raw_uri_pages`
+        table."""
 
         # Determine coin_id to start at
         print("Determining coin_id to start scraping URI pages at...")
