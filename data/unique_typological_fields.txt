@@ -1,0 +1,123 @@
+Key "_date" first appears on coin_id 84 with value "19 BC" at URI http://numismatics.org/ocre/id/ric.1(2).aug.59.
+Key "_date_range" first appears on coin_id 1 with value "25 BC - 23 BC" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_denomination" first appears on coin_id 1 with value "Quinarius" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_denomination2" first appears on coin_id 38964 with value "AE1" at URI http://numismatics.org/ocre/id/ric.9.rom.42B.
+Key "_manufacture" first appears on coin_id 1 with value "Struck" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_material" first appears on coin_id 1 with value "Silver" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_material2" first appears on coin_id 37842 with value "Bronze (uncertain)" at URI http://numismatics.org/ocre/id/ric.8.alex.92.
+Key "_object_type" first appears on coin_id 1 with value "Coin" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "_object_type2" first appears on coin_id 7820 with value "Medallion" at URI http://numismatics.org/ocre/id/ric.2_3(2).hdn.2937.
+Key "authority_authority" first appears on coin_id 1 with value "Augustus" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "authority_authority2" first appears on coin_id 40202 with value "Flavius Marcus" at URI http://numismatics.org/ocre/id/ric.10.bas-mar_e.1034.
+Key "authority_issuer" first appears on coin_id 1 with value "P. Carisius" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "authority_issuer2" first appears on coin_id 541 with value "Galus" at URI http://numismatics.org/ocre/id/ric.1(2).aug.464.
+Key "authority_issuer3" first appears on coin_id 541 with value "Messalla" at URI http://numismatics.org/ocre/id/ric.1(2).aug.464.
+Key "authority_issuer4" first appears on coin_id 541 with value "Sisenna" at URI http://numismatics.org/ocre/id/ric.1(2).aug.464.
+Key "authority_stated_authority" first appears on coin_id 41163 with value "Priscus Attalus" at URI http://numismatics.org/ocre/id/ric.10.visi.3701.
+Key "date_on_object_date" first appears on coin_id 24728 with value "AD 269" at URI http://numismatics.org/ocre/id/ric.5.mar.3.
+Key "geographic_mint" first appears on coin_id 1 with value "Emerita" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "geographic_mint2" first appears on coin_id 40646 with value "Ravenna" at URI http://numismatics.org/ocre/id/ric.10.valt_iii_w.2074.
+Key "geographic_mint3" first appears on coin_id 21341 with value "Aquileia" at URI http://numismatics.org/ocre/id/ric.5.cg.298.
+Key "geographic_mint4" first appears on coin_id 21306 with value "Antioch" at URI http://numismatics.org/ocre/id/ric.5.cg.266.
+Key "geographic_mint5" first appears on coin_id 21306 with value "Rome" at URI http://numismatics.org/ocre/id/ric.5.cg.266.
+Key "geographic_region" first appears on coin_id 1 with value "Lusitania" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "geographic_region2" first appears on coin_id 21527 with value "Gallia" at URI http://numismatics.org/ocre/id/ric.5.aur.100.
+Key "geographic_region3" first appears on coin_id 21306 with value "Syria" at URI http://numismatics.org/ocre/id/ric.5.cg.266.
+Key "geographic_region4" first appears on coin_id 21306 with value "Mysia" at URI http://numismatics.org/ocre/id/ric.5.cg.266.
+Key "obverse_controlmark" first appears on coin_id 18819 with value "• • •" at URI http://numismatics.org/ocre/id/ric.4.tr_d.48.
+Key "obverse_deity" first appears on coin_id 323 with value "Venus" at URI http://numismatics.org/ocre/id/ric.1(2).aug.251.
+Key "obverse_deity2" first appears on coin_id 27853 with value "Alamannia" at URI http://numismatics.org/ocre/id/ric.6.tri.811.
+Key "obverse_deity3" first appears on coin_id 696 with value "Juno" at URI http://numismatics.org/ocre/id/ric.1(2).tib.67.
+Key "obverse_deity4" first appears on coin_id 696 with value "Jupiter" at URI http://numismatics.org/ocre/id/ric.1(2).tib.67.
+Key "obverse_deity5" first appears on coin_id 696 with value "Mercury" at URI http://numismatics.org/ocre/id/ric.1(2).tib.67.
+Key "obverse_deity6" first appears on coin_id 696 with value "Minerva" at URI http://numismatics.org/ocre/id/ric.1(2).tib.67.
+Key "obverse_legend" first appears on coin_id 1 with value "AVGVST" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "obverse_portrait" first appears on coin_id 1 with value "Augustus" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "obverse_portrait2" first appears on coin_id 40202 with value "Flavius Marcus" at URI http://numismatics.org/ocre/id/ric.10.bas-mar_e.1034.
+Key "obverse_state" first appears on coin_id 6546 with value "Roman Republic" at URI http://numismatics.org/ocre/id/ric.2.tr.793.
+Key "obverse_state2" first appears on coin_id 6564 with value "Roman Republic" at URI http://numismatics.org/ocre/id/ric.2.tr.811.
+Key "obverse_type" first appears on coin_id 1 with value "Head of Augustus, bare, left" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_control_marks" first appears on coin_id 18487 with value "A/-//-" at URI http://numismatics.org/ocre/id/ric.4.ph_i.7.
+Key "reverse_deity" first appears on coin_id 1 with value "Victory" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_deity2" first appears on coin_id 40418 with value "Genius" at URI http://numismatics.org/ocre/id/ric.10.hon_w.1337.
+Key "reverse_deity3" first appears on coin_id 39519 with value "Constantinopolis" at URI http://numismatics.org/ocre/id/ric.9.tri.99.
+Key "reverse_deity4" first appears on coin_id 16073 with value "Hercules" at URI http://numismatics.org/ocre/id/ric.4.ge.184.
+Key "reverse_deity5" first appears on coin_id 11115 with value "Remus" at URI http://numismatics.org/ocre/id/ric.3.m_aur.736.
+Key "reverse_dynasty" first appears on coin_id 783 with value "Artaxiad Dynasty" at URI http://numismatics.org/ocre/id/ric.1(2).gai.59.
+Key "reverse_legend" first appears on coin_id 1 with value "P CARISI LEG" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "reverse_mintmark" first appears on coin_id 20948 with value "B/-//-" at URI http://numismatics.org/ocre/id/ric.5.sala(2).1.
+Key "reverse_mintmark10" first appears on coin_id 25291 with value "S/-//MLXXI" at URI http://numismatics.org/ocre/id/ric.5.cara.121.
+Key "reverse_mintmark11" first appears on coin_id 25291 with value "S/P//MLXXI" at URI http://numismatics.org/ocre/id/ric.5.cara.121.
+Key "reverse_mintmark12" first appears on coin_id 25291 with value "V/*//-" at URI http://numismatics.org/ocre/id/ric.5.cara.121.
+Key "reverse_mintmark13" first appears on coin_id 25271 with value "F/O//M(inv. L)" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark14" first appears on coin_id 25271 with value "F/S//ML" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark15" first appears on coin_id 25271 with value "L/-//-" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark16" first appears on coin_id 25271 with value "-/L//-" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark17" first appears on coin_id 25271 with value "L/-//ML" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark18" first appears on coin_id 25271 with value "M/O//ML" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark19" first appears on coin_id 25271 with value "O/F//-" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark2" first appears on coin_id 34019 with value "-/-//SMNΓ" at URI http://numismatics.org/ocre/id/ric.7.nic.20.
+Key "reverse_mintmark20" first appears on coin_id 25271 with value "-/O//ML" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark21" first appears on coin_id 25271 with value "S/P//MLXX" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark22" first appears on coin_id 25271 with value "S/P//MLXXI" at URI http://numismatics.org/ocre/id/ric.5.cara.101.
+Key "reverse_mintmark23" first appears on coin_id 23923 with value "(crescent on Z)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark24" first appears on coin_id 23923 with value "(crescent on H)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark25" first appears on coin_id 23923 with value "(crescent on ∈Δ)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark26" first appears on coin_id 23923 with value "(• on A)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark27" first appears on coin_id 23923 with value "(• on B)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark28" first appears on coin_id 23923 with value "(• on Γ)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark29" first appears on coin_id 23923 with value "(• on Δ)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark3" first appears on coin_id 34010 with value "-/-//SMNΓ•" at URI http://numismatics.org/ocre/id/ric.7.nic.11.
+Key "reverse_mintmark30" first appears on coin_id 23923 with value "(• on ϵ)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark31" first appears on coin_id 23923 with value "(• on ς)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark32" first appears on coin_id 23923 with value "(• on Z)//XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark33" first appears on coin_id 23923 with value "A//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark34" first appears on coin_id 23923 with value "B//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark35" first appears on coin_id 23923 with value "Γ//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark36" first appears on coin_id 23923 with value "Δ//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark37" first appears on coin_id 23923 with value "ϵ//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark38" first appears on coin_id 23923 with value "ς//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark39" first appears on coin_id 23923 with value "Z//•XXI" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark4" first appears on coin_id 29419 with value "-/H//Δ" at URI http://numismatics.org/ocre/id/ric.6.carth.26b.
+Key "reverse_mintmark40" first appears on coin_id 23923 with value "A//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark41" first appears on coin_id 23923 with value "B//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark42" first appears on coin_id 23923 with value "Γ//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark43" first appears on coin_id 23923 with value "Δ//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark44" first appears on coin_id 23923 with value "ϵ//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark45" first appears on coin_id 23923 with value "ς//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark46" first appears on coin_id 23923 with value "Z//XXI•" at URI http://numismatics.org/ocre/id/ric.5.dio.323.
+Key "reverse_mintmark47" first appears on coin_id 21669 with value "-/-//XXIT" at URI http://numismatics.org/ocre/id/ric.5.aur.244.
+Key "reverse_mintmark48" first appears on coin_id 21669 with value "-/-//XXIQ" at URI http://numismatics.org/ocre/id/ric.5.aur.244.
+Key "reverse_mintmark49" first appears on coin_id 21669 with value "-/-//XXIV" at URI http://numismatics.org/ocre/id/ric.5.aur.244.
+Key "reverse_mintmark5" first appears on coin_id 26506 with value "S/Γ//XXI" at URI http://numismatics.org/ocre/id/ric.5.jul_i.4.
+Key "reverse_mintmark50" first appears on coin_id 21669 with value "-/-//XXIVI" at URI http://numismatics.org/ocre/id/ric.5.aur.244.
+Key "reverse_mintmark6" first appears on coin_id 26506 with value "ISI//XXIΓ" at URI http://numismatics.org/ocre/id/ric.5.jul_i.4.
+Key "reverse_mintmark7" first appears on coin_id 26506 with value "-/-//XXIΓS" at URI http://numismatics.org/ocre/id/ric.5.jul_i.4.
+Key "reverse_mintmark8" first appears on coin_id 25291 with value "L/*//-" at URI http://numismatics.org/ocre/id/ric.5.cara.121.
+Key "reverse_mintmark9" first appears on coin_id 25291 with value "L/-//ML" at URI http://numismatics.org/ocre/id/ric.5.cara.121.
+Key "reverse_monogram" first appears on coin_id 40260 with value "Monogram 1 (Zeno)" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.958.
+Key "reverse_officinamark" first appears on coin_id 22083 with value "-/-//IIII" at URI http://numismatics.org/ocre/id/ric.5.fl.1.
+Key "reverse_officinamark10" first appears on coin_id 40236 with value "I" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.936.
+Key "reverse_officinamark11" first appears on coin_id 40229 with value "θ" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.930.
+Key "reverse_officinamark12" first appears on coin_id 40229 with value "I" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.930.
+Key "reverse_officinamark13" first appears on coin_id 37711 with value "ΓI" at URI http://numismatics.org/ocre/id/ric.8.anch.194.
+Key "reverse_officinamark14" first appears on coin_id 37711 with value "ΔI" at URI http://numismatics.org/ocre/id/ric.8.anch.194.
+Key "reverse_officinamark15" first appears on coin_id 37711 with value "∈I" at URI http://numismatics.org/ocre/id/ric.8.anch.194.
+Key "reverse_officinamark2" first appears on coin_id 41237 with value "Δ" at URI http://numismatics.org/ocre/id/ric.10.visi.3775.
+Key "reverse_officinamark3" first appears on coin_id 41237 with value "S" at URI http://numismatics.org/ocre/id/ric.10.visi.3775.
+Key "reverse_officinamark4" first appears on coin_id 40705 with value "Q" at URI http://numismatics.org/ocre/id/ric.10.valt_iii_w.2133.
+Key "reverse_officinamark5" first appears on coin_id 40705 with value "∈" at URI http://numismatics.org/ocre/id/ric.10.valt_iii_w.2133.
+Key "reverse_officinamark6" first appears on coin_id 40236 with value "S" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.936.
+Key "reverse_officinamark7" first appears on coin_id 40236 with value "Z" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.936.
+Key "reverse_officinamark8" first appears on coin_id 40236 with value "H" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.936.
+Key "reverse_officinamark9" first appears on coin_id 40236 with value "θ" at URI http://numismatics.org/ocre/id/ric.10.zeno(2)_e.936.
+Key "reverse_portrait" first appears on coin_id 209 with value "Augustus" at URI http://numismatics.org/ocre/id/ric.1(2).aug.162A.
+Key "reverse_portrait2" first appears on coin_id 40976 with value "Leo I" at URI http://numismatics.org/ocre/id/ric.10.anth_w.2899.
+Key "reverse_portrait3" first appears on coin_id 39964 with value "Aelia Pulcheria" at URI http://numismatics.org/ocre/id/ric.10.marc_e.502.
+Key "reverse_portrait4" first appears on coin_id 34088 with value "Constantius II" at URI http://numismatics.org/ocre/id/ric.7.nic.89.
+Key "reverse_portrait5" first appears on coin_id 33936 with value "Dalmatius" at URI http://numismatics.org/ocre/id/ric.7.cnp.89.
+Key "reverse_state" first appears on coin_id 413 with value "Roman Republic" at URI http://numismatics.org/ocre/id/ric.1(2).aug.337.
+Key "reverse_state2" first appears on coin_id 6550 with value "Roman Republic" at URI http://numismatics.org/ocre/id/ric.2.tr.797.
+Key "reverse_symbol" first appears on coin_id 39959 with value "Monogram 1 (Theodosius II)" at URI http://numismatics.org/ocre/id/ric.10.theo_ii_e.462.
+Key "reverse_symbol2" first appears on coin_id 40865 with value "Monogram 2 (Libius Severus) consists of C, E, V, R, and A" at URI http://numismatics.org/ocre/id/ric.10.lib_sev_w.2717.
+Key "reverse_type" first appears on coin_id 1 with value "Victory standing right, placing wreath on trophy with dagger and sword at base" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.

@@ -39,11 +39,18 @@ class ScrapeOcre:
         "reference": None,
         "num_objects_found": None,
     }
+    SCHEMA_RAW_URI_PAGES = {"coin_id": None, "page_html": None}
 
-    def __init__(self, db_name: str, pages_to_sample: Union[None, int] = None) -> None:
+    def __init__(
+        self,
+        db_name: str,
+        pages_to_sample: Union[None, int] = None,
+        only_found: bool = True,
+    ) -> None:
         """Construct instance of class."""
         self.db_name = db_name
         self.pages_to_sample = pages_to_sample
+        self.only_found = only_found
         self.client = None
         return None
 
@@ -57,7 +64,7 @@ class ScrapeOcre:
         self.client.close_connection()
         return None
 
-    def scrape_browse_results(self):
+    def scrape_browse_results(self) -> None:
         """Scrape Browse results and save HTML to database."""
         curr_page_id = 1
         max_num_pages = None
@@ -124,7 +131,7 @@ class ScrapeOcre:
         print("\nFinished scraping Browse results...")
         return None
 
-    def process_browse_results(self):
+    def process_browse_results(self) -> None:
         """Process and save Browse results data."""
         # Query data
         print("Retrieving data from `raw_web_scrape` table...")
@@ -189,8 +196,63 @@ class ScrapeOcre:
                     path_insert_query, [processed_browse_data]
                 )
 
-    def scrape_canonical_uris(self):
-        pass
+    def scrape_canonical_uris(self) -> None:
+        """Process and save Browse results data."""
+
+        # Determine coin_id to start at
+        print("Determining coin_id to start scraping URI pages at...")
+        path_max_id = c.SQL_FOLDER / "query" / "raw_uri_pages_max_id.sql"
+        self.client.query_data(path_max_id)
+        query_params = {"start_coin_id": None}
+        for row in self.client.cur:
+            if row[0]:
+                query_params["start_coin_id"] = row[0] + 1
+            else:
+                query_params["start_coin_id"] = 1
+        print(
+            f"Starting URI page scraping at coin_id #{query_params['start_coin_id']}..."
+        )
+
+        # Query data
+        print("Retrieving data from `stg_coin_summaries` table...")
+        if self.only_found:
+            path_query = (
+                c.SQL_FOLDER
+                / "query"
+                / "stg_coin_summaries_filter_coin_id_and_only_found.sql"
+            )
+        else:
+            path_query = (
+                c.SQL_FOLDER / "query" / "stg_coin_summaries_filter_coin_id.sql"
+            )
+        self.client.query_data(path_query, query_params)
+
+        # Scrape and store raw URI pages' HTML
+        for row in self.client.cur:
+            data_query = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
+            ScrapeOcre.populate_stg_coin_summaries_schema(
+                data_query, row, all_fields=False
+            )
+            print(f"Scraping Canonical URI page for coin #{data_query['coin_id']}")
+
+            # Get HTML using requests library
+            response = requests.get(data_query["coin_canonical_uri"])
+            response.raise_for_status()
+
+            # Convert HTML into soup
+            soup = BeautifulSoup(response.text, "lxml")
+
+            # Insert data into database
+            data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+            ScrapeOcre.populate_raw_uri_pages_schema(
+                data_insert, [data_query["coin_id"], str(soup)]
+            )
+
+            path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
+            self._insert_using_secondary_client(path_insert, [data_insert])
+
+        print("Finished scraping canonical URIs...")
+        return None
 
     def process_canonical_uris(self):
         pass
@@ -230,11 +292,55 @@ class ScrapeOcre:
         data_dict["page_html"] = row_of_data[4]
         return None
 
+    @staticmethod
+    def populate_stg_coin_summaries_schema(
+        data_dict: dict, row_of_data: Union[list, tuple], all_fields: bool = False
+    ) -> None:
+        """Populate a stg_coin_summaries schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        stg_coin_summaries and the timestamp field (`ts`) is omitted,
+        for either all fields or a subset of fields in the table."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["page_id"] = row_of_data[1]
+        data_dict["coin_name"] = row_of_data[2]
+        data_dict["coin_canonical_uri"] = row_of_data[3]
+
+        if all_fields:
+            data_dict["coin_date_string"] = row_of_data[4]
+            data_dict["denomination"] = row_of_data[5]
+            data_dict["mint"] = row_of_data[6]
+            data_dict["obverse_description"] = row_of_data[7]
+            data_dict["reverse_description"] = row_of_data[8]
+            data_dict["reference"] = row_of_data[9]
+            data_dict["num_objects_found"] = row_of_data[10]
+        else:
+            # Convert data_dict.keys() into list to prevent dict
+            # changed size during iteration error
+            for key in list(data_dict.keys()):
+                if key not in ("coin_id", "page_id", "coin_name", "coin_canonical_uri"):
+                    data_dict.pop(key)
+
+        return None
+
+    @staticmethod
+    def populate_raw_uri_pages_schema(
+        data_dict: dict, row_of_data: Union[list, tuple]
+    ) -> None:
+        """Populate a raw_uri_pages schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        raw_uri_pages and the timestamp field (`ts`) is omitted."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["page_html"] = row_of_data[1]
+        return None
+
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20)
-    # pipeline = ScrapeOcre("ocre")
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20, only_found=True)
+    # pipeline = ScrapeOcre("ocre", only_found=False)
 
+    # Connect
     try:
         pipeline.connect_to_database()
     except ValueError as err:
@@ -245,16 +351,42 @@ if __name__ == "__main__":
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
+    # Scrape Browse results pages
     # try:
     #     pipeline.scrape_browse_results()
     # except requests.exceptions.RequestException as err:
-    #     print(
-    #         f"\nREQUEST ERROR: Encountered error trying to connect to webpage."
-    #     )
+    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
     #     print(err)
     #     pipeline.disconnect_from_database()
     #     sys.exit(1)
 
-    pipeline.process_browse_results()
+    # Process Browse results pages
+    # pipeline.process_browse_results()
 
+    # Scrape raw Canonical URI pages
+    # TODO: modify script so that method below can be re-run for incomplete scrapes
+    # num_retries = 0
+    # retry_limit = 50  # Arbitrary number
+    # while num_retries <= retry_limit:
+    #     try:
+    #         pipeline.scrape_canonical_uris()
+    #         break
+    #     except requests.exceptions.ConnectTimeout as err:
+    #         print("\nREQUESTS CONNECTION TIMEOUT:")
+    #         print(err)
+    #     except requests.exceptions.ConnectionError as err:
+    #         print("\nREQUESTS CONNECTION ERROR:")
+    #         print(err)
+
+    #     num_retries += 1
+    #     print(f"Current retry count: {num_retries} / {retry_limit}")
+    #     if num_retries <= retry_limit:
+    #         print("Retrying scrape of Canonical URIs...")
+    #     else:
+    #         print("Ending scrape of Canonical URIs...")
+
+    # Process Canonical URI pages
+    # pipeline.process_canonical_uris()
+
+    # Disconnect
     pipeline.disconnect_from_database()

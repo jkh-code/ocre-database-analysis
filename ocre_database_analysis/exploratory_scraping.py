@@ -1,17 +1,29 @@
 from bs4 import BeautifulSoup
+import re
+import sys
+
+from pprint import pprint
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
+import ocre_database_analysis.utilities.helper_functions as hf
 
 
-def scrape_browse_results(db_name: str) -> Topsy:
+def connect_and_query(db_name: str, table_name: str) -> Topsy:
+    """Connect to specified database, query specified table, and return
+    the Topsy client, which contains the cursor and query results."""
     print("Start scraping of Browse results fields...")
+
+    # Validate table names
+    VALID_TABLE_NAMES = ("raw_browse_pages", "raw_uri_pages")
+    if table_name not in VALID_TABLE_NAMES:
+        raise ValueError(f"VALUE ERROR: `{table_name}` is not a valid table name!")
 
     # Try connection and return client
     client = Topsy.try_postgres_connection(db_name)
 
     # Loading data from postgres
-    file_path = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
+    file_path = c.SQL_FOLDER / "query" / (table_name + ".sql")
     client.query_data(file_path)
 
     return client
@@ -19,7 +31,8 @@ def scrape_browse_results(db_name: str) -> Topsy:
 
 def get_browse_fields(db_name: str) -> None:
     """Scrape browse fields and print to CSV file."""
-    client = scrape_browse_results(db_name)
+    table_name = "raw_browse_pages"
+    client = connect_and_query(db_name, table_name)
 
     # Determining unique Browse results fields
     unique_fields = dict()
@@ -27,9 +40,7 @@ def get_browse_fields(db_name: str) -> None:
     print("\nScraping fields from all results...")
     for row in client.cur:
         curr_row = client.cur.rownumber
-
-        if (curr_row in (1, total_rows)) or (curr_row % 250 == 0):
-            print(f"Scraping page {curr_row} of {total_rows}...")
+        hf.print_update_periodically(curr_row, total_rows, 250)
 
         soup = BeautifulSoup(row[4], "lxml")
         all_page_coins = soup.find_all("div", class_="row result-doc")
@@ -63,7 +74,8 @@ def get_browse_fields(db_name: str) -> None:
 
 def get_unique_object_counts(db_name: str) -> None:
     """Scrape object counts and print to text file."""
-    client = scrape_browse_results(db_name)
+    table_name = "raw_browse_pages"
+    client = connect_and_query(db_name, table_name)
 
     # Determining unique object count strings
     unique_text_d = dict()
@@ -71,9 +83,7 @@ def get_unique_object_counts(db_name: str) -> None:
     print("\nScraping object counts from all pages...")
     for row in client.cur:
         curr_row = client.cur.rownumber
-
-        if (curr_row in (1, total_rows)) or (curr_row % 250 == 0):
-            print(f"Scraping page {curr_row} of {total_rows}...")
+        hf.print_update_periodically(curr_row, total_rows, 250)
 
         soup = BeautifulSoup(row[4], "lxml")
         all_page_coins = soup.find_all("div", class_="row result-doc")
@@ -101,12 +111,276 @@ def get_unique_object_counts(db_name: str) -> None:
             )
 
     client.close_connection()
+    return None
+
+
+def get_uri_header_sections(db_name: str) -> None:
+    """Scrape the sections line from URI headers to determine all possible variations."""
+    print("Scraping header section of URI pages...")
+    table_name = "raw_uri_pages"
+    client = connect_and_query(db_name, table_name)
+
+    number_of_header_lines_d = dict()
+    unique_section_text_d = dict()
+    unique_sections_d = dict()
+    total_rows = client.cur.rowcount
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        curr_coin_id = row[0]
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(row[1], "lxml")
+        soup_header = soup.body.find_all("div", class_="col-md-12")[1].contents
+        all_tags = [item for item in soup_header if item.name]
+        path_uri = all_tags[1].find("a")["href"]
+
+        # Check number of tags in header
+        num_tags = len(all_tags)
+        if num_tags not in number_of_header_lines_d.keys():
+            number_of_header_lines_d[num_tags] = (curr_coin_id, path_uri)
+
+        # Check section text
+        section_text = all_tags[2].text.strip().replace("\n", "")
+        section_text = re.sub(" +", " ", section_text)
+        if section_text not in unique_section_text_d.keys():
+            unique_section_text_d[section_text] = (curr_coin_id, path_uri)
+
+        # Check section names
+        section_names = [
+            " ".join(item.split()) for item in all_tags[2].text.split(" | ")
+        ]
+        for section in section_names:
+            if section not in unique_sections_d:
+                unique_sections_d[section] = (curr_coin_id, path_uri)
+
+    # Saving to files
+    print("Writing data to files...")
+    files = (
+        "number_of_header_lines.txt",
+        "unique_section_text.txt",
+        "unique_sections.txt",
+    )
+    data_structures = (
+        number_of_header_lines_d,
+        unique_section_text_d,
+        unique_sections_d,
+    )
+    for d, f in zip(data_structures, files):
+        path_ = c.DATA_FOLDER / f
+        sorted_ = sorted(d.items(), reverse=False, key=lambda x: str(x[0]).lower())
+        with open(path_, "w", encoding="UTF-8") as f:
+            for k, v in sorted_:
+                f.write(f'"{k}" first appears on coin_id {v[0]} at URI {v[1]}\n')
+
+    client.close_connection()
+    return None
+
+
+def integrate_field_value_pairs(
+    field: str,
+    value: str,
+    row_field_counts_d: dict,
+    unique_fields_d: dict,
+    curr_coin_id: int,
+    path_uri: str,
+) -> None:
+    """Integrating field and value pairs into the row_field_counts_d
+    and unique_field_d dicts in place."""
+    # Incrementing row_field_counts_d
+    if field not in row_field_counts_d.keys():
+        row_field_counts_d[field] = 1
+    else:
+        row_field_counts_d[field] += 1
+
+    # Adding field to unique_fields_d
+    if field not in unique_fields_d.keys():
+        unique_fields_d[field] = (value, curr_coin_id, path_uri)
+    else:
+        if row_field_counts_d[field] > 1:
+            key_idx = row_field_counts_d[field]
+            unique_fields_d[field + f"{key_idx}"] = (
+                value,
+                curr_coin_id,
+                path_uri,
+            )
 
     return None
+
+
+def get_uri_typological_fields(db_name: str) -> None:
+    """Scrape the fields of the Typological Description section."""
+    print("Scraping fields of the Typological Description section...")
+    table_name = "raw_uri_pages"
+    client = connect_and_query(db_name, table_name)
+
+    # Determining unique typological fields
+    unique_fields_d = dict()
+    total_rows = client.cur.rowcount
+    print("Scraping fields from all results...")
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        curr_coin_id = row[0]
+        curr_coin_html = row[1]
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(curr_coin_html, "lxml")
+        path_uri = hf.retrieve_uri_path(soup)
+
+        soup_typological = soup.find("div", class_="metadata_section")
+        data_raw = soup_typological.ul
+        data_raw = [item for item in data_raw if item.name]
+
+        curr_subsection = str()
+        row_field_counts_d = dict()
+        for item in data_raw:
+            all_item_tags = [i for i in item if i.name]
+
+            if all_item_tags[0].name == "b":
+                result_split = item.text.strip().split(": ", maxsplit=1)
+                if len(result_split) == 1:
+                    field = result_split[0].replace(":", "")
+                    value = None
+                else:
+                    field, value = result_split
+                    value = re.sub(" +", " ", value.replace("\n", " "))
+                field = "_" + field.lower().replace(" ", "_")
+
+                integrate_field_value_pairs(
+                    field,
+                    value,
+                    row_field_counts_d,
+                    unique_fields_d,
+                    curr_coin_id,
+                    path_uri,
+                )
+            elif all_item_tags[0].name == "h4":
+                section_name = all_item_tags[0].text.strip().lower().replace(" ", "_")
+                for li in item.find_all("li"):
+                    if li.contents[0].name == "b":
+                        field = (
+                            li.contents[0]
+                            .text.strip()
+                            .lower()
+                            .replace(" ", "_")
+                            .replace(":", "")
+                        )
+                        field = section_name + "_" + field
+
+                        if "symbol" in field:
+                            value = re.sub(
+                                " +",
+                                " ",
+                                li.text.strip().replace(" - ", " ").replace(",", "", 1),
+                            )
+                            value = value.replace("Symbol: ", "")
+                        else:
+                            value = (
+                                re.sub(
+                                    " +",
+                                    " ",
+                                    li.contents[1].text.strip().replace("\n", " "),
+                                )
+                                if len(li.contents) > 1
+                                else None
+                            )
+
+                        integrate_field_value_pairs(
+                            field,
+                            value,
+                            row_field_counts_d,
+                            unique_fields_d,
+                            curr_coin_id,
+                            path_uri,
+                        )
+
+    # Saving to file
+    print("Saving unique fields to file...")
+    path_save = c.DATA_FOLDER / "unique_typological_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on coin_id {v[1]} with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    client.close_connection()
+    return None
+
+
+def get_uri_analysis_fields(db_name: str) -> None:
+    """Scrape fields in the Quantitative Analysis section of URI pages."""
+    print("Scraping fields of the Quantitative Analysis section...")
+    table_name = "raw_uri_pages"
+    client = connect_and_query(db_name, table_name)
+
+    unique_fields_d = dict()
+    total_rows = client.cur.rowcount
+    print("Scraping fields from all results...")
+    for row in client.cur:
+        curr_row = client.cur.rownumber
+        curr_coin_id = row[0]
+        curr_coin_html = row[1]
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(curr_coin_html, "lxml")
+        path_uri = hf.retrieve_uri_path(soup)
+
+        soup_analysis = soup.find("div", class_="row", id="metrical")
+        if not soup_analysis:
+            # When there is not a Quantitative Analysis section
+            continue
+        soup_data = soup_analysis.find("dl", class_="dl-horizontal")
+        if not soup_data:
+            # When there is not data in the Quantitative Analysis section
+            continue
+
+        all_dt = soup_data.find_all("dt")
+        all_dd = soup_data.find_all("dd")
+        row_field_counts_d = dict()
+        for dt, dd in zip(all_dt, all_dd):
+            field = dt.text.strip().lower().replace(" ", "_")
+            field = "average_" + field
+            value = float(dd.text.strip())
+
+            integrate_field_value_pairs(
+                field,
+                value,
+                row_field_counts_d,
+                unique_fields_d,
+                curr_coin_id,
+                path_uri,
+            )
+
+    # Saving to file
+    print("Saving unique fields to file...")
+    path_save = c.DATA_FOLDER / "unique_analysis_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on coin ID #{v[1]} with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    client.close_connection()
+    return None
+
+
+def get_uri_examples_fields(db_name: str) -> None:
+    """Scrape fields in the example section of URI pages."""
+    pass
 
 
 if __name__ == "__main__":
     database_name = "ocre"
 
-    get_browse_fields(database_name)
-    get_unique_object_counts(database_name)
+    # get_browse_fields(database_name)
+    # get_unique_object_counts(database_name)
+
+    # get_uri_header_sections(database_name)
+    # get_uri_typological_fields(database_name)
+    # get_uri_analysis_fields(database_name)
+    get_uri_examples_fields(database_name)

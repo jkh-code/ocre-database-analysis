@@ -14,6 +14,7 @@ import ocre_database_analysis.constants as c
 
 # TODO: Document class with docstring (https://realpython.com/documenting-python-code/#class-docstrings)
 # TODO: Replace print statements with logging
+# TODO: Remove print/logging statements from Topsy and move to scripts that use Topsy
 
 
 class Topsy:
@@ -192,8 +193,12 @@ class Topsy:
 
         return None
 
-    def query_data(self, file_path: Union[PosixPath, WindowsPath]) -> None:
-        """Query data using specified file and save results to cursor object."""
+    def query_data(
+        self, file_path: Union[PosixPath, WindowsPath], params: Union[None, dict] = None
+    ) -> None:
+        """Query data using specified file and save results to cursor object.
+        Use the `params` argument when the query has parameters to pass to
+        it."""
         print(
             f"Trying to query `{self.conn_parameters['dbname']}` using {file_path.name}..."
         )
@@ -211,7 +216,10 @@ class Topsy:
         with open(file_path, "r", encoding="UTF-8") as f:
             query = f.read()
 
-        self.cur.execute(query)
+        if params:
+            self.cur.execute(query, params)
+        else:
+            self.cur.execute(query)
         print(f"Query complete...")
 
         return None

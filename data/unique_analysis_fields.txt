@@ -1,0 +1,3 @@
+Key "average_axis" first appears on coin ID #1 with value "5.0" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "average_diameter" first appears on coin ID #1 with value "13.66" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "average_weight" first appears on coin ID #1 with value "1.61" at URI http://numismatics.org/ocre/id/ric.1(2).aug.1A.
