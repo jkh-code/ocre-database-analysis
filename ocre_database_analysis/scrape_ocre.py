@@ -39,7 +39,18 @@ class ScrapeOcre:
         "reference": None,
         "num_objects_found": None,
     }
-    SCHEMA_RAW_URI_PAGES = {"coin_id": None, "page_html": None}
+    SCHEMA_RAW_URI_PAGES = {
+        "raw_uri_id": None,
+        "coin_id": None,
+        "has_examples": None,
+        "has_examples_pagination": None,
+        "examples_pagination_id": None,
+        "examples_total_pagination": None,
+        "examples_start_id": None,
+        "examples_end_id": None,
+        "examples_max_id": None,
+        "page_html": None,
+    }
 
     def __init__(
         self,
@@ -229,7 +240,7 @@ class ScrapeOcre:
             )
         self.client.query_data(path_query, query_params)
 
-        # Scrape and store raw URI pages' HTML
+        # Scrape canonical URIs and store raw data in raw_uri_pages
         for row in self.client.cur:
             data_query = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
             ScrapeOcre.populate_stg_coin_summaries_schema(
