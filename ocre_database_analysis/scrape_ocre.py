@@ -266,7 +266,7 @@ class ScrapeOcre:
             if soup_examples:
                 # If there is an examples section
                 data_insert["has_examples"] = True
-                soup_pagination = soup_examples.find("div", class_="col-md-12")
+                soup_pagination = soup_examples.find_all("div", class_="col-md-12")
                 if len(soup_pagination) > 1:
                     # If there is pagination in the examples section
                     data_insert["has_examples_pagination"] = True
