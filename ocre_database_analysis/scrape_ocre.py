@@ -255,12 +255,33 @@ class ScrapeOcre:
             # Convert HTML into soup
             soup = BeautifulSoup(response.text, "lxml")
 
-            # Insert data into database
+            # Extract data from soup to later insert into database
+            # TODO: Update
             data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
-            ScrapeOcre.populate_raw_uri_pages_schema(
-                data_insert, [data_query["coin_id"], str(soup)]
-            )
+            data_insert.pop("raw_uri_id")
+            data_insert["coin_id"] = data_query["coin_id"]
+            data_insert["page_html"] = str(soup)
 
+            soup_examples = soup.find("div", class_="row", id="examples")
+            if soup_examples:
+                # If there is an examples section
+                data_insert["has_examples"] = True
+                soup_pagination = soup_examples.find("div", class_="col-md-12")
+                if len(soup_pagination) > 1:
+                    # If there is pagination in the examples section
+                    data_insert["has_examples_pagination"] = True
+                else:
+                    # If there is not pagination in the examples section
+                    data_insert["has_examples_pagination"] = False
+            else:
+                # If there is not an examples section
+                data_insert["has_examples"] = False
+                data_insert["has_examples_pagination"] = False
+
+            # TODO: debug
+            break
+
+            # Insert data into database
             path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
             self._insert_using_secondary_client(path_insert, [data_insert])
 
