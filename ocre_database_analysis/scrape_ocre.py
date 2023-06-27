@@ -344,13 +344,21 @@ class ScrapeOcre:
         row_of_data, where the order of the items in row_of_data
         corresponds to the ordinal position of columns from
         raw_uri_pages and the timestamp field (`ts`) is omitted."""
-        data_dict["coin_id"] = row_of_data[0]
-        data_dict["page_html"] = row_of_data[1]
+        data_dict["raw_uri_id"] = row_of_data[0]
+        data_dict["coin_id"] = row_of_data[1]
+        data_dict["has_examples"] = row_of_data[2]
+        data_dict["has_examples_pagination"] = row_of_data[3]
+        data_dict["examples_pagination_id"] = row_of_data[4]
+        data_dict["examples_total_pagination"] = row_of_data[5]
+        data_dict["examples_start_id"] = row_of_data[6]
+        data_dict["examples_end_id"] = row_of_data[7]
+        data_dict["examples_max_id"] = row_of_data[8]
+        data_dict["page_html"] = row_of_data[9]
         return None
 
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20, only_found=True)
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
     # pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
@@ -365,38 +373,38 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    # try:
-    #     pipeline.scrape_browse_results()
-    # except requests.exceptions.RequestException as err:
-    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-    #     print(err)
-    #     pipeline.disconnect_from_database()
-    #     sys.exit(1)
+    try:
+        pipeline.scrape_browse_results()
+    except requests.exceptions.RequestException as err:
+        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+        print(err)
+        pipeline.disconnect_from_database()
+        sys.exit(1)
 
     # Process Browse results pages
-    # pipeline.process_browse_results()
+    pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    # num_retries = 0
-    # retry_limit = 50  # Arbitrary number
-    # while num_retries <= retry_limit:
-    #     try:
-    #         pipeline.scrape_canonical_uris()
-    #         break
-    #     except requests.exceptions.ConnectTimeout as err:
-    #         print("\nREQUESTS CONNECTION TIMEOUT:")
-    #         print(err)
-    #     except requests.exceptions.ConnectionError as err:
-    #         print("\nREQUESTS CONNECTION ERROR:")
-    #         print(err)
+    num_retries = 0
+    retry_limit = 50  # Arbitrary number
+    while num_retries <= retry_limit:
+        try:
+            pipeline.scrape_canonical_uris()
+            break
+        except requests.exceptions.ConnectTimeout as err:
+            print("\nREQUESTS CONNECTION TIMEOUT:")
+            print(err)
+        except requests.exceptions.ConnectionError as err:
+            print("\nREQUESTS CONNECTION ERROR:")
+            print(err)
 
-    #     num_retries += 1
-    #     print(f"Current retry count: {num_retries} / {retry_limit}")
-    #     if num_retries <= retry_limit:
-    #         print("Retrying scrape of Canonical URIs...")
-    #     else:
-    #         print("Ending scrape of Canonical URIs...")
+        num_retries += 1
+        print(f"Current retry count: {num_retries} / {retry_limit}")
+        if num_retries <= retry_limit:
+            print("Retrying scrape of Canonical URIs...")
+        else:
+            print("Ending scrape of Canonical URIs...")
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
