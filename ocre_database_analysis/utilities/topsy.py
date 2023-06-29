@@ -170,8 +170,6 @@ class Topsy:
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
-        print(f"Trying to insert data using {file_path.name}...")
-
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
                 "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
