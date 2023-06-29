@@ -284,16 +284,29 @@ class ScrapeOcre:
                     ) = data_examples_ids
 
                     # Scraping pagination data
-
+                    data_insert["examples_pagination_id"] = int(
+                        data_pagination.find(
+                            "button", class_="btn btn-default active"
+                        ).text.strip()
+                    )
+                    data_insert["examples_total_pagination"] = int(
+                        data_pagination.find(
+                            "a", class_="btn btn-default", title="Last"
+                        ).text.strip()
+                    )
                 else:
                     # If there is not pagination in the examples section
                     data_insert["has_examples_pagination"] = False
+
                     data_insert["examples_start_id"] = 1
                     num_coins_on_page = len(
                         soup_examples.find_all("div", class_="g_doc col-md-4")
                     )
                     data_insert["examples_end_id"] = num_coins_on_page
                     data_insert["examples_max_id"] = num_coins_on_page
+
+                    data_insert["examples_pagination_id"] = None
+                    data_insert["examples_total_pagination"] = None
             else:
                 # If there is not an examples section
                 data_insert["has_examples"] = False
@@ -302,6 +315,9 @@ class ScrapeOcre:
                 data_insert["examples_start_id"] = None
                 data_insert["examples_end_id"] = None
                 data_insert["examples_max_id"] = None
+
+                data_insert["examples_pagination_id"] = None
+                data_insert["examples_total_pagination"] = None
 
             # TODO: debug
             break
