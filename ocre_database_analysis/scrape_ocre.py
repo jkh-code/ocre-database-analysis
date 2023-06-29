@@ -428,8 +428,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
-    # pipeline = ScrapeOcre("ocre", only_found=False)
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
+    pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
