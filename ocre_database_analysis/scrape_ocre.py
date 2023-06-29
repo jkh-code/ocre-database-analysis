@@ -246,8 +246,9 @@ class ScrapeOcre:
             ScrapeOcre.populate_stg_coin_summaries_schema(
                 data_query, row, all_fields=False
             )
-            # TODO: Update interval
-            self._print_update_periodically(coin_id=data_query["coin_id"], interval=1)
+            self._print_scrape_update_periodically(
+                coin_id=data_query["coin_id"], interval=1_000
+            )
 
             # Get HTML using requests library
             response = requests.get(data_query["coin_canonical_uri"])
@@ -349,7 +350,7 @@ class ScrapeOcre:
         client_temp.close_connection()
         return None
 
-    def _print_update_periodically(self, coin_id: int, interval: int) -> None:
+    def _print_scrape_update_periodically(self, coin_id: int, interval: int) -> None:
         """Print to console scraping update message at an interval of
         number of records."""
         curr_row = self.client.cur.rownumber
