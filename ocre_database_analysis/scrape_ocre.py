@@ -256,7 +256,6 @@ class ScrapeOcre:
             soup = BeautifulSoup(response.text, "lxml")
 
             # Extract data from soup to later insert into database
-            # TODO: Update
             data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
             data_insert.pop("raw_uri_id")
             data_insert["coin_id"] = data_query["coin_id"]
@@ -289,6 +288,10 @@ class ScrapeOcre:
                             "button", class_="btn btn-default active"
                         ).text.strip()
                     )
+                    # TODO: Update logic for soup_last_button and if clause.
+                    # Do not need to check if this is the last page b/c
+                    # this method does a "first pass" scrape that only
+                    # grabs values for the first page
                     soup_last_button = data_pagination.find(
                         "a", class_="btn btn-default", title="Last"
                     )
@@ -332,6 +335,7 @@ class ScrapeOcre:
                 data_insert["examples_total_pagination"] = None
 
             # TODO: debug
+            print(data_insert)
             break
 
             # Insert data into database
@@ -447,16 +451,16 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    try:
-        pipeline.scrape_browse_results()
-    except requests.exceptions.RequestException as err:
-        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-        print(err)
-        pipeline.disconnect_from_database()
-        sys.exit(1)
+    # try:
+    #     pipeline.scrape_browse_results()
+    # except requests.exceptions.RequestException as err:
+    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+    #     print(err)
+    #     pipeline.disconnect_from_database()
+    #     sys.exit(1)
 
     # Process Browse results pages
-    pipeline.process_browse_results()
+    # pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
