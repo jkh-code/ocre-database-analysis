@@ -289,11 +289,23 @@ class ScrapeOcre:
                             "button", class_="btn btn-default active"
                         ).text.strip()
                     )
-                    data_insert["examples_total_pagination"] = int(
-                        data_pagination.find(
-                            "a", class_="btn btn-default", title="Last"
-                        ).text.strip()
+                    soup_last_button = data_pagination.find(
+                        "a", class_="btn btn-default", title="Last"
                     )
+                    if soup_last_button:
+                        # There is a button with title "Last" on page,
+                        # i.e., not on the last pagination page.
+                        data_insert["examples_total_pagination"] = int(
+                            soup_last_button.text.strip()
+                        )
+                    else:
+                        # There is not a button with title "Last" on page,
+                        # i.e., on the last pagination page.
+                        data_insert["examples_total_pagination"] = int(
+                            data_pagination.find(
+                                "button", class_="btn btn-default active"
+                            ).text.strip()
+                        )
                 else:
                     # If there is not pagination in the examples section
                     data_insert["has_examples_pagination"] = False
