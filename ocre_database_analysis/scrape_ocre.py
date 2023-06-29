@@ -246,7 +246,8 @@ class ScrapeOcre:
             ScrapeOcre.populate_stg_coin_summaries_schema(
                 data_query, row, all_fields=False
             )
-            print(f"Scraping Canonical URI page for coin #{data_query['coin_id']}")
+            # TODO: Update interval
+            self._print_update_periodically(coin_id=data_query["coin_id"], interval=1)
 
             # Get HTML using requests library
             response = requests.get(data_query["coin_canonical_uri"])
@@ -318,9 +319,14 @@ class ScrapeOcre:
                 data_insert["examples_pagination_id"] = None
                 data_insert["examples_total_pagination"] = None
 
-            # TODO: debug
-            print(data_insert)
-            break
+            # TODO: >>> debug >>>
+            if self.client.cur.rownumber <= 60:
+                data_insert.pop("page_html")
+                print(data_insert)
+                continue
+            else:
+                break
+            # <<< debug <<<
 
             # Insert data into database
             path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
@@ -350,6 +356,16 @@ class ScrapeOcre:
         client_temp = Topsy(self.db_name, silent=True)
         client_temp.insert_data(path, data)
         client_temp.close_connection()
+        return None
+
+    def _print_update_periodically(self, coin_id: int, interval: int) -> None:
+        """Print to console scraping update message at an interval of
+        number of records."""
+        curr_row = self.client.cur.rownumber
+        total_rows = self.client.cur.rowcount
+
+        if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
+            print(f"Scraping coin #{coin_id} in row {curr_row} of {total_rows}...")
         return None
 
     @staticmethod
