@@ -319,15 +319,6 @@ class ScrapeOcre:
                 data_insert["examples_pagination_id"] = None
                 data_insert["examples_total_pagination"] = None
 
-            # TODO: >>> debug >>>
-            if self.client.cur.rownumber <= 60:
-                data_insert.pop("page_html")
-                print(data_insert)
-                continue
-            else:
-                break
-            # <<< debug <<<
-
             # Insert data into database
             path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
             self._insert_using_secondary_client(path_insert, [data_insert])
