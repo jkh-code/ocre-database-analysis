@@ -288,27 +288,11 @@ class ScrapeOcre:
                             "button", class_="btn btn-default active"
                         ).text.strip()
                     )
-                    # TODO: Update logic for soup_last_button and if clause.
-                    # Do not need to check if this is the last page b/c
-                    # this method does a "first pass" scrape that only
-                    # grabs values for the first page
-                    soup_last_button = data_pagination.find(
-                        "a", class_="btn btn-default", title="Last"
+                    data_insert["examples_total_pagination"] = int(
+                        data_pagination.find(
+                            "a", class_="btn btn-default", title="Last"
+                        ).text.strip()
                     )
-                    if soup_last_button:
-                        # There is a button with title "Last" on page,
-                        # i.e., not on the last pagination page.
-                        data_insert["examples_total_pagination"] = int(
-                            soup_last_button.text.strip()
-                        )
-                    else:
-                        # There is not a button with title "Last" on page,
-                        # i.e., on the last pagination page.
-                        data_insert["examples_total_pagination"] = int(
-                            data_pagination.find(
-                                "button", class_="btn btn-default active"
-                            ).text.strip()
-                        )
                 else:
                     # If there is not pagination in the examples section
                     data_insert["has_examples_pagination"] = False
