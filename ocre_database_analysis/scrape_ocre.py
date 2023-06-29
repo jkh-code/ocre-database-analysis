@@ -270,13 +270,38 @@ class ScrapeOcre:
                 if len(soup_pagination) > 1:
                     # If there is pagination in the examples section
                     data_insert["has_examples_pagination"] = True
+                    soup_pagination_bar = soup_pagination[1]
+                    data_examples, data_pagination = soup_pagination_bar.find_all(
+                        "div", class_="col-md-6"
+                    )
+
+                    # Scraping examples IDs
+                    data_examples_ids = data_examples.text.strip().split()[1::2]
+                    (
+                        data_insert["examples_start_id"],
+                        data_insert["examples_end_id"],
+                        data_insert["examples_max_id"],
+                    ) = data_examples_ids
+
+                    # Scraping pagination data
+
                 else:
                     # If there is not pagination in the examples section
                     data_insert["has_examples_pagination"] = False
+                    data_insert["examples_start_id"] = 1
+                    num_coins_on_page = len(
+                        soup_examples.find_all("div", class_="g_doc col-md-4")
+                    )
+                    data_insert["examples_end_id"] = num_coins_on_page
+                    data_insert["examples_max_id"] = num_coins_on_page
             else:
                 # If there is not an examples section
                 data_insert["has_examples"] = False
                 data_insert["has_examples_pagination"] = False
+
+                data_insert["examples_start_id"] = None
+                data_insert["examples_end_id"] = None
+                data_insert["examples_max_id"] = None
 
             # TODO: debug
             break
