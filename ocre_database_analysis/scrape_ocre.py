@@ -247,7 +247,7 @@ class ScrapeOcre:
                 data_query, row, all_fields=False
             )
             self._print_scrape_update_periodically(
-                coin_id=data_query["coin_id"], interval=1_000
+                coin_id=data_query["coin_id"], interval=500
             )
 
             # Get HTML using requests library
@@ -358,7 +358,7 @@ class ScrapeOcre:
 
         if curr_row == 1:
             print(
-                f"Going into periodical updates. Updates will be at every {interval} row..."
+                f"Going into periodical updates, which are at every {interval} row..."
             )
 
         if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
