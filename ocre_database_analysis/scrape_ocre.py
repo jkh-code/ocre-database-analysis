@@ -356,6 +356,11 @@ class ScrapeOcre:
         curr_row = self.client.cur.rownumber
         total_rows = self.client.cur.rowcount
 
+        if curr_row == 1:
+            print(
+                f"Going into periodical updates. Updates will be at every {interval} row..."
+            )
+
         if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
             print(f"Scraping coin #{coin_id} in row {curr_row} of {total_rows}...")
         return None
