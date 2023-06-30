@@ -187,8 +187,6 @@ class Topsy:
             query = f.read()
 
         self.cur.executemany(query, data)
-        print(f"Data inserted...")
-
         return None
 
     def query_data(
