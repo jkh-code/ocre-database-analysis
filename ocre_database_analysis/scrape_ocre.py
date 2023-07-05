@@ -39,7 +39,18 @@ class ScrapeOcre:
         "reference": None,
         "num_objects_found": None,
     }
-    SCHEMA_RAW_URI_PAGES = {"coin_id": None, "page_html": None}
+    SCHEMA_RAW_URI_PAGES = {
+        "raw_uri_id": None,
+        "coin_id": None,
+        "has_examples": None,
+        "has_examples_pagination": None,
+        "examples_pagination_id": None,
+        "examples_total_pagination": None,
+        "examples_start_id": None,
+        "examples_end_id": None,
+        "examples_max_id": None,
+        "page_html": None,
+    }
 
     def __init__(
         self,
@@ -197,7 +208,9 @@ class ScrapeOcre:
                 )
 
     def scrape_canonical_uris(self) -> None:
-        """Process and save Browse results data."""
+        """Use processed `stg_coin_summaries` table data to scrape
+        canonical URI pages and store raw data in `raw_uri_pages`
+        table."""
 
         # Determine coin_id to start at
         print("Determining coin_id to start scraping URI pages at...")
@@ -227,13 +240,15 @@ class ScrapeOcre:
             )
         self.client.query_data(path_query, query_params)
 
-        # Scrape and store raw URI pages' HTML
+        # Scrape canonical URIs and store raw data in raw_uri_pages
         for row in self.client.cur:
             data_query = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
             ScrapeOcre.populate_stg_coin_summaries_schema(
                 data_query, row, all_fields=False
             )
-            print(f"Scraping Canonical URI page for coin #{data_query['coin_id']}")
+            self._print_scrape_update_periodically(
+                coin_id=data_query["coin_id"], interval=500
+            )
 
             # Get HTML using requests library
             response = requests.get(data_query["coin_canonical_uri"])
@@ -242,12 +257,70 @@ class ScrapeOcre:
             # Convert HTML into soup
             soup = BeautifulSoup(response.text, "lxml")
 
-            # Insert data into database
+            # Extract data from soup to later insert into database
             data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
-            ScrapeOcre.populate_raw_uri_pages_schema(
-                data_insert, [data_query["coin_id"], str(soup)]
-            )
+            data_insert.pop("raw_uri_id")
+            data_insert["coin_id"] = data_query["coin_id"]
+            data_insert["page_html"] = str(soup)
 
+            soup_examples = soup.find("div", class_="row", id="examples")
+            if soup_examples:
+                # If there is an examples section
+                data_insert["has_examples"] = True
+                soup_pagination = soup_examples.find_all("div", class_="col-md-12")
+                if len(soup_pagination) > 1:
+                    # If there is pagination in the examples section
+                    data_insert["has_examples_pagination"] = True
+                    soup_pagination_bar = soup_pagination[1]
+                    data_examples, data_pagination = soup_pagination_bar.find_all(
+                        "div", class_="col-md-6"
+                    )
+
+                    # Scraping examples IDs
+                    data_examples_ids = data_examples.text.strip().split()[1::2]
+                    (
+                        data_insert["examples_start_id"],
+                        data_insert["examples_end_id"],
+                        data_insert["examples_max_id"],
+                    ) = data_examples_ids
+
+                    # Scraping pagination data
+                    data_insert["examples_pagination_id"] = int(
+                        data_pagination.find(
+                            "button", class_="btn btn-default active"
+                        ).text.strip()
+                    )
+                    data_insert["examples_total_pagination"] = int(
+                        data_pagination.find(
+                            "a", class_="btn btn-default", title="Last"
+                        ).text.strip()
+                    )
+                else:
+                    # If there is not pagination in the examples section
+                    data_insert["has_examples_pagination"] = False
+
+                    data_insert["examples_start_id"] = 1
+                    num_coins_on_page = len(
+                        soup_examples.find_all("div", class_="g_doc col-md-4")
+                    )
+                    data_insert["examples_end_id"] = num_coins_on_page
+                    data_insert["examples_max_id"] = num_coins_on_page
+
+                    data_insert["examples_pagination_id"] = None
+                    data_insert["examples_total_pagination"] = None
+            else:
+                # If there is not an examples section
+                data_insert["has_examples"] = False
+                data_insert["has_examples_pagination"] = False
+
+                data_insert["examples_start_id"] = None
+                data_insert["examples_end_id"] = None
+                data_insert["examples_max_id"] = None
+
+                data_insert["examples_pagination_id"] = None
+                data_insert["examples_total_pagination"] = None
+
+            # Insert data into database
             path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
             self._insert_using_secondary_client(path_insert, [data_insert])
 
@@ -275,6 +348,21 @@ class ScrapeOcre:
         client_temp = Topsy(self.db_name, silent=True)
         client_temp.insert_data(path, data)
         client_temp.close_connection()
+        return None
+
+    def _print_scrape_update_periodically(self, coin_id: int, interval: int) -> None:
+        """Print to console scraping update message at an interval of
+        number of records."""
+        curr_row = self.client.cur.rownumber
+        total_rows = self.client.cur.rowcount
+
+        if curr_row == 1:
+            print(
+                f"Going into periodical updates, which are at every {interval} row..."
+            )
+
+        if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
+            print(f"Scraping coin #{coin_id} in row {curr_row} of {total_rows}...")
         return None
 
     @staticmethod
@@ -331,14 +419,22 @@ class ScrapeOcre:
         row_of_data, where the order of the items in row_of_data
         corresponds to the ordinal position of columns from
         raw_uri_pages and the timestamp field (`ts`) is omitted."""
-        data_dict["coin_id"] = row_of_data[0]
-        data_dict["page_html"] = row_of_data[1]
+        data_dict["raw_uri_id"] = row_of_data[0]
+        data_dict["coin_id"] = row_of_data[1]
+        data_dict["has_examples"] = row_of_data[2]
+        data_dict["has_examples_pagination"] = row_of_data[3]
+        data_dict["examples_pagination_id"] = row_of_data[4]
+        data_dict["examples_total_pagination"] = row_of_data[5]
+        data_dict["examples_start_id"] = row_of_data[6]
+        data_dict["examples_end_id"] = row_of_data[7]
+        data_dict["examples_max_id"] = row_of_data[8]
+        data_dict["page_html"] = row_of_data[9]
         return None
 
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=20, only_found=True)
-    # pipeline = ScrapeOcre("ocre", only_found=False)
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
+    pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -365,25 +461,25 @@ if __name__ == "__main__":
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    # num_retries = 0
-    # retry_limit = 50  # Arbitrary number
-    # while num_retries <= retry_limit:
-    #     try:
-    #         pipeline.scrape_canonical_uris()
-    #         break
-    #     except requests.exceptions.ConnectTimeout as err:
-    #         print("\nREQUESTS CONNECTION TIMEOUT:")
-    #         print(err)
-    #     except requests.exceptions.ConnectionError as err:
-    #         print("\nREQUESTS CONNECTION ERROR:")
-    #         print(err)
+    num_retries = 0
+    retry_limit = 50  # Arbitrary number
+    while num_retries <= retry_limit:
+        try:
+            pipeline.scrape_canonical_uris()
+            break
+        except requests.exceptions.ConnectTimeout as err:
+            print("\nREQUESTS CONNECTION TIMEOUT:")
+            print(err)
+        except requests.exceptions.ConnectionError as err:
+            print("\nREQUESTS CONNECTION ERROR:")
+            print(err)
 
-    #     num_retries += 1
-    #     print(f"Current retry count: {num_retries} / {retry_limit}")
-    #     if num_retries <= retry_limit:
-    #         print("Retrying scrape of Canonical URIs...")
-    #     else:
-    #         print("Ending scrape of Canonical URIs...")
+        num_retries += 1
+        print(f"Current retry count: {num_retries} / {retry_limit}")
+        if num_retries <= retry_limit:
+            print("Retrying scrape of Canonical URIs...")
+        else:
+            print("Ending scrape of Canonical URIs...")
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
