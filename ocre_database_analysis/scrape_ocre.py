@@ -327,6 +327,9 @@ class ScrapeOcre:
         print("Finished scraping canonical URIs...")
         return None
 
+    def scrape_uris_pagination(self):
+        pass
+
     def process_canonical_uris(self):
         pass
 
@@ -480,6 +483,10 @@ if __name__ == "__main__":
     #         print("Retrying scrape of Canonical URIs...")
     #     else:
     #         print("Ending scrape of Canonical URIs...")
+
+    # Scrape raw Canonical URI pages with pagination
+    # TODO: Add try-except block inside a while clause (like pipeline.scrape_canonical_uris method)
+    pipeline.scrape_uris_pagination()
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
