@@ -332,6 +332,13 @@ class ScrapeOcre:
     def scrape_uris_pagination(self) -> None:
         """Scrape URI pages with pagination in the examples section and
         store in raw_uri_pages table."""
+
+        # Query URI pages with pagination
+        print("Querying URI pages with pagination...")
+
+        # Scrape URI pages with pagination
+
+        print("Finished scraping URIs with pagination...")
         return None
 
     def process_canonical_uris(self):
@@ -440,7 +447,7 @@ class ScrapeOcre:
 
     @staticmethod
     def try_except_with_retry(
-        instance_method: Callable[[ScrapeOcre], None], retry_limit: int = 50
+        instance_method: Callable[[], None], retry_limit: int = 50
     ) -> None:
         """Run method from ScrapeOcre on an instance with try-except
         clauses and a retry limit."""
