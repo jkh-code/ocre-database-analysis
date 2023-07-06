@@ -332,6 +332,7 @@ class ScrapeOcre:
     def scrape_uris_pagination(self) -> None:
         """Scrape URI pages with pagination in the examples section and
         store in raw_uri_pages table."""
+        print("Scraping URI pages with pagination in examples section...")
 
         # Query URI pages with pagination
         print("Querying URI pages with pagination...")
@@ -342,6 +343,50 @@ class ScrapeOcre:
 
         # Scrape URI pages with pagination
         # TODO: develop section
+        for row in self.client.cur:
+            pagination_coin_d = {
+                "coin_id": row[0],
+                "last_page_scraped": row[1],
+                "total_pages": row[2],
+                "coin_canonical_uri": row[3],
+            }
+            self._print_scrape_update_periodically(
+                pagination_coin_d["coin_id"], interval=50
+            )
+
+            start_page_id = pagination_coin_d["last_page_scraped"] + 1
+            end_page_id = pagination_coin_d["total_pages"] + 1
+            for page_id in range(start_page_id, end_page_id, 1):
+
+                path_uri = pagination_coin_d["coin_canonical_uri"] + f"?page={page_id}"
+                response = requests.get(path_uri)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, "lxml")
+
+                data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+                data_insert.pop("raw_uri_id")
+                data_insert["coin_id"] = pagination_coin_d["coin_id"]
+                data_insert["page_html"] = str(soup)
+                data_insert["has_examples"] = True
+                data_insert["has_examples_pagination"] = True
+                data_insert["examples_pagination_id"] = page_id
+                data_insert["examples_total_pagination"] = pagination_coin_d[
+                    "total_pages"
+                ]
+
+                # TODO: scrape last 3 data fields
+
+                # >>> debug >>>
+                print(f"Coin #{pagination_coin_d['coin_id']} Page #{page_id}")
+                data_insert["page_html"] = path_uri
+                pprint(data_insert)
+                # <<< debug <<<
+
+            # >>> debug >>>
+            pprint(pagination_coin_d)
+            if self.client.cur.rownumber > 20:
+                break
+            # <<< debug <<<
 
         print("Finished scraping URIs with pagination...")
         return None
