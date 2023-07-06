@@ -335,8 +335,13 @@ class ScrapeOcre:
 
         # Query URI pages with pagination
         print("Querying URI pages with pagination...")
+        path_pagination_query = c.SQL_FOLDER / "query" / "raw_uri_pages_pagination.sql"
+        self.client.query_data(path_pagination_query)
+        num_coins_with_pagination = self.client.cur.rowcount
+        print(f"There are {num_coins_with_pagination} coins with pagination...")
 
         # Scrape URI pages with pagination
+        # TODO: develop section
 
         print("Finished scraping URIs with pagination...")
         return None
