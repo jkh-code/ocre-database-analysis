@@ -555,6 +555,7 @@ if __name__ == "__main__":
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
     # TODO: replace code below with try_except_with_retry staticmethod
+    ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
     # num_retries = 0
     # retry_limit = 50  # Arbitrary number
     # while num_retries <= retry_limit:
