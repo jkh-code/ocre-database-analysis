@@ -526,8 +526,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
-    pipeline = ScrapeOcre("ocre", only_found=False)
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
+    # pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -541,16 +541,16 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    # try:
-    #     pipeline.scrape_browse_results()
-    # except requests.exceptions.RequestException as err:
-    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-    #     print(err)
-    #     pipeline.disconnect_from_database()
-    #     sys.exit(1)
+    try:
+        pipeline.scrape_browse_results()
+    except requests.exceptions.RequestException as err:
+        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+        print(err)
+        pipeline.disconnect_from_database()
+        sys.exit(1)
 
     # Process Browse results pages
-    # pipeline.process_browse_results()
+    pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
