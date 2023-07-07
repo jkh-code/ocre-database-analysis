@@ -342,7 +342,6 @@ class ScrapeOcre:
         print(f"There are {num_coins_with_pagination} coins with pagination...")
 
         # Scrape URI pages with pagination
-        # TODO: develop section
         for row in self.client.cur:
             pagination_coin_d = {
                 "coin_id": row[0],
@@ -374,7 +373,18 @@ class ScrapeOcre:
                     "total_pages"
                 ]
 
-                # TODO: scrape last 3 data fields
+                data_examples_ids = (
+                    soup.find("div", class_="row", id="examples")
+                    .find_all("div", class_="col-md-12")[1]
+                    .find("div", class_="col-md-6")
+                    .text.strip()
+                    .split()[1::2]
+                )
+                (
+                    data_insert["examples_start_id"],
+                    data_insert["examples_end_id"],
+                    data_insert["examples_max_id"],
+                ) = data_examples_ids
 
                 # >>> debug >>>
                 print(f"Coin #{pagination_coin_d['coin_id']} Page #{page_id}")
@@ -382,8 +392,10 @@ class ScrapeOcre:
                 pprint(data_insert)
                 # <<< debug <<<
 
+                # Insert data into database
+                # TODO: develop section
+
             # >>> debug >>>
-            pprint(pagination_coin_d)
             if self.client.cur.rownumber > 20:
                 break
             # <<< debug <<<
