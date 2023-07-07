@@ -386,19 +386,16 @@ class ScrapeOcre:
                     data_insert["examples_max_id"],
                 ) = data_examples_ids
 
+                # TODO: Delete debugging section
                 # >>> debug >>>
-                print(f"Coin #{pagination_coin_d['coin_id']} Page #{page_id}")
-                data_insert["page_html"] = path_uri
-                pprint(data_insert)
+                # print(f"Coin #{pagination_coin_d['coin_id']} Page #{page_id}")
+                # data_insert["page_html"] = path_uri
+                # pprint(data_insert)
                 # <<< debug <<<
 
                 # Insert data into database
-                # TODO: develop section
-
-            # >>> debug >>>
-            if self.client.cur.rownumber > 20:
-                break
-            # <<< debug <<<
+                path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
+                self._insert_using_secondary_client(path_insert, [data_insert])
 
         print("Finished scraping URIs with pagination...")
         return None
