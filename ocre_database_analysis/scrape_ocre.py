@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
@@ -8,7 +10,7 @@ from pprint import pprint
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
-from typing import Union
+from typing import Union, Callable
 from pathlib import PosixPath, WindowsPath
 
 
@@ -327,6 +329,70 @@ class ScrapeOcre:
         print("Finished scraping canonical URIs...")
         return None
 
+    def scrape_uris_pagination(self) -> None:
+        """Scrape URI pages with pagination in the examples section and
+        store in raw_uri_pages table."""
+        print("Scraping URI pages with pagination in examples section...")
+
+        # Query URI pages with pagination
+        print("Querying URI pages with pagination...")
+        path_pagination_query = c.SQL_FOLDER / "query" / "raw_uri_pages_pagination.sql"
+        self.client.query_data(path_pagination_query)
+        num_coins_with_pagination = self.client.cur.rowcount
+        print(f"There are {num_coins_with_pagination} coins with pagination...")
+
+        # Scrape URI pages with pagination
+        for row in self.client.cur:
+            pagination_coin_d = {
+                "coin_id": row[0],
+                "last_page_scraped": row[1],
+                "total_pages": row[2],
+                "coin_canonical_uri": row[3],
+            }
+            self._print_scrape_update_periodically(
+                pagination_coin_d["coin_id"], interval=50
+            )
+
+            start_page_id = pagination_coin_d["last_page_scraped"] + 1
+            end_page_id = pagination_coin_d["total_pages"] + 1
+            for page_id in range(start_page_id, end_page_id, 1):
+
+                path_uri = pagination_coin_d["coin_canonical_uri"] + f"?page={page_id}"
+                response = requests.get(path_uri)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, "lxml")
+
+                data_insert = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+                data_insert.pop("raw_uri_id")
+                data_insert["coin_id"] = pagination_coin_d["coin_id"]
+                data_insert["page_html"] = str(soup)
+                data_insert["has_examples"] = True
+                data_insert["has_examples_pagination"] = True
+                data_insert["examples_pagination_id"] = page_id
+                data_insert["examples_total_pagination"] = pagination_coin_d[
+                    "total_pages"
+                ]
+
+                data_examples_ids = (
+                    soup.find("div", class_="row", id="examples")
+                    .find_all("div", class_="col-md-12")[1]
+                    .find("div", class_="col-md-6")
+                    .text.strip()
+                    .split()[1::2]
+                )
+                (
+                    data_insert["examples_start_id"],
+                    data_insert["examples_end_id"],
+                    data_insert["examples_max_id"],
+                ) = data_examples_ids
+
+                # Insert data into database
+                path_insert = c.SQL_FOLDER / "insert" / "raw_uri_pages.sql"
+                self._insert_using_secondary_client(path_insert, [data_insert])
+
+        print("Finished scraping URIs with pagination...")
+        return None
+
     def process_canonical_uris(self):
         pass
 
@@ -431,6 +497,33 @@ class ScrapeOcre:
         data_dict["page_html"] = row_of_data[9]
         return None
 
+    @staticmethod
+    def try_except_with_retry(
+        instance_method: Callable[[], None], retry_limit: int = 50
+    ) -> None:
+        """Run method from ScrapeOcre on an instance with try-except
+        clauses and a retry limit."""
+        num_retries = 0
+        while num_retries <= retry_limit:
+            try:
+                instance_method()
+                break
+            except requests.exceptions.ConnectTimeout as err:
+                print("\nREQUESTS CONNECTION TIMEOUT:")
+                print(err)
+            except requests.exceptions.ConnectionError as err:
+                print("\nREQUESTS CONNECTION ERROR:")
+                print(err)
+
+            num_retries += 1
+            print(f"Current retry count: {num_retries} / {retry_limit}")
+            if num_retries <= retry_limit:
+                print("Retrying scrape of Canonical URIs...")
+            else:
+                print("Ending scrape of Canonical URIs...")
+
+        return None
+
 
 if __name__ == "__main__":
     # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
@@ -461,25 +554,29 @@ if __name__ == "__main__":
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    num_retries = 0
-    retry_limit = 50  # Arbitrary number
-    while num_retries <= retry_limit:
-        try:
-            pipeline.scrape_canonical_uris()
-            break
-        except requests.exceptions.ConnectTimeout as err:
-            print("\nREQUESTS CONNECTION TIMEOUT:")
-            print(err)
-        except requests.exceptions.ConnectionError as err:
-            print("\nREQUESTS CONNECTION ERROR:")
-            print(err)
+    # TODO: replace code below with try_except_with_retry staticmethod
+    # num_retries = 0
+    # retry_limit = 50  # Arbitrary number
+    # while num_retries <= retry_limit:
+    #     try:
+    #         pipeline.scrape_canonical_uris()
+    #         break
+    #     except requests.exceptions.ConnectTimeout as err:
+    #         print("\nREQUESTS CONNECTION TIMEOUT:")
+    #         print(err)
+    #     except requests.exceptions.ConnectionError as err:
+    #         print("\nREQUESTS CONNECTION ERROR:")
+    #         print(err)
 
-        num_retries += 1
-        print(f"Current retry count: {num_retries} / {retry_limit}")
-        if num_retries <= retry_limit:
-            print("Retrying scrape of Canonical URIs...")
-        else:
-            print("Ending scrape of Canonical URIs...")
+    #     num_retries += 1
+    #     print(f"Current retry count: {num_retries} / {retry_limit}")
+    #     if num_retries <= retry_limit:
+    #         print("Retrying scrape of Canonical URIs...")
+    #     else:
+    #         print("Ending scrape of Canonical URIs...")
+
+    # Scrape raw Canonical URI pages with pagination
+    ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
