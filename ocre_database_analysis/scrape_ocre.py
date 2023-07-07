@@ -554,27 +554,7 @@ if __name__ == "__main__":
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    # TODO: replace code below with try_except_with_retry staticmethod
     ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
-    # num_retries = 0
-    # retry_limit = 50  # Arbitrary number
-    # while num_retries <= retry_limit:
-    #     try:
-    #         pipeline.scrape_canonical_uris()
-    #         break
-    #     except requests.exceptions.ConnectTimeout as err:
-    #         print("\nREQUESTS CONNECTION TIMEOUT:")
-    #         print(err)
-    #     except requests.exceptions.ConnectionError as err:
-    #         print("\nREQUESTS CONNECTION ERROR:")
-    #         print(err)
-
-    #     num_retries += 1
-    #     print(f"Current retry count: {num_retries} / {retry_limit}")
-    #     if num_retries <= retry_limit:
-    #         print("Retrying scrape of Canonical URIs...")
-    #     else:
-    #         print("Ending scrape of Canonical URIs...")
 
     # Scrape raw Canonical URI pages with pagination
     ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
