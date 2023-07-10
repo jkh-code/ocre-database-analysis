@@ -379,6 +379,7 @@ def get_uri_examples_fields(db_name: str) -> None:
     file_path = c.SQL_FOLDER / "query" / (query_file_name + ".sql")
     client.query_data(file_path)
 
+    unique_fields_d = dict()
     total_rows = client.cur.rowcount
     for row in client.cur:
         query_data = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
@@ -389,12 +390,54 @@ def get_uri_examples_fields(db_name: str) -> None:
         hf.print_update_periodically(curr_row, total_rows, 1_000)
 
         soup = BeautifulSoup(query_data["page_html"], "lxml")
-        soup_examples = soup.find("div", class_="row", id="examples")
-        soup_coins = soup_examples.find_all("div", class_="g_doc col-md-4")
-        print(soup_coins[0])
+        soup_examples_section = soup.find("div", class_="row", id="examples")
+        soup_examples = soup_examples_section.find_all("div", class_="g_doc col-md-4")
 
+        for soup_example in soup_examples:
+            soup_example_title = soup_example.find("span", class_="result_link")
+            example_title = soup_example_title.text.strip()
+
+            soup_fields = soup_example.find("dl", class_="dl-horizontal")
+            fields, values = soup_fields.find_all("dt"), soup_fields.find_all("dd")
+
+            example_field_count_d = dict()
+            for field, value in zip(fields, values):
+                f = field.text.strip().lower().replace(" ", "_")
+                v = value.text.strip()
+
+                if f not in example_field_count_d.keys():
+                    example_field_count_d[f] = 1
+                else:
+                    example_field_count_d[f] += 1
+                if f not in unique_fields_d.keys():
+                    unique_fields_d[f] = (v, example_title, query_data["path_uri"])
+                else:
+                    if example_field_count_d[f] > 1:
+                        key_idx = example_field_count_d[f]
+                        unique_fields_d[f + f"{key_idx}"] = (
+                            v,
+                            example_title,
+                            query_data["path_uri"],
+                        )
+
+        pprint(unique_fields_d)
+        # >>> debug >>>
         break
+        # <<< debug <<<
 
+    # Saving to file
+    print("Saving unique_fields to file...")
+    path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on example "{v[1]}" with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    client.close_connection()
     return None
 
 
