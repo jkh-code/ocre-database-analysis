@@ -379,10 +379,19 @@ def get_uri_examples_fields(db_name: str) -> None:
     file_path = c.SQL_FOLDER / "query" / (query_file_name + ".sql")
     client.query_data(file_path)
 
+    total_rows = client.cur.rowcount
     for row in client.cur:
         query_data = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
         ScrapeOcre.populate_raw_uri_pages_schema(query_data, row)
         query_data["path_uri"] = row[10]
+
+        curr_row = client.cur.rownumber
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(query_data["page_html"], "lxml")
+        soup_examples = soup.find("div", class_="row", id="examples")
+        soup_coins = soup_examples.find_all("div", class_="g_doc col-md-4")
+        print(soup_coins[0])
 
         break
 
