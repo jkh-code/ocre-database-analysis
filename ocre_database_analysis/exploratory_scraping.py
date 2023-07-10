@@ -7,6 +7,7 @@ from pprint import pprint
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 import ocre_database_analysis.utilities.helper_functions as hf
+from ocre_database_analysis.scrape_ocre import ScrapeOcre
 
 
 def connect_and_query(db_name: str, table_name: str) -> Topsy:
@@ -371,7 +372,21 @@ def get_uri_analysis_fields(db_name: str) -> None:
 
 def get_uri_examples_fields(db_name: str) -> None:
     """Scrape fields in the example section of URI pages."""
-    pass
+    print("Scraping data from URI examples sections...")
+    # Using specific raw_uri_pages query file name as table name
+    query_file_name = "raw_uri_pages_has_examples"
+    client = Topsy.try_postgres_connection(db_name)
+    file_path = c.SQL_FOLDER / "query" / (query_file_name + ".sql")
+    client.query_data(file_path)
+
+    for row in client.cur:
+        query_data = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+        ScrapeOcre.populate_raw_uri_pages_schema(query_data, row)
+        query_data["path_uri"] = row[10]
+
+        break
+
+    return None
 
 
 if __name__ == "__main__":
