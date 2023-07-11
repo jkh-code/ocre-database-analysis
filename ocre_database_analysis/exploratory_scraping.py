@@ -403,6 +403,7 @@ def get_uri_examples_fields(db_name: str) -> None:
             soup_fields = soup_example.find("dl", class_="dl-horizontal")
             fields, values = soup_fields.find_all("dt"), soup_fields.find_all("dd")
 
+            curr_collection = str()
             example_field_count_d = dict()
             for field, value in zip(fields, values):
                 # Loop through fields in an example
@@ -412,6 +413,7 @@ def get_uri_examples_fields(db_name: str) -> None:
 
                 # Track unique collection names
                 if f == "collection":
+                    curr_collection = v
                     if v not in unique_collections_d.keys():
                         unique_collections_d[v] = (
                             example_title,
@@ -440,8 +442,9 @@ def get_uri_examples_fields(db_name: str) -> None:
             has_iiif = True if soup_iiif else False
             # >>> debug >>>
             print(example_title)
+            print(curr_collection)
             print(f"Number of links: {len(links_list)}")
-            print(f"Has IIIF window: {has_iiif}")
+            print(f"Has IIIF window: {has_iiif}", end="\n\n")
             # <<< debug <<<
 
         # >>> debug >>>
