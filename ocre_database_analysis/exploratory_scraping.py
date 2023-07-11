@@ -403,16 +403,6 @@ def get_uri_examples_fields(db_name: str) -> None:
             soup_fields = soup_example.find("dl", class_="dl-horizontal")
             fields, values = soup_fields.find_all("dt"), soup_fields.find_all("dd")
 
-            soup_links = soup_example.find("div", class_="gi_c")
-            soup_iiif = soup_links.find("a", class_="iiif-image")
-            links_list = soup_links.find_all("a")
-            has_iiif = True if soup_iiif else False
-            # >>> debug >>>
-            print(example_title)
-            print(f"Number of links: {len(links_list)}")
-            print(f"Has IIIF window: {has_iiif}")
-            # <<< debug <<<
-
             example_field_count_d = dict()
             for field, value in zip(fields, values):
                 # Loop through fields in an example
@@ -443,6 +433,16 @@ def get_uri_examples_fields(db_name: str) -> None:
                             example_title,
                             query_data["path_uri"],
                         )
+
+            soup_links = soup_example.find("div", class_="gi_c")
+            soup_iiif = soup_links.find("a", class_="iiif-image")
+            links_list = soup_links.find_all("a")
+            has_iiif = True if soup_iiif else False
+            # >>> debug >>>
+            print(example_title)
+            print(f"Number of links: {len(links_list)}")
+            print(f"Has IIIF window: {has_iiif}")
+            # <<< debug <<<
 
         # >>> debug >>>
         break
