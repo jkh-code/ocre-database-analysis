@@ -404,10 +404,13 @@ def get_uri_examples_fields(db_name: str) -> None:
             fields, values = soup_fields.find_all("dt"), soup_fields.find_all("dd")
 
             soup_links = soup_example.find("div", class_="gi_c")
+            soup_iiif = soup_links.find("a", class_="iiif-image")
+            links_list = soup_links.find_all("a")
+            has_iiif = True if soup_iiif else False
             # >>> debug >>>
             print(example_title)
-            print(len(soup_links.contents))
-            print(soup_links.contents)
+            print(f"Number of links: {len(links_list)}")
+            print(f"Has IIIF window: {has_iiif}")
             # <<< debug <<<
 
             example_field_count_d = dict()
