@@ -432,8 +432,8 @@ def get_uri_examples_fields(db_name: str) -> None:
                         )
 
         # >>> debug >>>
-        if curr_row > 100:
-            break
+        # if curr_row > 100:
+        #     break
         # <<< debug <<<
 
     # Saving unique fields in the examples section

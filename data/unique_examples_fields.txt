@@ -2,5 +2,6 @@ Key "axis" first appears on example "Silver Quinarius of Augustus, Emerita, 25 B
 Key "collection" first appears on example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" with value "American Numismatic Society" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
 Key "diameter" first appears on example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" with value "14.0" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
 Key "findspot" first appears on example "845319: PAS Coin" with value "Albrighton" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Key "hoard" first appears on example "RIC 207, Augusto, 36001" with value "Llíria Hoard" at URI https://numismatics.org/ocre/id/ric.1(2).aug.207?page=2.
 Key "identifier" first appears on example "[Monnaie. Quinarius, Auguste, Emerita]" with value "IMP-4734" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
 Key "weight" first appears on example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" with value "1.66" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
