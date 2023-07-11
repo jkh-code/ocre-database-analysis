@@ -380,6 +380,7 @@ def get_uri_examples_fields(db_name: str) -> None:
     client.query_data(file_path)
 
     unique_fields_d = dict()
+    unique_collections_d = dict()
     total_rows = client.cur.rowcount
     for row in client.cur:
         query_data = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
@@ -403,8 +404,18 @@ def get_uri_examples_fields(db_name: str) -> None:
             example_field_count_d = dict()
             for field, value in zip(fields, values):
                 f = field.text.strip().lower().replace(" ", "_")
-                v = value.text.strip()
+                v = value.text.strip().replace("\n", " ")
+                v = re.sub(" +", " ", v)
 
+                # Track unique collection names
+                if f == "collection":
+                    if v not in unique_collections_d.keys():
+                        unique_collections_d[v] = (
+                            example_title,
+                            query_data["path_uri"],
+                        )
+
+                # Track unique fields in examples section
                 if f not in example_field_count_d.keys():
                     example_field_count_d[f] = 1
                 else:
@@ -420,13 +431,13 @@ def get_uri_examples_fields(db_name: str) -> None:
                             query_data["path_uri"],
                         )
 
-        pprint(unique_fields_d)
         # >>> debug >>>
-        break
+        if curr_row > 100:
+            break
         # <<< debug <<<
 
-    # Saving to file
-    print("Saving unique_fields to file...")
+    # Saving unique fields in the examples section
+    print("Saving unique fields to file...")
     path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
     sorted_keys = sorted(
         unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
@@ -435,6 +446,18 @@ def get_uri_examples_fields(db_name: str) -> None:
         for k, v in sorted_keys:
             f.write(
                 f'Key "{k}" first appears on example "{v[1]}" with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    # Saving unique collection names
+    print("Saving unique collections to file...")
+    path_save = c.DATA_FOLDER / "unique_example_collections.txt"
+    sorted_keys = sorted(
+        unique_collections_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Collection "{k}" first appears in example "{v[0]}" at URI {v[1]}.\n'
             )
 
     client.close_connection()
