@@ -1,0 +1,8 @@
+"American Numismatic Society_True_2" was first seen on example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Bibliothèque nationale de France_True_2" was first seen on example "[Monnaie. Quinarius, Auguste, Emerita]" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"British Museum_False_1" was first seen on example "British Museum: 2002,0102.4995" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Department of Numismatics and Monetary History at the University of Vienna_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Fitzwilliam Museum_False_2" was first seen on example "Fitzwilliam Museum - Object CM.BU.25-R" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Münzkabinett Berlin_False_2" was first seen on example "Augustus ca. 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Münzsammlung des Seminars für Alte Geschichte der Albert-Ludwigs-Universität_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Portable Antiquities Scheme_False_1" was first seen on example "845319: PAS Coin" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".

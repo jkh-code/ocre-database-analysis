@@ -381,6 +381,7 @@ def get_uri_examples_fields(db_name: str) -> None:
 
     unique_fields_d = dict()
     unique_collections_d = dict()
+    collections_iiif_d = dict()
     total_rows = client.cur.rowcount
     for row in client.cur:
         # Loop through raw_uri_pages rows that have examples
@@ -440,6 +441,17 @@ def get_uri_examples_fields(db_name: str) -> None:
             soup_iiif = soup_links.find("a", class_="iiif-image")
             links_list = soup_links.find_all("a")
             has_iiif = True if soup_iiif else False
+
+            num_links = len(links_list)
+            collection_iiif = (
+                curr_collection + "_" + str(has_iiif) + "_" + str(num_links)
+            )
+            if collection_iiif not in collections_iiif_d.keys():
+                collections_iiif_d[collection_iiif] = (
+                    example_title,
+                    query_data["path_uri"],
+                )
+
             # >>> debug >>>
             print(example_title)
             print(curr_collection)
@@ -478,6 +490,16 @@ def get_uri_examples_fields(db_name: str) -> None:
     #         f.write(
     #             f'Collection "{k}" first appears in example "{v[0]}" at URI {v[1]}.\n'
     #         )
+
+    # Saving collections-IIIF data
+    print("Saving collections-IIIF data to file...")
+    path_save = c.DATA_FOLDER / "collections IIIF use.txt"
+    sorted_keys = sorted(
+        collections_iiif_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(f'"{k}" was first seen on example "{v[0]}" at "{v[1]}".\n')
 
     client.close_connection()
     return None
