@@ -453,14 +453,14 @@ def get_uri_examples_fields(db_name: str) -> None:
                 )
 
             # >>> debug >>>
-            print(example_title)
-            print(curr_collection)
-            print(f"Number of links: {len(links_list)}")
-            print(f"Has IIIF window: {has_iiif}", end="\n\n")
+            # print(example_title)
+            # print(curr_collection)
+            # print(f"Number of links: {len(links_list)}")
+            # print(f"Has IIIF window: {has_iiif}", end="\n\n")
             # <<< debug <<<
 
         # >>> debug >>>
-        break
+        # break
         # if curr_row > 100:
         #     break
         # <<< debug <<<
