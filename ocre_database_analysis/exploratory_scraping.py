@@ -453,30 +453,28 @@ def get_uri_examples_fields(db_name: str) -> None:
                 )
 
     # Saving unique fields in the examples section
-    # TODO: uncomment out
-    # print("Saving unique fields to file...")
-    # path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
-    # sorted_keys = sorted(
-    #     unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
-    # )
-    # with open(path_save, "w", encoding="UTF-8") as f:
-    #     for k, v in sorted_keys:
-    #         f.write(
-    #             f'Key "{k}" first appears on example "{v[1]}" with value "{v[0]}" at URI {v[2]}.\n'
-    #         )
+    print("Saving unique fields to file...")
+    path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on example "{v[1]}" with value "{v[0]}" at URI {v[2]}.\n'
+            )
 
     # Saving unique collection names
-    # TODO: uncomment out
-    # print("Saving unique collections to file...")
-    # path_save = c.DATA_FOLDER / "unique_example_collections.txt"
-    # sorted_keys = sorted(
-    #     unique_collections_d.items(), reverse=False, key=lambda x: x[0].lower()
-    # )
-    # with open(path_save, "w", encoding="UTF-8") as f:
-    #     for k, v in sorted_keys:
-    #         f.write(
-    #             f'Collection "{k}" first appears in example "{v[0]}" at URI {v[1]}.\n'
-    #         )
+    print("Saving unique collections to file...")
+    path_save = c.DATA_FOLDER / "unique_example_collections.txt"
+    sorted_keys = sorted(
+        unique_collections_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Collection "{k}" first appears in example "{v[0]}" at URI {v[1]}.\n'
+            )
 
     # Saving collections-IIIF data
     print("Saving collections-IIIF data to file...")
