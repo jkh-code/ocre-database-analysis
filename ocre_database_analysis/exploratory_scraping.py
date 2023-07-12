@@ -452,19 +452,6 @@ def get_uri_examples_fields(db_name: str) -> None:
                     query_data["path_uri"],
                 )
 
-            # >>> debug >>>
-            # print(example_title)
-            # print(curr_collection)
-            # print(f"Number of links: {len(links_list)}")
-            # print(f"Has IIIF window: {has_iiif}", end="\n\n")
-            # <<< debug <<<
-
-        # >>> debug >>>
-        # break
-        # if curr_row > 100:
-        #     break
-        # <<< debug <<<
-
     # Saving unique fields in the examples section
     # TODO: uncomment out
     # print("Saving unique fields to file...")
