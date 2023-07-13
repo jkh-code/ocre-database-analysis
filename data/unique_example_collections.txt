@@ -1,0 +1,55 @@
+Collection "AFE RGK Coinfinds" first appears in example "AFE RGK Coin3227" at URI https://numismatics.org/ocre/id/ric.1(2).aug.25.
+Collection "American Numismatic Society" first appears in example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "Archäologisches Museum der Westfälischen Wilhelms-Universität" first appears in example "Augustus ca. 27-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.14.
+Collection "Bibliothèque nationale de France" first appears in example "[Monnaie. Quinarius, Auguste, Emerita]" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "British Museum" first appears in example "British Museum: 2002,0102.4995" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "Coin Cabinet of Greifswald University" first appears in example "Domitianus 82 n. Chr." at URI https://numismatics.org/ocre/id/ric.2_1(2).dom.108.
+Collection "Coin Cabinet of the Mainz City Archives" first appears in example "Münze, Sesterz, 112 - 117 n. Chr." at URI https://numismatics.org/ocre/id/ric.2.tr.748.
+Collection "Coin Cabinet, Herzog Anton Ulrich-Museum" first appears in example "Galba 68 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).gal.265.
+Collection "Coin Collection of Ruhr-Universität Bochum" first appears in example "Augustus ca. 19-18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.36A.
+Collection "Coin collection of the Archaeological Museum of the Martin-Luther-Universität Halle-Wittenberg" first appears in example "Augustus 19-18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.36A.
+Collection "Coin Collection of the Institute of Classical Archaeology at the University of Tübingen" first appears in example "Augustus 9-14 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.233.
+Collection "Coin Collection of the Professorship for Ancient History at the University of Eichstaett-Ingolstadt" first appears in example "Augustus 2 v. Chr. - 4 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.208.
+Collection "Coin collections of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU)" first appears in example "Colonia Caesaraugusta (?): Augustus ca. 19-18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.36A.
+Collection "Coin Collections of the Goethe University, Frankfurt am Main" first appears in example "Augustus 25-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.15A.
+Collection "Coin Finds of Priene" first appears in example "Augustus, um 25 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.486?page=2.
+Collection "Das Digitale Münzkabinett der Universität Trier" first appears in example "Augustus 10-14 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.159?page=2.
+Collection "Department of Numismatics and Monetary History at the University of Vienna" first appears in example "Augustus 25-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "Digitales Münzkabinett der Universität Heidelberg" first appears in example "Augustus 25-22 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.9B.
+Collection "Fitzwilliam Museum" first appears in example "Fitzwilliam Museum - Object CM.BU.25-R" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "FRC PL" first appears in example "FRC PL Coin4772" at URI https://numismatics.org/ocre/id/ric.1(2).ner.45.
+Collection "Freiberg University of Mining and Technology" first appears in example "Augustus 19-18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.36A.
+Collection "Furman University Ancient Coins" first appears in example "Coin, Rome. 2010-081-H" at URI https://numismatics.org/ocre/id/ric.1(2).ner.54.
+Collection "Gallo-Roman Museum Tongeren" first appears in example "Denarius van Augustus in zilver" at URI https://numismatics.org/ocre/id/ric.1(2).aug.77A.
+Collection "Harvard Art Museums" first appears in example "Denarius of Augustus, Emerita" at URI https://numismatics.org/ocre/id/ric.1(2).aug.10.
+Collection "J. Paul Getty Museum" first appears in example "Denarius" at URI https://numismatics.org/ocre/id/ric.1(2).aug.475.
+Collection "Martin von Wagner Museum der Universität Würzburg" first appears in example "Römische Kaiserzeit: Augustus 2 v.-4 n. Chr.?" at URI https://numismatics.org/ocre/id/ric.1(2).aug.207?page=5.
+Collection "Metropolitan Museum of Art" first appears in example "Silver denarius of Octavian (Augustus)" at URI https://numismatics.org/ocre/id/ric.1(2).aug.265A.
+Collection "Museu Arqueològic de Llíria" first appears in example "RIC 53, Nerón, 36005" at URI https://numismatics.org/ocre/id/ric.1(2).ner.53.
+Collection "Museu de Prehistòria de València" first appears in example "RIC 207, Augusto, 36001" at URI https://numismatics.org/ocre/id/ric.1(2).aug.207?page=2.
+Collection "Museum of Fine Arts, Boston" first appears in example "Denarius with head of Augustus, struck under P. Carisius" at URI https://numismatics.org/ocre/id/ric.1(2).aug.7A.
+Collection "Münzkabinett Berlin" first appears in example "Augustus ca. 25-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "Münzkabinett der Heinrich-Heine-Universität Düsseldorf" first appears in example "Augustus 19-15 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.86B.
+Collection "Münzkabinett der Universität Göttingen" first appears in example "Münze, Quinar, 25 - 23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.1B.
+Collection "Münzkabinett und Antikensammlung der Stadt Winterthur" first appears in example "Augustus 19–18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.33B.
+Collection "Münzkabinett Wien" first appears in example "Augustus ca. 19–18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.33B.
+Collection "Münzsammlung des Seminars für Alte Geschichte der Albert-Ludwigs-Universität" first appears in example "Augustus 25-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "Numismatic Collection of the Archaeological Seminar of the Philipps-Universität Marburg" first appears in example "Augustus ca. 10-14 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.159?page=1.
+Collection "Numismatic Collection of the Professorship for Ancient History at the University of Augsburg" first appears in example "Augustus 20/19 v.Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.75A.
+Collection "Numismatic Collection of the Professorship for Ancient History at the University of Passau" first appears in example "Augustus 18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.115.
+Collection "Oldenburg Municipal Museum" first appears in example "Münze, As, 64 - 68 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).ner.306?page=1.
+Collection "Open Context" first appears in example "DT# 5028" at URI https://numismatics.org/ocre/id/ric.7.lug.4.
+Collection "Portable Antiquities Scheme" first appears in example "845319: PAS Coin" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1A.
+Collection "State Coin Collection of Munich" first appears in example "Münze, Denar, 19 v. Chr. - 18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.33A.
+Collection "State Museum of Prehistory Halle" first appears in example "Münze, As, 10 - 14 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.159?page=1.
+Collection "Swiss National Museum" first appears in example "Swiss National Museum: LM.A-574" at URI https://numismatics.org/ocre/id/ric.1(2).aug.155?page=1.
+Collection "The Academic Coin Cabinet of the Archaeological Collection of Rostock University" first appears in example "Augustus 17 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.342.
+Collection "The Digital Coin Cabinet of Kiel University" first appears in example "Augustus ca. 19-18 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.42A.
+Collection "The Digital Coin Cabinet of Mainz University" first appears in example "Augustus 25-23 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.1B.
+Collection "The Digital Coin Cabinet of Mannheim University" first appears in example "Röm. Republik: C. Iulius Caesar (Octavianus) 29-27 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.265A.
+Collection "The Digital Coin Cabinet of the University of Cologne, Department of History, Ancient History, and Department of Classics, Byzantine Studies" first appears in example "Augustus 19 v. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).aug.64.
+Collection "The Digital Coin Cabinet of University of Konstanz" first appears in example "Caligula 40-41 n. Chr." at URI https://numismatics.org/ocre/id/ric.1(2).gai.54.
+Collection "The Egypt Centre, Swansea University" first appears in example "Roman Imperial Coin" at URI https://numismatics.org/ocre/id/ric.1(2).tib.33.
+Collection "The Fralin Museum of Art" first appears in example "Cistophorus of Augustus, Ephesus,  24-20 B.C. 2001.4.1." at URI https://numismatics.org/ocre/id/ric.1(2).aug.481.
+Collection "Thuringian Museum for Pre- and Early History" first appears in example "Fundmünze, Denar (barbarisiert), Denar (subaerat), Denar (ANT), -2-4[14]?" at URI https://numismatics.org/ocre/id/ric.1(2).aug.207?page=1.
+Collection "University of Graz" first appears in example "Augustus (27 v.-14 n. Chr.); Emerita; 25 v.Chr. - 23 v.Chr.; Quinar; RIC I² 1b" at URI https://numismatics.org/ocre/id/ric.1(2).aug.1B.

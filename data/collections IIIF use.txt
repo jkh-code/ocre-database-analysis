@@ -1,0 +1,65 @@
+"AFE RGK Coinfinds_False_0" was first seen on example "AFE RGK Coin3227" at "https://numismatics.org/ocre/id/ric.1(2).aug.25".
+"American Numismatic Society_False_0" was first seen on example "Silver Denarius of Augustus, Lugdunum, 15 BC - 13 BC. 1995.11.1604" at "https://numismatics.org/ocre/id/ric.1(2).aug.167A".
+"American Numismatic Society_True_1" was first seen on example "Bronze Dupondius of Tiberius, Commagene, AD 19 - AD 21. 1978.106.67" at "https://numismatics.org/ocre/id/ric.1(2).tib.90".
+"American Numismatic Society_True_2" was first seen on example "Silver Quinarius of Augustus, Emerita, 25 BC - 23 BC. 1969.222.1275" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Archäologisches Museum der Westfälischen Wilhelms-Universität_False_2" was first seen on example "Augustus ca. 27-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.14".
+"Bibliothèque nationale de France_True_2" was first seen on example "[Monnaie. Quinarius, Auguste, Emerita]" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"British Museum_False_0" was first seen on example "British Museum: 1973,0822.302" at "https://numismatics.org/ocre/id/ric.1(2).aug.9A".
+"British Museum_False_1" was first seen on example "British Museum: 2002,0102.4995" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"British Museum_True_1" was first seen on example "British Museum: 1902,0404.16" at "https://numismatics.org/ocre/id/ric.1(2).aug.12".
+"Coin Cabinet of Greifswald University_False_2" was first seen on example "Domitianus 82 n. Chr." at "https://numismatics.org/ocre/id/ric.2_1(2).dom.108".
+"Coin Cabinet of the Mainz City Archives_True_2" was first seen on example "Münze, Sesterz, 112 - 117 n. Chr." at "https://numismatics.org/ocre/id/ric.2.tr.748".
+"Coin Cabinet, Herzog Anton Ulrich-Museum_False_2" was first seen on example "Galba 68 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).gal.265".
+"Coin Collection of Ruhr-Universität Bochum_False_2" was first seen on example "Augustus ca. 19-18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.36A".
+"Coin collection of the Archaeological Museum of the Martin-Luther-Universität Halle-Wittenberg_False_2" was first seen on example "Augustus 19-18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.36A".
+"Coin Collection of the Institute of Classical Archaeology at the University of Tübingen_False_2" was first seen on example "Augustus 9-14 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.233".
+"Coin Collection of the Professorship for Ancient History at the University of Eichstaett-Ingolstadt_False_2" was first seen on example "Augustus 2 v. Chr. - 4 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.208".
+"Coin collections of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU)_False_2" was first seen on example "Colonia Caesaraugusta (?): Augustus ca. 19-18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.36A".
+"Coin Collections of the Goethe University, Frankfurt am Main_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.15A".
+"Coin Finds of Priene_False_2" was first seen on example "Augustus, um 25 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.486?page=2".
+"Das Digitale Münzkabinett der Universität Trier_False_2" was first seen on example "Augustus 10-14 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.159?page=2".
+"Department of Numismatics and Monetary History at the University of Vienna_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Digitales Münzkabinett der Universität Heidelberg_False_2" was first seen on example "Augustus 25-22 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.9B".
+"Fitzwilliam Museum_False_2" was first seen on example "Fitzwilliam Museum - Object CM.BU.25-R" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"FRC PL_False_0" was first seen on example "FRC PL Coin4772" at "https://numismatics.org/ocre/id/ric.1(2).ner.45".
+"Freiberg University of Mining and Technology_False_2" was first seen on example "Augustus 19-18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.36A".
+"Furman University Ancient Coins_False_2" was first seen on example "Coin, Rome. 2010-081-H" at "https://numismatics.org/ocre/id/ric.1(2).ner.54".
+"Gallo-Roman Museum Tongeren_False_1" was first seen on example "Denarius van Augustus in zilver" at "https://numismatics.org/ocre/id/ric.1(2).aug.77A".
+"Harvard Art Museums_True_1" was first seen on example "Denarius of Augustus, Emerita" at "https://numismatics.org/ocre/id/ric.1(2).aug.10".
+"J. Paul Getty Museum_False_0" was first seen on example "Sestertius of Commodus as Caesar" at "https://numismatics.org/ocre/id/ric.3.m_aur.1530".
+"J. Paul Getty Museum_True_2" was first seen on example "Denarius" at "https://numismatics.org/ocre/id/ric.1(2).aug.475".
+"Martin von Wagner Museum der Universität Würzburg_False_2" was first seen on example "Römische Kaiserzeit: Augustus 2 v.-4 n. Chr.?" at "https://numismatics.org/ocre/id/ric.1(2).aug.207?page=5".
+"Metropolitan Museum of Art_False_0" was first seen on example "Bronze as of Tiberius" at "https://numismatics.org/ocre/id/ric.1(2).tib.81?page=4".
+"Metropolitan Museum of Art_False_1" was first seen on example "Silver denarius of Octavian (Augustus)" at "https://numismatics.org/ocre/id/ric.1(2).aug.265A".
+"Metropolitan Museum of Art_False_2" was first seen on example "Silver denarius of Octavian" at "https://numismatics.org/ocre/id/ric.1(2).aug.267".
+"Museu Arqueològic de Llíria_False_2" was first seen on example "RIC 53, Nerón, 36005" at "https://numismatics.org/ocre/id/ric.1(2).ner.53".
+"Museu de Prehistòria de València_False_2" was first seen on example "RIC 207, Augusto, 36001" at "https://numismatics.org/ocre/id/ric.1(2).aug.207?page=2".
+"Museum of Fine Arts, Boston_False_2" was first seen on example "Denarius with head of Augustus, struck under P. Carisius" at "https://numismatics.org/ocre/id/ric.1(2).aug.7A".
+"Münzkabinett Berlin_False_2" was first seen on example "Augustus ca. 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Münzkabinett der Heinrich-Heine-Universität Düsseldorf_False_2" was first seen on example "Augustus 19-15 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.86B".
+"Münzkabinett der Universität Göttingen_True_2" was first seen on example "Münze, Quinar, 25 - 23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1B".
+"Münzkabinett und Antikensammlung der Stadt Winterthur_False_2" was first seen on example "Augustus 19–18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.33B".
+"Münzkabinett Wien_False_2" was first seen on example "Augustus ca. 19–18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.33B".
+"Münzsammlung des Seminars für Alte Geschichte der Albert-Ludwigs-Universität_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"Numismatic Collection of the Archaeological Seminar of the Philipps-Universität Marburg_False_2" was first seen on example "Augustus ca. 10-14 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.159?page=1".
+"Numismatic Collection of the Professorship for Ancient History at the University of Augsburg_False_2" was first seen on example "Augustus 20/19 v.Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.75A".
+"Numismatic Collection of the Professorship for Ancient History at the University of Passau_False_2" was first seen on example "Augustus 18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.115".
+"Oldenburg Municipal Museum_True_2" was first seen on example "Münze, As, 64 - 68 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).ner.306?page=1".
+"Open Context_False_0" was first seen on example "DT# 5028" at "https://numismatics.org/ocre/id/ric.7.lug.4".
+"Portable Antiquities Scheme_False_0" was first seen on example "343114: PAS Coin" at "https://numismatics.org/ocre/id/ric.1(2).aug.20".
+"Portable Antiquities Scheme_False_1" was first seen on example "845319: PAS Coin" at "https://numismatics.org/ocre/id/ric.1(2).aug.1A".
+"State Coin Collection of Munich_True_2" was first seen on example "Münze, Denar, 19 v. Chr. - 18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.33A".
+"State Museum of Prehistory Halle_True_2" was first seen on example "Münze, As, 10 - 14 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.159?page=1".
+"Swiss National Museum_False_2" was first seen on example "Swiss National Museum: LM.A-574" at "https://numismatics.org/ocre/id/ric.1(2).aug.155?page=1".
+"The Academic Coin Cabinet of the Archaeological Collection of Rostock University_False_2" was first seen on example "Augustus 17 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.342".
+"The Digital Coin Cabinet of Kiel University_False_2" was first seen on example "Augustus ca. 19-18 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.42A".
+"The Digital Coin Cabinet of Mainz University_False_2" was first seen on example "Augustus 25-23 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.1B".
+"The Digital Coin Cabinet of Mannheim University_False_2" was first seen on example "Röm. Republik: C. Iulius Caesar (Octavianus) 29-27 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.265A".
+"The Digital Coin Cabinet of the University of Cologne, Department of History, Ancient History, and Department of Classics, Byzantine Studies_False_2" was first seen on example "Augustus 19 v. Chr." at "https://numismatics.org/ocre/id/ric.1(2).aug.64".
+"The Digital Coin Cabinet of University of Konstanz_False_2" was first seen on example "Caligula 40-41 n. Chr." at "https://numismatics.org/ocre/id/ric.1(2).gai.54".
+"The Egypt Centre, Swansea University_False_2" was first seen on example "Roman Imperial Coin" at "https://numismatics.org/ocre/id/ric.1(2).tib.33".
+"The Fralin Museum of Art_True_2" was first seen on example "Cistophorus of Augustus, Ephesus,  24-20 B.C. 2001.4.1." at "https://numismatics.org/ocre/id/ric.1(2).aug.481".
+"Thuringian Museum for Pre- and Early History_True_2" was first seen on example "Fundmünze, Denar (barbarisiert), Denar (subaerat), Denar (ANT), -2-4[14]?" at "https://numismatics.org/ocre/id/ric.1(2).aug.207?page=1".
+"University of Graz_False_0" was first seen on example "Hadrianus (117-138); Rom; 134 - 138; Denar; RIC 247 (a)" at "https://numismatics.org/ocre/id/ric.2_3(2).hdn.1405-1411".
+"University of Graz_True_1" was first seen on example "Diocletianus (284-305); Londinium; 303; Follis; RIC 26a" at "https://numismatics.org/ocre/id/ric.9.thes.26C".
+"University of Graz_True_2" was first seen on example "Augustus (27 v.-14 n. Chr.); Emerita; 25 v.Chr. - 23 v.Chr.; Quinar; RIC I² 1b" at "https://numismatics.org/ocre/id/ric.1(2).aug.1B".

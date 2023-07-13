@@ -7,6 +7,7 @@ from pprint import pprint
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 import ocre_database_analysis.utilities.helper_functions as hf
+from ocre_database_analysis.scrape_ocre import ScrapeOcre
 
 
 def connect_and_query(db_name: str, table_name: str) -> Topsy:
@@ -371,7 +372,122 @@ def get_uri_analysis_fields(db_name: str) -> None:
 
 def get_uri_examples_fields(db_name: str) -> None:
     """Scrape fields in the example section of URI pages."""
-    pass
+    print("Scraping data from URI examples sections...")
+    # Using specific raw_uri_pages query file name as table name
+    query_file_name = "raw_uri_pages_has_examples"
+    client = Topsy.try_postgres_connection(db_name)
+    file_path = c.SQL_FOLDER / "query" / (query_file_name + ".sql")
+    client.query_data(file_path)
+
+    unique_fields_d = dict()
+    unique_collections_d = dict()
+    collections_iiif_d = dict()
+    total_rows = client.cur.rowcount
+    for row in client.cur:
+        # Loop through raw_uri_pages rows that have examples
+        query_data = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+        ScrapeOcre.populate_raw_uri_pages_schema(query_data, row)
+        query_data["path_uri"] = row[10]
+
+        curr_row = client.cur.rownumber
+        hf.print_update_periodically(curr_row, total_rows, 1_000)
+
+        soup = BeautifulSoup(query_data["page_html"], "lxml")
+        soup_examples_section = soup.find("div", class_="row", id="examples")
+        soup_examples = soup_examples_section.find_all("div", class_="g_doc col-md-4")
+
+        for soup_example in soup_examples:
+            # Loop through examples in the examples section
+            soup_example_title = soup_example.find("span", class_="result_link")
+            example_title = soup_example_title.text.strip()
+
+            soup_fields = soup_example.find("dl", class_="dl-horizontal")
+            fields, values = soup_fields.find_all("dt"), soup_fields.find_all("dd")
+
+            curr_collection = str()
+            example_field_count_d = dict()
+            for field, value in zip(fields, values):
+                # Loop through fields in an example
+                f = field.text.strip().lower().replace(" ", "_")
+                v = value.text.strip().replace("\n", " ")
+                v = re.sub(" +", " ", v)
+
+                # Track unique collection names
+                if f == "collection":
+                    curr_collection = v
+                    if v not in unique_collections_d.keys():
+                        unique_collections_d[v] = (
+                            example_title,
+                            query_data["path_uri"],
+                        )
+
+                # Track unique fields in examples section
+                if f not in example_field_count_d.keys():
+                    example_field_count_d[f] = 1
+                else:
+                    example_field_count_d[f] += 1
+                if f not in unique_fields_d.keys():
+                    unique_fields_d[f] = (v, example_title, query_data["path_uri"])
+                else:
+                    if example_field_count_d[f] > 1:
+                        key_idx = example_field_count_d[f]
+                        unique_fields_d[f + f"{key_idx}"] = (
+                            v,
+                            example_title,
+                            query_data["path_uri"],
+                        )
+
+            soup_links = soup_example.find("div", class_="gi_c")
+            soup_iiif = soup_links.find("a", class_="iiif-image")
+            links_list = soup_links.find_all("a")
+            has_iiif = True if soup_iiif else False
+
+            num_links = len(links_list)
+            collection_iiif = (
+                curr_collection + "_" + str(has_iiif) + "_" + str(num_links)
+            )
+            if collection_iiif not in collections_iiif_d.keys():
+                collections_iiif_d[collection_iiif] = (
+                    example_title,
+                    query_data["path_uri"],
+                )
+
+    # Saving unique fields in the examples section
+    print("Saving unique fields to file...")
+    path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
+    sorted_keys = sorted(
+        unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Key "{k}" first appears on example "{v[1]}" with value "{v[0]}" at URI {v[2]}.\n'
+            )
+
+    # Saving unique collection names
+    print("Saving unique collections to file...")
+    path_save = c.DATA_FOLDER / "unique_example_collections.txt"
+    sorted_keys = sorted(
+        unique_collections_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(
+                f'Collection "{k}" first appears in example "{v[0]}" at URI {v[1]}.\n'
+            )
+
+    # Saving collections-IIIF data
+    print("Saving collections-IIIF data to file...")
+    path_save = c.DATA_FOLDER / "collections IIIF use.txt"
+    sorted_keys = sorted(
+        collections_iiif_d.items(), reverse=False, key=lambda x: x[0].lower()
+    )
+    with open(path_save, "w", encoding="UTF-8") as f:
+        for k, v in sorted_keys:
+            f.write(f'"{k}" was first seen on example "{v[0]}" at "{v[1]}".\n')
+
+    client.close_connection()
+    return None
 
 
 if __name__ == "__main__":
