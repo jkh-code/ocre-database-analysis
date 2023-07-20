@@ -60,7 +60,7 @@ def get_browse_fields(db_name: str) -> None:
     print(
         f"\nFound the following unique fields on the following pages: {sorted_unique_fields}"
     )
-    path_save_results = c.DATA_FOLDER / "unique_browse_fields.csv"
+    path_save_results = c.EXPLORATORY_FOLDER / "unique_browse_fields.csv"
     print(f"Writing results to file {path_save_results}")
     with open(path_save_results, "w", encoding="UTF-8") as f:
         f.write("item, first_page_seen, api_start_value\n")
@@ -101,7 +101,7 @@ def get_unique_object_counts(db_name: str) -> None:
         unique_text_d.items(), reverse=False, key=lambda x: x[0].lower()
     )
     print(f"\nFound {len(sorted_unique_fields)} unique object count text...")
-    path_save_results = c.DATA_FOLDER / "unique_object_count_text.txt"
+    path_save_results = c.EXPLORATORY_FOLDER / "unique_object_count_text.txt"
     print(f"Writing results to file {path_save_results}")
     with open(path_save_results, "w", encoding="UTF-8") as f:
         for text, page_num in sorted_unique_fields:
@@ -167,7 +167,7 @@ def get_uri_header_sections(db_name: str) -> None:
         unique_sections_d,
     )
     for d, f in zip(data_structures, files):
-        path_ = c.DATA_FOLDER / f
+        path_ = c.EXPLORATORY_FOLDER / f
         sorted_ = sorted(d.items(), reverse=False, key=lambda x: str(x[0]).lower())
         with open(path_, "w", encoding="UTF-8") as f:
             for k, v in sorted_:
@@ -296,7 +296,7 @@ def get_uri_typological_fields(db_name: str) -> None:
 
     # Saving to file
     print("Saving unique fields to file...")
-    path_save = c.DATA_FOLDER / "unique_typological_fields.txt"
+    path_save = c.EXPLORATORY_FOLDER / "unique_typological_fields.txt"
     sorted_keys = sorted(
         unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
     )
@@ -356,7 +356,7 @@ def get_uri_analysis_fields(db_name: str) -> None:
 
     # Saving to file
     print("Saving unique fields to file...")
-    path_save = c.DATA_FOLDER / "unique_analysis_fields.txt"
+    path_save = c.EXPLORATORY_FOLDER / "unique_analysis_fields.txt"
     sorted_keys = sorted(
         unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
     )
@@ -454,7 +454,7 @@ def get_uri_examples_fields(db_name: str) -> None:
 
     # Saving unique fields in the examples section
     print("Saving unique fields to file...")
-    path_save = c.DATA_FOLDER / "unique_examples_fields.txt"
+    path_save = c.EXPLORATORY_FOLDER / "unique_examples_fields.txt"
     sorted_keys = sorted(
         unique_fields_d.items(), reverse=False, key=lambda x: str(x[0]).lower()
     )
@@ -466,7 +466,7 @@ def get_uri_examples_fields(db_name: str) -> None:
 
     # Saving unique collection names
     print("Saving unique collections to file...")
-    path_save = c.DATA_FOLDER / "unique_example_collections.txt"
+    path_save = c.EXPLORATORY_FOLDER / "unique_example_collections.txt"
     sorted_keys = sorted(
         unique_collections_d.items(), reverse=False, key=lambda x: x[0].lower()
     )
@@ -478,7 +478,7 @@ def get_uri_examples_fields(db_name: str) -> None:
 
     # Saving collections-IIIF data
     print("Saving collections-IIIF data to file...")
-    path_save = c.DATA_FOLDER / "collections IIIF use.txt"
+    path_save = c.EXPLORATORY_FOLDER / "collections IIIF use.txt"
     sorted_keys = sorted(
         collections_iiif_d.items(), reverse=False, key=lambda x: x[0].lower()
     )
