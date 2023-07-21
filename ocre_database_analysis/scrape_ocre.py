@@ -394,7 +394,9 @@ class ScrapeOcre:
         return None
 
     def process_canonical_uris(self):
-        """"""
+        """Process raw_uri_pages records to populate records in
+        stg_coins, stg_examples, stg_examples_images, and stg_uri_pages
+        tables."""
         pass
 
     def _convert_dt(self, tag: str) -> str:
