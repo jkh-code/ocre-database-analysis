@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS stg_coins;
-CREATE TABLE stg_coins (
+DROP TABLE IF EXISTS stg_web_scrape.stg_coins;
+CREATE TABLE stg_web_scrape.stg_coins (
     coin_id INTEGER NOT NULL,
     has_typological BOOLEAN NOT NULL,
     has_examples BOOLEAN NOT NULL,
