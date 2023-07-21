@@ -393,11 +393,23 @@ class ScrapeOcre:
         print("Finished scraping URIs with pagination...")
         return None
 
-    def process_canonical_uris(self):
+    def process_canonical_uris(self) -> None:
         """Process raw_uri_pages records to populate records in
         stg_coins, stg_examples, stg_examples_images, and stg_uri_pages
         tables."""
-        pass
+
+        print("Start processing canonical URI data...")
+        print("Querying raw_uri_pages table...")
+        path_query = c.SQL_FOLDER / "query" / "raw_uri_pages.sql"
+        self.client.query_data(path_query)
+
+        # >>> DEBUG >>>
+        num_rows = self.client.cur.rowcount
+        print(f"Number of pages: {num_rows}")
+        # <<< DEBUG <<<
+
+        print("Finished processing canonical URI data...")
+        return None
 
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
