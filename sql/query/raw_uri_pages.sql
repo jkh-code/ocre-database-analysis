@@ -10,4 +10,4 @@ SELECT
     , examples_max_id
     , page_html
 FROM raw_web_scrape.raw_uri_pages
-ORDER BY coin_id ASC;
+ORDER BY coin_id ASC, examples_pagination_id ASC;
