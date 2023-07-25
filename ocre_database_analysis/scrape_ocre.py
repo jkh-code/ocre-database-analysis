@@ -403,10 +403,20 @@ class ScrapeOcre:
         path_query = c.SQL_FOLDER / "query" / "raw_uri_pages.sql"
         self.client.query_data(path_query)
 
-        # >>> DEBUG >>>
         num_rows = self.client.cur.rowcount
-        print(f"Number of pages: {num_rows}")
-        # <<< DEBUG <<<
+        print(f"Processing {num_rows:6,d} rows of data...")
+
+        for row in self.client.cur:
+            data_query = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+            ScrapeOcre.populate_raw_uri_pages_schema(data_query, row)
+            # >>> DEBUG >>>
+            data_query.pop("page_html")
+            pprint(data_query)
+            # <<< DEBUG <<<
+            self._print_scrape_update_periodically(
+                coin_id=data_query["coin_id"], interval=500
+            )
+            break
 
         print("Finished processing canonical URI data...")
         return None
