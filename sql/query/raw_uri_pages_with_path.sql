@@ -16,4 +16,5 @@ SELECT
 FROM
     raw_web_scrape.raw_uri_pages AS r
     LEFT JOIN stg_web_scrape.stg_coin_summaries AS s
+    ON r.coin_id = s.coin_id
 ORDER BY r.coin_id ASC, r.examples_pagination_id ASC;

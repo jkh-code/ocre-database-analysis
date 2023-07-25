@@ -465,7 +465,7 @@ class ScrapeOcre:
 
         print("Start processing canonical URI data...")
         print("Querying raw_uri_pages table...")
-        path_query = c.SQL_FOLDER / "query" / "raw_uri_pages.sql"
+        path_query = c.SQL_FOLDER / "query" / "raw_uri_pages_with_path.sql"
         self.client.query_data(path_query)
 
         num_rows = self.client.cur.rowcount
@@ -474,6 +474,7 @@ class ScrapeOcre:
         for row in self.client.cur:
             data_query = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
             ScrapeOcre.populate_raw_uri_pages_schema(data_query, row)
+            data_query["path_uri"] = row[-1]
             # >>> DEBUG >>>
             data_query.pop("page_html")
             pprint(data_query)
