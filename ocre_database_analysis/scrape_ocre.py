@@ -507,16 +507,11 @@ class ScrapeOcre:
             data_pages["examples_max_id"] = data_query["examples_max_id"]
             data_pages["uri_link"] = data_query["path_uri"]
 
-            # pprint(data_pages)
             path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
-            self._insert_using_secondary_client(path_insert_pages, [data_pages])
+            # TODO: Uncomment line
+            # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
-            # >>> DEBUG >>>
-            # print("STG_URI_PAGES DATA:")
-            # pprint(data_pages)
-            # <<< DEBUG <<<
-
-            # break
+            break
 
         print("Finished processing canonical URI data...")
         return None
