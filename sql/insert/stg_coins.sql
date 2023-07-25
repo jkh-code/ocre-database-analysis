@@ -33,7 +33,7 @@ INSERT INTO stg_web_scrape.stg_coins (
     reverse_type,
     average_axis,
     average_diameter,
-    average_weight,
+    average_weight
 )
 VALUES (
     %(coin_id)s,
@@ -70,5 +70,5 @@ VALUES (
     %(reverse_type)s,
     %(average_axis)s,
     %(average_diameter)s,
-    %(average_weight)s,
+    %(average_weight)s
 );
