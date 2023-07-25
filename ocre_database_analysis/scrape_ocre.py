@@ -475,14 +475,48 @@ class ScrapeOcre:
             data_query = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
             ScrapeOcre.populate_raw_uri_pages_schema(data_query, row)
             data_query["path_uri"] = row[-1]
-            # >>> DEBUG >>>
-            data_query.pop("page_html")
-            pprint(data_query)
-            # <<< DEBUG <<<
             self._print_scrape_update_periodically(
-                coin_id=data_query["coin_id"], interval=500
+                coin_id=data_query["coin_id"], interval=1_000
             )
-            break
+
+            # >>> DEBUG >>>
+            # data_query.pop("page_html")
+            # print("RAW_URI_PAGES DATA:")
+            # pprint(data_query)
+            # <<< DEBUG <<<
+
+            # Populate stg_coins
+            data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
+
+            # Populate stg_examples
+            data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
+
+            # Populate stg_examples_images
+            data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+
+            # Populate stg_uri_pages
+            data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
+            data_pages["uri_page_id"] = data_query["raw_uri_id"]
+            data_pages["coin_id"] = data_query["coin_id"]
+            data_pages["examples_pagination_id"] = data_query["examples_pagination_id"]
+            data_pages["examples_total_pagination"] = data_query[
+                "examples_total_pagination"
+            ]
+            data_pages["examples_start_id"] = data_query["examples_start_id"]
+            data_pages["examples_end_id"] = data_query["examples_end_id"]
+            data_pages["examples_max_id"] = data_query["examples_max_id"]
+            data_pages["uri_link"] = data_query["path_uri"]
+
+            # pprint(data_pages)
+            path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
+            self._insert_using_secondary_client(path_insert_pages, [data_pages])
+
+            # >>> DEBUG >>>
+            # print("STG_URI_PAGES DATA:")
+            # pprint(data_pages)
+            # <<< DEBUG <<<
+
+            # break
 
         print("Finished processing canonical URI data...")
         return None
