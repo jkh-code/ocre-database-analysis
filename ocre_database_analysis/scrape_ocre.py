@@ -4,6 +4,7 @@ import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
 import requests
+import re
 
 from pprint import pprint
 
@@ -502,6 +503,73 @@ class ScrapeOcre:
             if soup_typological:
                 # There is a typological section
                 data_coins["has_typological"] = True
+
+                raw_typo_data = soup_typological.ul
+                raw_typo_data = [item for item in raw_typo_data if item.name]
+                for item in raw_typo_data:
+                    all_item_tags = [i for i in item if i.name]
+
+                    if all_item_tags[0].name == "b":
+                        result_split = item.text.strip().split(": ", maxsplit=1)
+                        if len(result_split) == 1:
+                            field = result_split[0].replace(":", "")
+                            value = None
+                        else:
+                            field, value = result_split
+                            value = re.sub(" +", " ", value.replace("\n", " "))
+                        field = field.lower().replace(" ", "_")
+
+                        # >>> DEBUG >>>
+                        print(f"{field}\t\t{value}")
+                        # <<< DEBUG <<<
+
+                        # TODO: Modify field name and save to dict
+                    elif all_item_tags[0].name == "h4":
+                        section_name = (
+                            all_item_tags[0].text.strip().lower().replace(" ", "_")
+                        )
+                        for li in item.find_all("li"):
+                            if li.contents[0].name == "b":
+                                field = (
+                                    li.contents[0]
+                                    .text.strip()
+                                    .lower()
+                                    .replace(" ", "_")
+                                    .replace(":", "")
+                                )
+                                field = (
+                                    section_name + "_" + field
+                                    if section_name in ("obverse", "reverse")
+                                    else field
+                                )
+
+                                if "symbol" in field:
+                                    value = re.sub(
+                                        " +",
+                                        " ",
+                                        li.text.strip()
+                                        .replace(" - ", " ")
+                                        .replace(",", "", 1),
+                                    )
+                                    value = value.replace("Symbol: ", "")
+                                else:
+                                    value = (
+                                        re.sub(
+                                            " +",
+                                            " ",
+                                            li.contents[1]
+                                            .text.strip()
+                                            .replace("\n", " "),
+                                        )
+                                        if len(li.contents) > 1
+                                        else None
+                                    )
+
+                                # >>> DEBUG >>>
+                                print(f"{field}\t\t{value}")
+                                # <<< DEBUG <<<
+
+                                # TODO: Modify field name and save to dict
             else:
                 # There is not a typological section
                 data_coins["has_typological"] = False
@@ -534,10 +602,10 @@ class ScrapeOcre:
                         )
             else:
                 # There is not an analysis section
-                # By default, average_axis, average_diameter, and
-                # average_weight are `None`, therefore, they are not
-                # updated for this clause.
                 data_coins["has_analysis"] = False
+                data_coins["average_axis"] = None
+                data_coins["average_diameter"] = None
+                data_coins["average_weight"] = None
 
             # >>> DEBUG >>>
             # TODO: delme
