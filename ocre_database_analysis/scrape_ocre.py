@@ -480,13 +480,40 @@ class ScrapeOcre:
             )
 
             # >>> DEBUG >>>
-            # data_query.pop("page_html")
+            # delme_data_query = data_query.copy()
+            # delme_data_query.pop("page_html")
             # print("RAW_URI_PAGES DATA:")
-            # pprint(data_query)
+            # pprint(delme_data_query)
             # <<< DEBUG <<<
 
             # Populate stg_coins
             data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
+            data_coins["coin_id"] = data_query["coin_id"]
+            data_coins["has_examples"] = data_query["has_examples"]
+            data_coins["has_examples_pagination"] = data_query[
+                "has_examples_pagination"
+            ]
+
+            soup = BeautifulSoup(data_query["page_html"], "lxml")
+
+            ## Populate Typological data
+            soup_typological = soup.find("div", class_="metadata_section")
+            # TODO: Finish soup_typological logic
+            if soup_typological:
+                # there is a typological section
+                data_coins["has_typological"] = True
+            else:
+                # there is not a typological section
+                data_coins["has_typological"] = False
+
+            ## Populate Analysis data
+
+            # >>> DEBUG >>>
+            # TODO: delme
+            pprint(data_coins)
+            # <<< DEBUG <<<
+
+            ## Insert stg_coins data
 
             # Populate stg_examples
             data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
@@ -511,7 +538,10 @@ class ScrapeOcre:
             # TODO: Uncomment line
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
+            # >>> DEBUG >>>
+            # TODO: delme
             break
+            # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
         return None
