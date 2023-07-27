@@ -21,6 +21,55 @@ from pathlib import PosixPath, WindowsPath
 class ScrapeOcre:
     """Scrape OCRE website and process HTML."""
 
+    TYPOLOGICAL_FIELD_CONVERSION = {
+        "date": "coin_date_range",
+        "date_range": "coin_date_range",
+        "denomination": "denomination",
+        "manufacture": "manufacture",
+        "material": "material",
+        "object_type": "object_type",
+        "authority_authority": "authority_name",
+        "authority_issuer": "issuer_name",
+        "authority_stated_authority": "stated_authority_name",
+        "date_on_object_date": "coin_date_range",
+        "geographic_mint": "mint",
+        "geographic_region": "region",
+        "obverse_controlmark": "obverse_controlmark",
+        "obverse_deity": "obverse_deity",
+        "obverse_legend": "obverse_legend",
+        "obverse_portrait": "obverse_portrait",
+        "obverse_state": "obverse_state",
+        "obverse_type": "obverse_type",
+        "reverse_control_marks": "reverse_control_marks",
+        "reverse_deity": "reverse_deity",
+        "reverse_dynasty": "reverse_dynasty",
+        "reverse_legend": "reverse_legend",
+        "reverse_mintmark": "reverse_mintmark",
+        "reverse_monogram": "reverse_monogram",
+        "reverse_officinamark": "reverse_officinamark",
+        "reverse_portrait": "reverse_portrait",
+        "reverse_state": "reverse_state",
+        "reverse_symbol": "reverse_symbol",
+        "reverse_type": "reverse_type",
+    }
+    TYPOLOGICAL_ARRAY_FIELDS = [
+        "denomination",
+        "material",
+        "object_type",
+        "authority_name",
+        "issuer_name",
+        "mint",
+        "region",
+        "obverse_deity",
+        "obverse_portrait",
+        "obverse_state",
+        "reverse_deity",
+        "reverse_officinamark",
+        "reverse_portrait",
+        "reverse_state",
+        "reverse_symbol",
+    ]
+
     # Schemas without `ts` field
     SCHEMA_RAW_BROWSE_PAGES = {
         "page_id": None,
@@ -519,11 +568,12 @@ class ScrapeOcre:
                             value = re.sub(" +", " ", value.replace("\n", " "))
                         field = field.lower().replace(" ", "_")
 
-                        # >>> DEBUG >>>
-                        print(f"{field}\t\t{value}")
-                        # <<< DEBUG <<<
-
                         # TODO: Modify field name and save to dict
+                        self._add_field_value_to_dict(data_coins, field, value)
+
+                        # >>> DEBUG >>>
+                        # print(f"{field}\t\t{value}")
+                        # <<< DEBUG <<<
                     elif all_item_tags[0].name == "h4":
                         section_name = (
                             all_item_tags[0].text.strip().lower().replace(" ", "_")
@@ -537,11 +587,7 @@ class ScrapeOcre:
                                     .replace(" ", "_")
                                     .replace(":", "")
                                 )
-                                field = (
-                                    section_name + "_" + field
-                                    if section_name in ("obverse", "reverse")
-                                    else field
-                                )
+                                field = section_name + "_" + field
 
                                 if "symbol" in field:
                                     value = re.sub(
@@ -565,13 +611,16 @@ class ScrapeOcre:
                                         else None
                                     )
 
-                                # >>> DEBUG >>>
-                                print(f"{field}\t\t{value}")
-                                # <<< DEBUG <<<
-
                                 # TODO: Modify field name and save to dict
+                                self._add_field_value_to_dict(data_coins, field, value)
+
+                                # >>> DEBUG >>>
+                                # print(f"{field}\t\t{value}")
+                                # <<< DEBUG <<<
             else:
                 # There is not a typological section
+                # Remaining fields are None by default, therefore, they
+                # do not need to be updated in this clause.
                 data_coins["has_typological"] = False
 
             ## Populate Analysis data
@@ -602,14 +651,15 @@ class ScrapeOcre:
                         )
             else:
                 # There is not an analysis section
+                # Remaining fields are None by default, therefore, they
+                # do not need to be updated in this clause.
                 data_coins["has_analysis"] = False
-                data_coins["average_axis"] = None
-                data_coins["average_diameter"] = None
-                data_coins["average_weight"] = None
 
             # >>> DEBUG >>>
             # TODO: delme
+            print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
             pprint(data_coins)
+            print()
             # <<< DEBUG <<<
 
             ## Insert stg_coins data
@@ -639,7 +689,8 @@ class ScrapeOcre:
 
             # >>> DEBUG >>>
             # TODO: delme
-            break
+            if self.client.cur.rownumber > 25:
+                break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
@@ -678,6 +729,23 @@ class ScrapeOcre:
 
         if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
             print(f"Scraping coin #{coin_id} in row {curr_row} of {total_rows}...")
+        return None
+
+    def _add_field_value_to_dict(
+        self, data_dict: dict, field_name: str, field_value: str
+    ) -> None:
+        """Convert field name to schema field name and add field name
+        and value to data_dict in place for typological fields."""
+        mod_field = ScrapeOcre.TYPOLOGICAL_FIELD_CONVERSION[field_name]
+
+        if mod_field in ScrapeOcre.TYPOLOGICAL_ARRAY_FIELDS:
+            if data_dict[mod_field] == None:
+                data_dict[mod_field] = [field_value]
+            else:
+                data_dict[mod_field].append(field_value)
+        else:
+            data_dict[mod_field] = field_value
+
         return None
 
     @staticmethod
