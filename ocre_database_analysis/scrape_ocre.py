@@ -537,6 +537,8 @@ class ScrapeOcre:
             # pprint(delme_data_query)
             # <<< DEBUG <<<
 
+            soup = BeautifulSoup(data_query["page_html"], "lxml")
+
             # Populate stg_coins
             data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
             data_coins["coin_id"] = data_query["coin_id"]
@@ -544,8 +546,6 @@ class ScrapeOcre:
             data_coins["has_examples_pagination"] = data_query[
                 "has_examples_pagination"
             ]
-
-            soup = BeautifulSoup(data_query["page_html"], "lxml")
 
             ## Populate Typological data
             soup_typological = soup.find("div", class_="metadata_section")
