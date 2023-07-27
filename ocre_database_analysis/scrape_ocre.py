@@ -681,10 +681,9 @@ class ScrapeOcre:
                 # self._insert_using_secondary_client(path_insert_coins, [data_coins])
             # <<< Populate stg_coins <<<
 
-            # Populate stg_examples
+            # Populate stg_examples and stg_examples_images
             data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
 
-            # Populate stg_examples_images
             data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
 
             # Populate stg_uri_pages
