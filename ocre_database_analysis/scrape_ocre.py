@@ -539,132 +539,139 @@ class ScrapeOcre:
 
             soup = BeautifulSoup(data_query["page_html"], "lxml")
 
-            # Populate stg_coins
-            data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
-            data_coins["coin_id"] = data_query["coin_id"]
-            data_coins["has_examples"] = data_query["has_examples"]
-            data_coins["has_examples_pagination"] = data_query[
-                "has_examples_pagination"
-            ]
+            # >>> Populate stg_coins >>>
+            if data_query["examples_pagination_id"] in (None, 1):
+                data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
+                data_coins["coin_id"] = data_query["coin_id"]
+                data_coins["has_examples"] = data_query["has_examples"]
+                data_coins["has_examples_pagination"] = data_query[
+                    "has_examples_pagination"
+                ]
 
-            ## Populate Typological data
-            soup_typological = soup.find("div", class_="metadata_section")
-            # TODO: Finish soup_typological logic
-            if soup_typological:
-                # There is a typological section
-                data_coins["has_typological"] = True
+                # Populate Typological data
+                soup_typological = soup.find("div", class_="metadata_section")
+                # TODO: Finish soup_typological logic
+                if soup_typological:
+                    # There is a typological section
+                    data_coins["has_typological"] = True
 
-                raw_typo_data = soup_typological.ul
-                raw_typo_data = [item for item in raw_typo_data if item.name]
-                for item in raw_typo_data:
-                    all_item_tags = [i for i in item if i.name]
+                    raw_typo_data = soup_typological.ul
+                    raw_typo_data = [item for item in raw_typo_data if item.name]
+                    for item in raw_typo_data:
+                        all_item_tags = [i for i in item if i.name]
 
-                    if all_item_tags[0].name == "b":
-                        result_split = item.text.strip().split(": ", maxsplit=1)
-                        if len(result_split) == 1:
-                            field = result_split[0].replace(":", "")
-                            value = None
-                        else:
-                            field, value = result_split
-                            value = re.sub(" +", " ", value.replace("\n", " "))
-                        field = field.lower().replace(" ", "_")
+                        if all_item_tags[0].name == "b":
+                            result_split = item.text.strip().split(": ", maxsplit=1)
+                            if len(result_split) == 1:
+                                field = result_split[0].replace(":", "")
+                                value = None
+                            else:
+                                field, value = result_split
+                                value = re.sub(" +", " ", value.replace("\n", " "))
+                            field = field.lower().replace(" ", "_")
 
-                        # Modify field name and save field and value to dict
-                        self._add_field_value_to_dict(data_coins, field, value)
+                            # Modify field name and save field and value to dict
+                            self._add_field_value_to_dict(data_coins, field, value)
 
-                        # >>> DEBUG >>>
-                        # print(f"{field}\t\t{value}")
-                        # <<< DEBUG <<<
-                    elif all_item_tags[0].name == "h4":
-                        section_name = (
-                            all_item_tags[0].text.strip().lower().replace(" ", "_")
-                        )
-                        for li in item.find_all("li"):
-                            if li.contents[0].name == "b":
-                                field = (
-                                    li.contents[0]
-                                    .text.strip()
-                                    .lower()
-                                    .replace(" ", "_")
-                                    .replace(":", "")
-                                )
-                                field = section_name + "_" + field
-
-                                if "symbol" in field:
-                                    value = re.sub(
-                                        " +",
-                                        " ",
-                                        li.text.strip()
-                                        .replace(" - ", " ")
-                                        .replace(",", "", 1),
+                            # >>> DEBUG >>>
+                            # print(f"{field}\t\t{value}")
+                            # <<< DEBUG <<<
+                        elif all_item_tags[0].name == "h4":
+                            section_name = (
+                                all_item_tags[0].text.strip().lower().replace(" ", "_")
+                            )
+                            for li in item.find_all("li"):
+                                if li.contents[0].name == "b":
+                                    field = (
+                                        li.contents[0]
+                                        .text.strip()
+                                        .lower()
+                                        .replace(" ", "_")
+                                        .replace(":", "")
                                     )
-                                    value = value.replace("Symbol: ", "")
-                                else:
-                                    value = (
-                                        re.sub(
+                                    field = section_name + "_" + field
+
+                                    if "symbol" in field:
+                                        value = re.sub(
                                             " +",
                                             " ",
-                                            li.contents[1]
-                                            .text.strip()
-                                            .replace("\n", " "),
+                                            li.text.strip()
+                                            .replace(" - ", " ")
+                                            .replace(",", "", 1),
                                         )
-                                        if len(li.contents) > 1
-                                        else None
+                                        value = value.replace("Symbol: ", "")
+                                    else:
+                                        value = (
+                                            re.sub(
+                                                " +",
+                                                " ",
+                                                li.contents[1]
+                                                .text.strip()
+                                                .replace("\n", " "),
+                                            )
+                                            if len(li.contents) > 1
+                                            else None
+                                        )
+
+                                    # Modify field name and save field
+                                    # and value to dict
+                                    self._add_field_value_to_dict(
+                                        data_coins, field, value
                                     )
 
-                                # Modify field name and save field and value to dict
-                                self._add_field_value_to_dict(data_coins, field, value)
+                                    # >>> DEBUG >>>
+                                    # print(f"{field}\t\t{value}")
+                                    # <<< DEBUG <<<
+                else:
+                    # There is not a typological section
+                    # Remaining fields are None by default, therefore,
+                    # they do not need to be updated in this clause.
+                    data_coins["has_typological"] = False
 
-                                # >>> DEBUG >>>
-                                # print(f"{field}\t\t{value}")
-                                # <<< DEBUG <<<
-            else:
-                # There is not a typological section
-                # Remaining fields are None by default, therefore, they
-                # do not need to be updated in this clause.
-                data_coins["has_typological"] = False
+                # Populate Analysis data
+                soup_analysis = soup.find("div", class_="row", id="metrical")
+                if soup_analysis:
+                    # There is an analysis section
+                    data_coins["has_analysis"] = True
 
-            ## Populate Analysis data
-            soup_analysis = soup.find("div", class_="row", id="metrical")
-            if soup_analysis:
-                # There is an analysis section
-                data_coins["has_analysis"] = True
+                    soup_analysis_data = soup_analysis.find(
+                        "dl", class_="dl-horizontal"
+                    )
+                    all_dt = soup_analysis_data.find_all("dt")
+                    all_dd = soup_analysis_data.find_all("dd")
+                    for dt, dd in zip(all_dt, all_dd):
+                        field = dt.text.strip().lower().replace(" ", "")
+                        field = "average_" + field
+                        value = float(dd.text.strip())
+                        if field in data_coins.keys():
+                            data_coins[field] = value
+                        else:
+                            # This clause should not trigger for the state
+                            # of the OCRE database as of July 2023, but it
+                            # is written in case the database changes in the
+                            # future.
+                            raise KeyError(
+                                f"KEY ERROR: Field `{field}` is not in `data_coins`"
+                                + f"dict for coin #{data_coins['coin_id']} with "
+                                + f"raw_uri_id #{data_query['raw_uri_id']} at URI "
+                                + f"{data_query['path_uri']}!"
+                            )
+                else:
+                    # There is not an analysis section
+                    # Remaining fields are None by default, therefore,
+                    # they do not need to be updated in this clause.
+                    data_coins["has_analysis"] = False
 
-                soup_analysis_data = soup_analysis.find("dl", class_="dl-horizontal")
-                all_dt = soup_analysis_data.find_all("dt")
-                all_dd = soup_analysis_data.find_all("dd")
-                for dt, dd in zip(all_dt, all_dd):
-                    field = dt.text.strip().lower().replace(" ", "")
-                    field = "average_" + field
-                    value = float(dd.text.strip())
-                    if field in data_coins.keys():
-                        data_coins[field] = value
-                    else:
-                        # This clause should not trigger for the state
-                        # of the OCRE database as of July 2023, but it
-                        # is written in case the database changes in the
-                        # future.
-                        raise KeyError(
-                            f"KEY ERROR: Field `{field}` is not in `data_coins`"
-                            + f"dict for coin #{data_coins['coin_id']} with "
-                            + f"raw_uri_id #{data_query['raw_uri_id']} at URI "
-                            + f"{data_query['path_uri']}!"
-                        )
-            else:
-                # There is not an analysis section
-                # Remaining fields are None by default, therefore, they
-                # do not need to be updated in this clause.
-                data_coins["has_analysis"] = False
+                # >>> DEBUG >>>
+                # print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
+                # pprint(data_coins)
+                # print()
+                # <<< DEBUG <<<
 
-            # >>> DEBUG >>>
-            # print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
-            # pprint(data_coins)
-            # print()
-            # <<< DEBUG <<<
-
-            ## Insert stg_coins data
-            path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
-            self._insert_using_secondary_client(path_insert_coins, [data_coins])
+                # Insert stg_coins data
+                path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
+                self._insert_using_secondary_client(path_insert_coins, [data_coins])
+            # <<< Populate stg_coins <<<
 
             # Populate stg_examples
             data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
