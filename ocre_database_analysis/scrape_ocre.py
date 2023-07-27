@@ -632,30 +632,37 @@ class ScrapeOcre:
                 soup_analysis = soup.find("div", class_="row", id="metrical")
                 if soup_analysis:
                     # There is an analysis section
-                    data_coins["has_analysis"] = True
-
                     soup_analysis_data = soup_analysis.find(
                         "dl", class_="dl-horizontal"
                     )
-                    all_dt = soup_analysis_data.find_all("dt")
-                    all_dd = soup_analysis_data.find_all("dd")
-                    for dt, dd in zip(all_dt, all_dd):
-                        field = dt.text.strip().lower().replace(" ", "")
-                        field = "average_" + field
-                        value = float(dd.text.strip())
-                        if field in data_coins.keys():
-                            data_coins[field] = value
-                        else:
-                            # This clause should not trigger for the state
-                            # of the OCRE database as of July 2023, but it
-                            # is written in case the database changes in the
-                            # future.
-                            raise KeyError(
-                                f"KEY ERROR: Field `{field}` is not in `data_coins`"
-                                + f"dict for coin #{data_coins['coin_id']} with "
-                                + f"raw_uri_id #{data_query['raw_uri_id']} at URI "
-                                + f"{data_query['path_uri']}!"
-                            )
+
+                    if soup_analysis_data:
+                        # Analysis section has fields
+                        data_coins["has_analysis"] = True
+                        all_dt = soup_analysis_data.find_all("dt")
+                        all_dd = soup_analysis_data.find_all("dd")
+                        for dt, dd in zip(all_dt, all_dd):
+                            field = dt.text.strip().lower().replace(" ", "")
+                            field = "average_" + field
+                            value = float(dd.text.strip())
+                            if field in data_coins.keys():
+                                data_coins[field] = value
+                            else:
+                                # This clause should not trigger for the state
+                                # of the OCRE database as of July 2023, but it
+                                # is written in case the database changes in the
+                                # future.
+                                raise KeyError(
+                                    f"KEY ERROR: Field `{field}` is not in `data_coins`"
+                                    + f"dict for coin #{data_coins['coin_id']} with "
+                                    + f"raw_uri_id #{data_query['raw_uri_id']} at URI "
+                                    + f"{data_query['path_uri']}!"
+                                )
+                    else:
+                        # Analysis section does not have fields
+                        # Remaining fields are None by default, therefore,
+                        # they do not need to be updated in this clause.
+                        data_coins["has_analysis"] = False
                 else:
                     # There is not an analysis section
                     # Remaining fields are None by default, therefore,
