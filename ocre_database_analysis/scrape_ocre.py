@@ -1,4 +1,5 @@
 from __future__ import annotations
+from numpy import insert
 
 import psycopg2 as pg2
 import sys
@@ -568,7 +569,7 @@ class ScrapeOcre:
                             value = re.sub(" +", " ", value.replace("\n", " "))
                         field = field.lower().replace(" ", "_")
 
-                        # TODO: Modify field name and save to dict
+                        # Modify field name and save field and value to dict
                         self._add_field_value_to_dict(data_coins, field, value)
 
                         # >>> DEBUG >>>
@@ -611,7 +612,7 @@ class ScrapeOcre:
                                         else None
                                     )
 
-                                # TODO: Modify field name and save to dict
+                                # Modify field name and save field and value to dict
                                 self._add_field_value_to_dict(data_coins, field, value)
 
                                 # >>> DEBUG >>>
@@ -656,13 +657,14 @@ class ScrapeOcre:
                 data_coins["has_analysis"] = False
 
             # >>> DEBUG >>>
-            # TODO: delme
-            print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
-            pprint(data_coins)
-            print()
+            # print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
+            # pprint(data_coins)
+            # print()
             # <<< DEBUG <<<
 
             ## Insert stg_coins data
+            path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
+            self._insert_using_secondary_client(path_insert_coins, [data_coins])
 
             # Populate stg_examples
             data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
@@ -688,9 +690,8 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            # TODO: delme
-            if self.client.cur.rownumber > 25:
-                break
+            # if self.client.cur.rownumber > 25:
+            #     break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
