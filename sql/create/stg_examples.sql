@@ -3,6 +3,7 @@ CREATE TABLE stg_web_scrape.stg_examples (
     examples_id SERIAL NOT NULL,
     coin_id INTEGER NOT NULL,
     uri_page_examples_id INTEGER NOT NULL,
+    example_name VARCHAR NOT NULL,
     coin_axis NUMERIC NULL,
     collection_name VARCHAR NULL,
     coin_diameter NUMERIC NULL,
