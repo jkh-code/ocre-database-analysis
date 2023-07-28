@@ -53,6 +53,15 @@ class ScrapeOcre:
         "reverse_symbol": "reverse_symbol",
         "reverse_type": "reverse_type",
     }
+    EXAMPLES_FIELDS_CONVERSION = {
+        "axis": "coin_axis",
+        "collection": "collection_name",
+        "diameter": "coin_diameter",
+        "findspot": "findspot",
+        "hoard": "hoard",
+        "identifier": "identifier",
+        "weight": "coin_weight",
+    }
     TYPOLOGICAL_ARRAY_FIELDS = [
         "denomination",
         "material",
@@ -70,6 +79,7 @@ class ScrapeOcre:
         "reverse_state",
         "reverse_symbol",
     ]
+    STG_EXAMPLES_NUMERIC_FIELDS = ["coin_axis", "coin_diameter", "coin_weight"]
 
     # Schemas without `ts` field
     SCHEMA_RAW_BROWSE_PAGES = {
@@ -524,6 +534,7 @@ class ScrapeOcre:
         num_rows = self.client.cur.rowcount
         print(f"Processing {num_rows:6,d} rows of data...")
 
+        examples_id = int()  # For stg_examples table
         for row in self.client.cur:
             data_query = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
             ScrapeOcre.populate_raw_uri_pages_schema(data_query, row)
@@ -689,7 +700,6 @@ class ScrapeOcre:
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
-            examples_id = int()
             if data_query["has_examples"] == True:
                 soup_examples = soup.find("div", class_="row", id="examples").find_all(
                     "div", class_="g_doc col-md-4"
@@ -715,6 +725,35 @@ class ScrapeOcre:
                     data_examples["example_name"] = coin_title
                     data_images["stg_examples_id"] = examples_id
 
+                    soup_example_fields = soup_example.find(
+                        "dl", class_="dl-horizontal"
+                    )
+                    if soup_example_fields:
+                        # Example has fields (If example does not have
+                        # fields, then this section is skipped and the
+                        # field values remain None.)
+                        fields = soup_example_fields.find_all("dt")
+                        values = soup_example_fields.find_all("dd")
+                        for field, value in zip(fields, values):
+                            f = field.text.strip().lower().replace(" ", "_")
+                            v = value.text.strip().replace("\n", " ")
+                            v = re.sub(" +", " ", v)
+                            if f not in ScrapeOcre.EXAMPLES_FIELDS_CONVERSION.keys():
+                                # This clause should not trigger for the state
+                                # of the OCRE database as of July 2023, but it
+                                # is written in case the database changes in the
+                                # future.
+                                raise KeyError(
+                                    f"Field `{f}` not found in {coin_title} "
+                                    + f"(Example ID#{idx}) on URI page "
+                                    + f"{data_query['path_uri']}"
+                                )
+                            else:
+                                f = ScrapeOcre.EXAMPLES_FIELDS_CONVERSION[f]
+                                if f in ScrapeOcre.STG_EXAMPLES_NUMERIC_FIELDS:
+                                    v = float(v)
+                                data_examples[f] = v
+
                     # >>> DEBUG >>>
                     print(f"Example #{idx:2,d} {coin_title}")
                     pprint(data_examples)
@@ -739,8 +778,8 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            # if self.client.cur.rownumber > 25:
-            break
+            if self.client.cur.rownumber > 25:
+                break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
