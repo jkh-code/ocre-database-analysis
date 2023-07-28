@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS stg_web_scrape.stg_coins;
 CREATE TABLE stg_web_scrape.stg_coins (
     coin_id INTEGER NOT NULL,
+    coin_name VARCHAR NOT NULL,
     has_typological BOOLEAN NOT NULL,
     has_examples BOOLEAN NOT NULL,
     has_examples_pagination BOOLEAN NOT NULL,

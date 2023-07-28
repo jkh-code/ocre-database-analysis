@@ -1,5 +1,6 @@
 INSERT INTO stg_web_scrape.stg_coins (
     coin_id,
+    coin_name,
     has_typological,
     has_examples,
     has_examples_pagination,
@@ -37,6 +38,7 @@ INSERT INTO stg_web_scrape.stg_coins (
 )
 VALUES (
     %(coin_id)s,
+    %(coin_name)s,
     %(has_typological)s,
     %(has_examples)s,
     %(has_examples_pagination)s,
