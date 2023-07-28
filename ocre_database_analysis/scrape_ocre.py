@@ -682,9 +682,32 @@ class ScrapeOcre:
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
-            data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
+            if data_query["has_examples"] == True:
+                data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
+                data_examples.pop("examples_id")
+                data_examples["coin_id"] = data_query["coin_id"]
 
-            data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                data_images.pop("examples_images_id")
+
+                soup_examples = soup.find("div", class_="row", id="examples").find_all(
+                    "div", class_="g_doc col-md-4"
+                )
+                examples_ids = range(
+                    data_query["examples_start_id"],
+                    data_query["examples_end_id"] + 1,
+                    1,
+                )
+                for idx, soup_example in zip(examples_ids, soup_examples):
+                    coin_title = soup_example.find(
+                        "span", class_="result_link"
+                    ).text.strip()
+                    print(f"Example #{idx:2,d} {coin_title}")
+
+                # >>> DEBUG >>>
+                pprint(data_examples)
+                pprint(data_images)
+                # <<< DEBUG <<<
 
             # Populate stg_uri_pages
             data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
@@ -705,7 +728,7 @@ class ScrapeOcre:
 
             # >>> DEBUG >>>
             # if self.client.cur.rownumber > 25:
-            #     break
+            break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
