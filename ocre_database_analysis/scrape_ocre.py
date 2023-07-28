@@ -157,6 +157,8 @@ class ScrapeOcre:
         "coin_id": None,
         "uri_page_examples_id": None,
         "example_name": None,
+        "has_fields_section": None,
+        "has_links_section": None,
         "coin_axis": None,
         "collection_name": None,
         "coin_diameter": None,
@@ -729,9 +731,9 @@ class ScrapeOcre:
                         "dl", class_="dl-horizontal"
                     )
                     if soup_example_fields:
-                        # Example has fields (If example does not have
-                        # fields, then this section is skipped and the
-                        # field values remain None.)
+                        # Example has fields
+                        data_examples["has_fields_section"] = True
+
                         fields = soup_example_fields.find_all("dt")
                         values = soup_example_fields.find_all("dd")
                         for field, value in zip(fields, values):
@@ -753,7 +755,14 @@ class ScrapeOcre:
                                 if f in ScrapeOcre.STG_EXAMPLES_NUMERIC_FIELDS:
                                     v = float(v)
                                 data_examples[f] = v
+                    else:
+                        # Example does not have fields
+                        # Remaining fields are None by default, therefore,
+                        # they do not need to be updated in this clause.
+                        data_examples["has_fields_section"] = False
 
+                    # TODO: delme
+                    data_examples["has_links_section"] = False
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
@@ -783,8 +792,8 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            if self.client.cur.rownumber > 25:
-                break
+            # if self.client.cur.rownumber > 25:
+            #     break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")

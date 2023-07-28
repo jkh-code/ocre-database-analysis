@@ -4,6 +4,8 @@ CREATE TABLE stg_web_scrape.stg_examples (
     coin_id INTEGER NOT NULL,
     uri_page_examples_id INTEGER NOT NULL,
     example_name VARCHAR NOT NULL,
+    has_fields_section BOOLEAN NOT NULL,
+    has_links_section BOOLEAN NOT NULL,
     coin_axis NUMERIC NULL,
     collection_name VARCHAR NULL,
     coin_diameter NUMERIC NULL,
