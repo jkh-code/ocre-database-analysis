@@ -755,10 +755,15 @@ class ScrapeOcre:
                                 data_examples[f] = v
 
                     # >>> DEBUG >>>
-                    print(f"Example #{idx:2,d} {coin_title}")
-                    pprint(data_examples)
-                    pprint(data_images)
+                    # print(f"Example #{idx:2,d} {coin_title}")
+                    # pprint(data_examples)
+                    # pprint(data_images)
                     # <<< DEBUG <<<
+
+                    path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
+                    self._insert_using_secondary_client(
+                        path_insert_examples, [data_examples]
+                    )
 
             # Populate stg_uri_pages
             data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
