@@ -1,4 +1,5 @@
 INSERT INTO stg_web_scrape.stg_examples (
+    examples_id,
     coin_id,
     uri_page_examples_id,
     example_name,
@@ -11,6 +12,7 @@ INSERT INTO stg_web_scrape.stg_examples (
     coin_weight
 )
 VALUES (
+    %(examples_id)s,
     %(coin_id)s,
     %(uri_page_examples_id)s,
     %(example_name)s,
