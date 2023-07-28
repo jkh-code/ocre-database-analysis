@@ -689,14 +689,8 @@ class ScrapeOcre:
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
+            examples_id = int()
             if data_query["has_examples"] == True:
-                data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
-                data_examples.pop("examples_id")
-                data_examples["coin_id"] = data_query["coin_id"]
-
-                data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-                data_images.pop("examples_images_id")
-
                 soup_examples = soup.find("div", class_="row", id="examples").find_all(
                     "div", class_="g_doc col-md-4"
                 )
@@ -706,16 +700,26 @@ class ScrapeOcre:
                     1,
                 )
                 for idx, soup_example in zip(examples_ids, soup_examples):
+                    data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
+                    examples_id += 1
+                    data_examples["examples_id"] = examples_id
+                    data_examples["coin_id"] = data_query["coin_id"]
+
+                    data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                    data_images.pop("examples_images_id")
+
                     coin_title = soup_example.find(
                         "span", class_="result_link"
                     ).text.strip()
+                    data_examples["uri_page_examples_id"] = idx
+                    data_examples["example_name"] = coin_title
+                    data_images["stg_examples_id"] = examples_id
 
+                    # >>> DEBUG >>>
                     print(f"Example #{idx:2,d} {coin_title}")
-
-            # >>> DEBUG >>>
-            pprint(data_examples)
-            pprint(data_images)
-            # <<< DEBUG <<<
+                    pprint(data_examples)
+                    pprint(data_images)
+                    # <<< DEBUG <<<
 
             # Populate stg_uri_pages
             data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
