@@ -761,8 +761,20 @@ class ScrapeOcre:
                         # they do not need to be updated in this clause.
                         data_examples["has_fields_section"] = False
 
-                    # TODO: delme
-                    data_examples["has_links_section"] = False
+                    soup_examples_images = soup_example.find(
+                        "div", class_="gi_c"
+                    ).find_all("a")
+                    # >>> DEBUG >>>
+                    # print(f"Example #{idx:2,d} {coin_title}")
+                    # print(len(soup_examples_images))
+                    # <<< DEBUG <<<
+                    if soup_examples_images:
+                        # Example has image section
+                        data_examples["has_links_section"] = True
+                    else:
+                        # Example does not have image section
+                        data_examples["has_links_section"] = False
+
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
@@ -770,9 +782,10 @@ class ScrapeOcre:
                     # <<< DEBUG <<<
 
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
-                    self._insert_using_secondary_client(
-                        path_insert_examples, [data_examples]
-                    )
+                    # TODO: uncommit line
+                    # self._insert_using_secondary_client(
+                    #     path_insert_examples, [data_examples]
+                    # )
 
             # Populate stg_uri_pages
             data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
@@ -792,7 +805,8 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            # if self.client.cur.rownumber > 25:
+            # break
+            # if self.client.cur.rownumber > 50:
             #     break
             # <<< DEBUG <<<
 
