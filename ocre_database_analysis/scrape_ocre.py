@@ -80,6 +80,21 @@ class ScrapeOcre:
         "reverse_symbol",
     ]
     STG_EXAMPLES_NUMERIC_FIELDS = ["coin_axis", "coin_diameter", "coin_weight"]
+    COLLECTIONS_WITH_IIIF = [
+        "American Numismatic Society",
+        "Bibliothèque nationale de France",
+        "British Museum",
+        "Coin Cabinet of the Mainz City Archives",
+        "Harvard Art Museums",
+        "J. Paul Getty Museum",
+        "Münzkabinett der Universität Göttingen",
+        "Oldenburg Municipal Museum",
+        "State Coin Collection of Munich",
+        "State Museum of Prehistory Halle",
+        "The Fralin Museum of Art",
+        "Thuringian Museum for Pre- and Early History",
+        "University of Graz",
+    ]
 
     # Schemas without `ts` field
     SCHEMA_RAW_BROWSE_PAGES = {
@@ -717,6 +732,7 @@ class ScrapeOcre:
                     data_examples["examples_id"] = examples_id
                     data_examples["coin_id"] = data_query["coin_id"]
 
+                    # TODO: Move to `if soup_examples_images:` for loop
                     data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
                     data_images.pop("examples_images_id")
 
@@ -764,21 +780,42 @@ class ScrapeOcre:
                     soup_examples_images = soup_example.find(
                         "div", class_="gi_c"
                     ).find_all("a")
+                    num_tags = len(soup_examples_images)
                     # >>> DEBUG >>>
-                    # print(f"Example #{idx:2,d} {coin_title}")
-                    # print(len(soup_examples_images))
+                    print(f"Example #{idx:2,d} {coin_title}")
+                    print(data_examples["collection_name"])
+                    print(f"Number of links: {num_tags}")
+                    print(
+                        f"IIIF?: {data_examples['collection_name'] in ScrapeOcre.COLLECTIONS_WITH_IIIF}"
+                    )
                     # <<< DEBUG <<<
                     if soup_examples_images:
-                        # Example has image section
+                        # Example has links in the image section
                         data_examples["has_links_section"] = True
+
+                        for tag in soup_examples_images:
+                            # >>> DEBUG >>>
+                            print(tag["title"])
+                            # <<< DEBUG <<<
+
+                            if (
+                                data_examples["collection_name"]
+                                in ScrapeOcre.COLLECTIONS_WITH_IIIF
+                            ):
+                                # IIIF collection
+                                pass
+                            else:
+                                # Non-IIIF collection
+                                pass
                     else:
-                        # Example does not have image section
+                        # Example does not have links in the image section
                         data_examples["has_links_section"] = False
 
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
-                    # pprint(data_images)
+                    pprint(data_images)
+                    print()
                     # <<< DEBUG <<<
 
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
@@ -805,7 +842,7 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            # break
+            break
             # if self.client.cur.rownumber > 50:
             #     break
             # <<< DEBUG <<<
