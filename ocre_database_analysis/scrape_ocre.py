@@ -732,16 +732,11 @@ class ScrapeOcre:
                     data_examples["examples_id"] = examples_id
                     data_examples["coin_id"] = data_query["coin_id"]
 
-                    # TODO: Move to `if soup_examples_images:` for loop
-                    data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-                    data_images.pop("examples_images_id")
-
                     coin_title = soup_example.find(
                         "span", class_="result_link"
                     ).text.strip()
                     data_examples["uri_page_examples_id"] = idx
                     data_examples["example_name"] = coin_title
-                    data_images["stg_examples_id"] = examples_id
 
                     soup_example_fields = soup_example.find(
                         "dl", class_="dl-horizontal"
@@ -789,6 +784,7 @@ class ScrapeOcre:
                         f"IIIF?: {data_examples['collection_name'] in ScrapeOcre.COLLECTIONS_WITH_IIIF}"
                     )
                     # <<< DEBUG <<<
+                    data_images_list = list()
                     if soup_examples_images:
                         # Example has links in the image section
                         data_examples["has_links_section"] = True
@@ -797,6 +793,10 @@ class ScrapeOcre:
                             # >>> DEBUG >>>
                             print(tag["title"])
                             # <<< DEBUG <<<
+
+                            data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                            data_images.pop("examples_images_id")
+                            data_images["stg_examples_id"] = examples_id
 
                             if (
                                 data_examples["collection_name"]
@@ -822,18 +822,21 @@ class ScrapeOcre:
 
                                     data_images["link"] = tag["href"]
 
-                                    # >>> DEBUG >>>
-                                    pprint(data_images)
-                                    # <<< DEBUG <<<
+                                    data_images_list.append(data_images)
                                 else:
+                                    # Update has_links_section field and
+                                    # do not write to stg_examples_images
+                                    # table
                                     data_examples["has_links_section"] = False
                     else:
                         # Example does not have links in the image section
+                        # Do not write to stg_examples_images table
                         data_examples["has_links_section"] = False
 
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
+                    pprint(data_images_list)
                     print()
                     # <<< DEBUG <<<
 
