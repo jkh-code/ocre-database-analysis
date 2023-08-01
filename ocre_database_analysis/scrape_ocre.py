@@ -786,7 +786,52 @@ class ScrapeOcre:
                     # <<< DEBUG <<<
                     data_images_list = list()
                     if soup_examples_images:
-                        pass
+                        # Example may have links in the image section
+                        # (there are exceptions depending on collection
+                        # name)
+
+                        # NOTES:
+                        # For current example coin
+                        # Collection name from data_examples["collection_name"]
+                        # Example image links in soup_examples_images
+                        collection_name = data_examples["collection_name"]
+                        if collection_name not in ScrapeOcre.COLLECTIONS_WITH_IIIF:
+                            # Not a collection that uses IIIF
+
+                            if collection_name not in (
+                                "Museu Arqueològic de Llíria",
+                                "Museu de Prehistòria de València",
+                            ):
+                                # Not a Spanish museum that redirects to main page
+                                data_examples["has_links_section"] = True
+
+                                for tag in soup_examples_images:
+                                    data_images = (
+                                        ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                                    )
+                                    data_images.pop("examples_images_id")
+                                    data_images["stg_examples_id"] = examples_id
+
+                                    title = tag["title"].lower()
+                                    if "obverse" in title and "reverse" in title:
+                                        data_images["image_type"] = "both sides"
+                                    elif "obverse" in title:
+                                        data_images["image_type"] = "obverse"
+                                    elif "reverse" in title:
+                                        data_images["image_type"] = "reverse"
+                                    else:
+                                        data_images["image_type"] = "unknown"
+
+                                    data_images["link"] = tag["href"]
+
+                                    data_images_list.append(data_images)
+                            else:
+                                # A Spanish museum that redirects to main page
+                                data_examples["has_links_section"] = False
+                        else:
+                            # A collection that may use IIIF
+
+                            pass
 
                         # >>> OLD >>>
                         # # Example has links in the image section
@@ -841,6 +886,9 @@ class ScrapeOcre:
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
+                    print(
+                        f"Image has links section?: {data_examples['has_links_section']}"
+                    )
                     # TODO: Check if data_images_list is empty before writing to database
                     pprint(data_images_list)
                     print()
