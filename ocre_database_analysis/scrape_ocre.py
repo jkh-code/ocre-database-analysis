@@ -836,6 +836,7 @@ class ScrapeOcre:
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
+                    # TODO: Check if data_images_list is empty before writing to database
                     pprint(data_images_list)
                     print()
                     # <<< DEBUG <<<
