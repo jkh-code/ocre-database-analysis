@@ -806,7 +806,27 @@ class ScrapeOcre:
                                 pass
                             else:
                                 # Non-IIIF collection
-                                pass
+                                if data_examples["collection_name"] not in (
+                                    "Museu Arqueològic de Llíria",
+                                    "Museu de Prehistòria de València",
+                                ):
+                                    title = tag["title"].lower()
+                                    if "obverse" in title and "reverse" in title:
+                                        data_images["image_type"] = "both sides"
+                                    elif "obverse" in title:
+                                        data_images["image_type"] = "obverse"
+                                    elif "reverse" in title:
+                                        data_images["image_type"] = "reverse"
+                                    else:
+                                        data_images["image_type"] = "unknown"
+
+                                    data_images["link"] = tag["href"]
+
+                                    # >>> DEBUG >>>
+                                    pprint(data_images)
+                                    # <<< DEBUG <<<
+                                else:
+                                    data_examples["has_links_section"] = False
                     else:
                         # Example does not have links in the image section
                         data_examples["has_links_section"] = False
@@ -814,7 +834,6 @@ class ScrapeOcre:
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
-                    pprint(data_images)
                     print()
                     # <<< DEBUG <<<
 
