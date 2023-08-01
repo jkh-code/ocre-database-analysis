@@ -786,48 +786,53 @@ class ScrapeOcre:
                     # <<< DEBUG <<<
                     data_images_list = list()
                     if soup_examples_images:
-                        # Example has links in the image section
-                        data_examples["has_links_section"] = True
+                        pass
 
-                        for tag in soup_examples_images:
-                            # >>> DEBUG >>>
-                            print(tag["title"])
-                            # <<< DEBUG <<<
+                        # >>> OLD >>>
+                        # # Example has links in the image section
+                        # data_examples["has_links_section"] = True
 
-                            data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-                            data_images.pop("examples_images_id")
-                            data_images["stg_examples_id"] = examples_id
+                        # for tag in soup_examples_images:
+                        #     # >>> DEBUG >>>
+                        #     print(tag["title"])
+                        #     # <<< DEBUG <<<
 
-                            if (
-                                data_examples["collection_name"]
-                                in ScrapeOcre.COLLECTIONS_WITH_IIIF
-                            ):
-                                # IIIF collection
-                                pass
-                            else:
-                                # Non-IIIF collection
-                                if data_examples["collection_name"] not in (
-                                    "Museu Arqueològic de Llíria",
-                                    "Museu de Prehistòria de València",
-                                ):
-                                    title = tag["title"].lower()
-                                    if "obverse" in title and "reverse" in title:
-                                        data_images["image_type"] = "both sides"
-                                    elif "obverse" in title:
-                                        data_images["image_type"] = "obverse"
-                                    elif "reverse" in title:
-                                        data_images["image_type"] = "reverse"
-                                    else:
-                                        data_images["image_type"] = "unknown"
+                        #     data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                        #     data_images.pop("examples_images_id")
+                        #     data_images["stg_examples_id"] = examples_id
 
-                                    data_images["link"] = tag["href"]
+                        #     if (
+                        #         data_examples["collection_name"]
+                        #         in ScrapeOcre.COLLECTIONS_WITH_IIIF
+                        #     ):
+                        #         # IIIF collection
+                        #         pass
+                        #     else:
+                        #         # Non-IIIF collection
+                        #         if data_examples["collection_name"] not in (
+                        #             "Museu Arqueològic de Llíria",
+                        #             "Museu de Prehistòria de València",
+                        #         ):
+                        #             title = tag["title"].lower()
+                        #             if "obverse" in title and "reverse" in title:
+                        #                 data_images["image_type"] = "both sides"
+                        #             elif "obverse" in title:
+                        #                 data_images["image_type"] = "obverse"
+                        #             elif "reverse" in title:
+                        #                 data_images["image_type"] = "reverse"
+                        #             else:
+                        #                 data_images["image_type"] = "unknown"
 
-                                    data_images_list.append(data_images)
-                                else:
-                                    # Update has_links_section field and
-                                    # do not write to stg_examples_images
-                                    # table
-                                    data_examples["has_links_section"] = False
+                        #             data_images["link"] = tag["href"]
+
+                        #             data_images_list.append(data_images)
+                        #         else:
+                        #             # Update has_links_section field and
+                        #             # do not write to stg_examples_images
+                        #             # table
+                        #             data_examples["has_links_section"] = False
+                        #             del data_images
+                        # <<< OLD <<<
                     else:
                         # Example does not have links in the image section
                         # Do not write to stg_examples_images table
