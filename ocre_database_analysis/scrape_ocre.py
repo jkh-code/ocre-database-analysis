@@ -95,6 +95,14 @@ class ScrapeOcre:
         "Thuringian Museum for Pre- and Early History",
         "University of Graz",
     ]
+    MAINZ_CITY_LIKE_LINKS = [
+        "Coin Cabinet of the Mainz City Archives",
+        "Münzkabinett der Universität Göttingen",
+        "Oldenburg Municipal Museum",
+        "State Coin Collection of Munich",
+        "State Museum of Prehistory Halle",
+        "Thuringian Museum for Pre- and Early History",
+    ]
 
     # Schemas without `ts` field
     SCHEMA_RAW_BROWSE_PAGES = {
@@ -831,7 +839,27 @@ class ScrapeOcre:
                         else:
                             # A collection that may use IIIF
 
-                            pass
+                            if collection_name == "Harvard Art Museums":
+                                # Unable to scrape due to full image links
+                                # not having a logical conversion from
+                                # sample image links.
+                                pass
+                            elif collection_name == "American Numismatic Society":
+                                pass
+                            elif collection_name == "Bibliothèque nationale de France":
+                                pass
+                            elif collection_name == "British Museum":
+                                # Some British Museum images us IIIF and
+                                # others do not.
+                                pass
+                            elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
+                                pass
+                            elif collection_name == "J. Paul Getty Museum":
+                                pass
+                            elif collection_name == "The Fralin Museum of Art":
+                                pass
+                            elif collection_name == "University of Graz":
+                                pass
 
                         # >>> OLD >>>
                         # # Example has links in the image section
