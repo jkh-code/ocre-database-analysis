@@ -848,7 +848,35 @@ class ScrapeOcre:
 
                             elif collection_name == "American Numismatic Society":
 
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+
+                                    data_images = (
+                                        ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                                    )
+                                    data_images.pop("examples_images_id")
+                                    data_images["stg_examples_id"] = examples_id
+
+                                    title = tag["title"].lower()
+                                    if "obverse" in title and "reverse" in title:
+                                        data_images["image_type"] = "both sides"
+                                    elif "obverse" in title:
+                                        data_images["image_type"] = "obverse"
+                                    elif "reverse" in title:
+                                        data_images["image_type"] = "reverse"
+                                    else:
+                                        data_images["image_type"] = "unknown"
+
+                                    link = tag.img["src"]
+                                    mod_link = link.split(".", maxsplit=-1)
+                                    mod_link = [
+                                        "noscale" if "width" in i else i
+                                        for i in mod_link
+                                    ]
+                                    mod_link = ".".join(mod_link)
+                                    data_images["link"] = mod_link
+
+                                    data_images_list.append(data_images)
 
                             elif collection_name == "Bibliothèque nationale de France":
 
