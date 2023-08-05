@@ -844,7 +844,12 @@ class ScrapeOcre:
 
                             elif collection_name == "Bibliothèque nationale de France":
 
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
+                                    )
+                                    data_images_list.append(data_images)
 
                             elif collection_name == "British Museum":
 
@@ -908,9 +913,9 @@ class ScrapeOcre:
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
             # >>> DEBUG >>>
-            break
-            # if self.client.cur.rownumber > 50:
-            #     break
+            # break
+            if self.client.cur.rownumber > 5:
+                break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
@@ -997,16 +1002,22 @@ class ScrapeOcre:
             mod_link = link.split(".", maxsplit=-1)
             mod_link = ["noscale" if "width" in i else i for i in mod_link]
             mod_link = ".".join(mod_link)
-            data_images_["link"] = mod_link
 
-        elif collection_name == "":
+        elif collection_name == "Bibliothèque nationale de France":
 
-            pass
+            link = soup_a["id"]
+            # If obverse, use "f1"; if reverse, use "f2".
+            if data_images_["image_type"] == "obverse":
+                mod_link = link + "/f1.highres"
+            elif data_images_["image_type"] == "reverse":
+                mod_link = link + "/f2.highres"
 
         else:
 
             # Non-IIIF collection
-            data_images_["link"] = soup_a["href"]
+            mod_link = soup_a["href"]
+
+        data_images_["link"] = mod_link
 
         return data_images_.copy()
 
