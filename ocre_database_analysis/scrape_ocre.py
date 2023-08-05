@@ -840,25 +840,40 @@ class ScrapeOcre:
                             # A collection that may use IIIF
 
                             if collection_name == "Harvard Art Museums":
+
                                 # Unable to scrape due to full image links
                                 # not having a logical conversion from
                                 # sample image links.
-                                pass
+                                data_examples["has_links_section"] = False
+
                             elif collection_name == "American Numismatic Society":
+
                                 pass
+
                             elif collection_name == "Bibliothèque nationale de France":
+
                                 pass
+
                             elif collection_name == "British Museum":
+
                                 # Some British Museum images us IIIF and
                                 # others do not.
                                 pass
+
                             elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
+
                                 pass
+
                             elif collection_name == "J. Paul Getty Museum":
+
                                 pass
+
                             elif collection_name == "The Fralin Museum of Art":
+
                                 pass
+
                             elif collection_name == "University of Graz":
+
                                 pass
 
                         # >>> OLD >>>
