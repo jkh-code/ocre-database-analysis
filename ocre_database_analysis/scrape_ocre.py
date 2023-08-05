@@ -1049,6 +1049,43 @@ class ScrapeOcre:
 
         return None
 
+    def _process_examples_images_fields(
+        self, soup_a: BeautifulSoup, examples_id: int, collection_name: str
+    ) -> dict:
+        """Process example's image section, populate fields of
+        data_images dict, and return data_images dict for IIIF and
+        non-IIIF images."""
+        data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+        data_images.pop("examples_images_id")
+        data_images["stg_examples_id"] = examples_id
+
+        # Scrape image_type field
+        title = soup_a["title"].lower()
+        if "obverse" in title and "reverse" in title:
+            data_images["image_type"] = "both sides"
+        elif "obverse" in title:
+            data_images["image_type"] = "obverse"
+        elif "reverse" in title:
+            data_images["image_type"] = "reverse"
+        else:
+            data_images["image_type"] = "unknown"
+
+        # Scrape link field
+        if collection_name == "":
+
+            pass
+
+        elif collection_name == "":
+
+            pass
+
+        else:
+
+            # Non-IIIF collection
+            data_images["link"] = soup_a["href"]
+
+        return data_images.copy()
+
     @staticmethod
     def populate_raw_browse_pages_schema(
         data_dict: dict, row_of_data: Union[list, tuple]
