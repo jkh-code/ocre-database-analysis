@@ -814,24 +814,9 @@ class ScrapeOcre:
                                 data_examples["has_links_section"] = True
 
                                 for tag in soup_examples_images:
-                                    data_images = (
-                                        ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
                                     )
-                                    data_images.pop("examples_images_id")
-                                    data_images["stg_examples_id"] = examples_id
-
-                                    title = tag["title"].lower()
-                                    if "obverse" in title and "reverse" in title:
-                                        data_images["image_type"] = "both sides"
-                                    elif "obverse" in title:
-                                        data_images["image_type"] = "obverse"
-                                    elif "reverse" in title:
-                                        data_images["image_type"] = "reverse"
-                                    else:
-                                        data_images["image_type"] = "unknown"
-
-                                    data_images["link"] = tag["href"]
-
                                     data_images_list.append(data_images)
                             else:
                                 # A Spanish museum that redirects to main page
@@ -1055,20 +1040,20 @@ class ScrapeOcre:
         """Process example's image section, populate fields of
         data_images dict, and return data_images dict for IIIF and
         non-IIIF images."""
-        data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-        data_images.pop("examples_images_id")
-        data_images["stg_examples_id"] = examples_id
+        data_images_ = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+        data_images_.pop("examples_images_id")
+        data_images_["stg_examples_id"] = examples_id
 
         # Scrape image_type field
         title = soup_a["title"].lower()
         if "obverse" in title and "reverse" in title:
-            data_images["image_type"] = "both sides"
+            data_images_["image_type"] = "both sides"
         elif "obverse" in title:
-            data_images["image_type"] = "obverse"
+            data_images_["image_type"] = "obverse"
         elif "reverse" in title:
-            data_images["image_type"] = "reverse"
+            data_images_["image_type"] = "reverse"
         else:
-            data_images["image_type"] = "unknown"
+            data_images_["image_type"] = "unknown"
 
         # Scrape link field
         if collection_name == "":
@@ -1082,9 +1067,9 @@ class ScrapeOcre:
         else:
 
             # Non-IIIF collection
-            data_images["link"] = soup_a["href"]
+            data_images_["link"] = soup_a["href"]
 
-        return data_images.copy()
+        return data_images_.copy()
 
     @staticmethod
     def populate_raw_browse_pages_schema(
