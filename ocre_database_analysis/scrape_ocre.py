@@ -889,51 +889,6 @@ class ScrapeOcre:
 
                                 pass
 
-                        # >>> OLD >>>
-                        # # Example has links in the image section
-                        # data_examples["has_links_section"] = True
-
-                        # for tag in soup_examples_images:
-                        #     # >>> DEBUG >>>
-                        #     print(tag["title"])
-                        #     # <<< DEBUG <<<
-
-                        #     data_images = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-                        #     data_images.pop("examples_images_id")
-                        #     data_images["stg_examples_id"] = examples_id
-
-                        #     if (
-                        #         data_examples["collection_name"]
-                        #         in ScrapeOcre.COLLECTIONS_WITH_IIIF
-                        #     ):
-                        #         # IIIF collection
-                        #         pass
-                        #     else:
-                        #         # Non-IIIF collection
-                        #         if data_examples["collection_name"] not in (
-                        #             "Museu Arqueològic de Llíria",
-                        #             "Museu de Prehistòria de València",
-                        #         ):
-                        #             title = tag["title"].lower()
-                        #             if "obverse" in title and "reverse" in title:
-                        #                 data_images["image_type"] = "both sides"
-                        #             elif "obverse" in title:
-                        #                 data_images["image_type"] = "obverse"
-                        #             elif "reverse" in title:
-                        #                 data_images["image_type"] = "reverse"
-                        #             else:
-                        #                 data_images["image_type"] = "unknown"
-
-                        #             data_images["link"] = tag["href"]
-
-                        #             data_images_list.append(data_images)
-                        #         else:
-                        #             # Update has_links_section field and
-                        #             # do not write to stg_examples_images
-                        #             # table
-                        #             data_examples["has_links_section"] = False
-                        #             del data_images
-                        # <<< OLD <<<
                     else:
                         # Example does not have links in the image section
                         # Do not write to stg_examples_images table
@@ -1034,6 +989,7 @@ class ScrapeOcre:
 
         return None
 
+    # TODO: Move for loop inside method and return list of dicts
     def _process_examples_images_fields(
         self, soup_a: BeautifulSoup, examples_id: int, collection_name: str
     ) -> dict:
