@@ -855,7 +855,12 @@ class ScrapeOcre:
 
                                 # Some British Museum images us IIIF and
                                 # others do not.
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
+                                    )
+                                    data_images_list.append(data_images)
 
                             elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
 
@@ -1034,7 +1039,15 @@ class ScrapeOcre:
 
         elif collection_name == "British Museum":
 
-            pass
+            if soup_a["href"] == "#iiif-window":
+
+                link = soup_a.img["src"]
+                mod_link = link.replace("small_", "mid_", 1)
+
+            else:
+
+                link = soup_a["href"]
+                mod_link = link.replace("large_", "mid_", 1)
 
         elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
 
