@@ -863,7 +863,12 @@ class ScrapeOcre:
 
                             elif collection_name == "J. Paul Getty Museum":
 
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
+                                    )
+                                    data_images_list.append(data_images)
 
                             elif collection_name == "The Fralin Museum of Art":
 
@@ -1027,7 +1032,14 @@ class ScrapeOcre:
 
         elif collection_name == "J. Paul Getty Museum":
 
-            pass
+            link = soup_a.img["src"]
+            mod_link = link.replace("https://", "")
+            mod_link = mod_link.split("/", maxsplit=-1)
+            mod_link = [
+                "600,600" if "," in i else "default.jpg" if "native" in i else i
+                for i in mod_link
+            ]
+            mod_link = "https://" + "/".join(mod_link)
 
         elif collection_name == "The Fralin Museum of Art":
 
