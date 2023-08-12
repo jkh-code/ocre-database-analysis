@@ -871,7 +871,12 @@ class ScrapeOcre:
 
                             elif collection_name == "University of Graz":
 
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
+                                    )
+                                    data_images_list.append(data_images)
 
                     else:
                         # Example does not have links in the image section
@@ -914,7 +919,7 @@ class ScrapeOcre:
 
             # >>> DEBUG >>>
             # break
-            if self.client.cur.rownumber > 5:
+            if self.client.cur.rownumber > 5_000:
                 break
             # <<< DEBUG <<<
 
@@ -1011,6 +1016,28 @@ class ScrapeOcre:
                 mod_link = link + "/f1.highres"
             elif data_images_["image_type"] == "reverse":
                 mod_link = link + "/f2.highres"
+
+        elif collection_name == "British Museum":
+
+            pass
+
+        elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
+
+            pass
+
+        elif collection_name == "J. Paul Getty Museum":
+
+            pass
+
+        elif collection_name == "The Fralin Museum of Art":
+
+            pass
+
+        elif collection_name == "University of Graz":
+
+            link = soup_a.img["src"]
+            mod_link = link.replace("iiif", "archive/get").replace("http", "https")
+            mod_link = mod_link.split("/full/", maxsplit=1)[0]
 
         else:
 
