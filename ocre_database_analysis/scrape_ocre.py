@@ -859,7 +859,12 @@ class ScrapeOcre:
 
                             elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
 
-                                pass
+                                data_examples["has_links_section"] = True
+                                for tag in soup_examples_images:
+                                    data_images = self._process_examples_images_fields(
+                                        tag, examples_id, collection_name
+                                    )
+                                    data_images_list.append(data_images)
 
                             elif collection_name == "J. Paul Getty Museum":
 
@@ -1033,7 +1038,17 @@ class ScrapeOcre:
 
         elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
 
-            pass
+            link = soup_a.img["src"]
+            mod_link = link.replace("https://", "").replace(
+                "iiif/image", "api/v1/records"
+            )
+            mod_link = mod_link.split("/", maxsplit=-1)
+            mod_link = [
+                i + "/files/images" if ("record_" in i) and (".jpg" not in i) else i
+                for i in mod_link
+            ]
+            mod_link = ["!600,600" if "," in i else i for i in mod_link]
+            mod_link = "https://" + "/".join(mod_link)
 
         elif collection_name == "J. Paul Getty Museum":
 
