@@ -810,16 +810,27 @@ class ScrapeOcre:
                                 "Museu Arqueològic de Llíria",
                                 "Museu de Prehistòria de València",
                             ):
+
                                 # Not a Spanish museum that redirects to main page
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
+                                self._process_image_tags(
+                                    soup_examples_images,
+                                    data_examples,
+                                    data_images_list,
+                                    examples_id,
+                                    collection_name,
+                                )
+                                # data_examples["has_links_section"] = True
+                                # for tag in soup_examples_images:
+                                #     data_images = self._process_examples_images_fields(
+                                #         tag, examples_id, collection_name
+                                #     )
+                                #     data_images_list.append(data_images)
+
                             else:
+
                                 # A Spanish museum that redirects to main page
                                 data_examples["has_links_section"] = False
+
                         else:
                             # A collection that may use IIIF
 
@@ -831,17 +842,23 @@ class ScrapeOcre:
                                 data_examples["has_links_section"] = False
 
                             else:
-                                # TODO: Update if statement because collection
-                                # specific actions are in method?
 
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
+                                self._process_image_tags(
+                                    soup_examples_images,
+                                    data_examples,
+                                    data_images_list,
+                                    examples_id,
+                                    collection_name,
+                                )
+                                # data_examples["has_links_section"] = True
+                                # for tag in soup_examples_images:
+                                #     data_images = self._process_examples_images_fields(
+                                #         tag, examples_id, collection_name
+                                #     )
+                                #     data_images_list.append(data_images)
 
                     else:
+
                         # Example does not have links in the image section
                         # Do not write to stg_examples_images table
                         data_examples["has_links_section"] = False
@@ -1048,6 +1065,26 @@ class ScrapeOcre:
         data_images_["link"] = mod_link
 
         return data_images_.copy()
+
+    def _process_image_tags(
+        self,
+        soup: BeautifulSoup,
+        data_examples: dict,
+        data_images_list: list,
+        examples_id: int,
+        collection_name: str,
+    ) -> None:
+        """Scrape image tags and update data_examples dict and
+        data_images_list list in place."""
+
+        data_examples["has_links_section"] = True
+        for tag in soup:
+            data_images = self._process_examples_images_fields(
+                tag, examples_id, collection_name
+            )
+            data_images_list.append(data_images)
+
+        return None
 
     @staticmethod
     def populate_raw_browse_pages_schema(
