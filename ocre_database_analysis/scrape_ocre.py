@@ -819,12 +819,6 @@ class ScrapeOcre:
                                     examples_id,
                                     collection_name,
                                 )
-                                # data_examples["has_links_section"] = True
-                                # for tag in soup_examples_images:
-                                #     data_images = self._process_examples_images_fields(
-                                #         tag, examples_id, collection_name
-                                #     )
-                                #     data_images_list.append(data_images)
 
                             else:
 
@@ -850,12 +844,6 @@ class ScrapeOcre:
                                     examples_id,
                                     collection_name,
                                 )
-                                # data_examples["has_links_section"] = True
-                                # for tag in soup_examples_images:
-                                #     data_images = self._process_examples_images_fields(
-                                #         tag, examples_id, collection_name
-                                #     )
-                                #     data_images_list.append(data_images)
 
                     else:
 
