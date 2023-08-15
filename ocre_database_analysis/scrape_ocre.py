@@ -785,12 +785,12 @@ class ScrapeOcre:
                     ).find_all("a")
                     num_tags = len(soup_examples_images)
                     # >>> DEBUG >>>
-                    print(f"Example #{idx:2,d} {coin_title}")
-                    print(data_examples["collection_name"])
-                    print(f"Number of links: {num_tags}")
-                    print(
-                        f"IIIF?: {data_examples['collection_name'] in ScrapeOcre.COLLECTIONS_WITH_IIIF}"
-                    )
+                    # print(f"Example #{idx:2,d} {coin_title}")
+                    # print(data_examples["collection_name"])
+                    # print(f"Number of links: {num_tags}")
+                    # print(
+                    #     f"IIIF?: {data_examples['collection_name'] in ScrapeOcre.COLLECTIONS_WITH_IIIF}"
+                    # )
                     # <<< DEBUG <<<
                     data_images_list = list()
                     if soup_examples_images:
@@ -906,12 +906,12 @@ class ScrapeOcre:
                     # >>> DEBUG >>>
                     # print(f"Example #{idx:2,d} {coin_title}")
                     # pprint(data_examples)
-                    print(
-                        f"Image has links section?: {data_examples['has_links_section']}"
-                    )
-                    # TODO: Check if data_images_list is empty before writing to database
-                    pprint(data_images_list)
-                    print()
+                    # print(
+                    #     f"Image has links section?: {data_examples['has_links_section']}"
+                    # )
+
+                    # pprint(data_images_list)
+                    # print()
                     # <<< DEBUG <<<
 
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
@@ -920,6 +920,7 @@ class ScrapeOcre:
                     #     path_insert_examples, [data_examples]
                     # )
 
+                    # TODO: Check if data_images_list is empty before writing to database
                     if data_images_list:
                         path_insert_images = (
                             c.SQL_FOLDER / "insert" / "stg_examples_images.sql"
