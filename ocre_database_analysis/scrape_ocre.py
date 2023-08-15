@@ -920,6 +920,14 @@ class ScrapeOcre:
                     #     path_insert_examples, [data_examples]
                     # )
 
+                    if data_images_list:
+                        path_insert_images = (
+                            c.SQL_FOLDER / "insert" / "stg_examples_images.sql"
+                        )
+                        self._insert_using_secondary_client(
+                            path_insert_images, data_images_list
+                        )
+
             # Populate stg_uri_pages
             data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
             data_pages["uri_page_id"] = data_query["raw_uri_id"]
