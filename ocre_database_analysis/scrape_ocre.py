@@ -812,7 +812,6 @@ class ScrapeOcre:
                             ):
                                 # Not a Spanish museum that redirects to main page
                                 data_examples["has_links_section"] = True
-
                                 for tag in soup_examples_images:
                                     data_images = self._process_examples_images_fields(
                                         tag, examples_id, collection_name
@@ -831,65 +830,9 @@ class ScrapeOcre:
                                 # sample image links.
                                 data_examples["has_links_section"] = False
 
-                            # TODO: Update if statement because collection
-                            # specific actions are in method?
-                            elif collection_name == "American Numismatic Society":
-
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name == "Bibliothèque nationale de France":
-
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name == "British Museum":
-
-                                # Some British Museum images us IIIF and
-                                # others do not.
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
-
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name == "J. Paul Getty Museum":
-
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name == "The Fralin Museum of Art":
-
-                                data_examples["has_links_section"] = True
-                                for tag in soup_examples_images:
-                                    data_images = self._process_examples_images_fields(
-                                        tag, examples_id, collection_name
-                                    )
-                                    data_images_list.append(data_images)
-
-                            elif collection_name == "University of Graz":
+                            else:
+                                # TODO: Update if statement because collection
+                                # specific actions are in method?
 
                                 data_examples["has_links_section"] = True
                                 for tag in soup_examples_images:
