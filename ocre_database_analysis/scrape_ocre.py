@@ -702,8 +702,7 @@ class ScrapeOcre:
 
                 # Insert stg_coins data
                 path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
-                # TODO: Uncomment
-                # self._insert_using_secondary_client(path_insert_coins, [data_coins])
+                self._insert_using_secondary_client(path_insert_coins, [data_coins])
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
