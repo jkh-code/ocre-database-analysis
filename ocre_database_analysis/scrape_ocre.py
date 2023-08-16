@@ -567,13 +567,6 @@ class ScrapeOcre:
                 coin_id=data_query["coin_id"], interval=1_000
             )
 
-            # >>> DEBUG >>>
-            # delme_data_query = data_query.copy()
-            # delme_data_query.pop("page_html")
-            # print("RAW_URI_PAGES DATA:")
-            # pprint(delme_data_query)
-            # <<< DEBUG <<<
-
             soup = BeautifulSoup(data_query["page_html"], "lxml")
 
             # >>> Populate stg_coins >>>
@@ -614,10 +607,6 @@ class ScrapeOcre:
 
                             # Modify field name and save field and value to dict
                             self._add_field_value_to_dict(data_coins, field, value)
-
-                            # >>> DEBUG >>>
-                            # print(f"{field}\t\t{value}")
-                            # <<< DEBUG <<<
                         elif all_item_tags[0].name == "h4":
                             section_name = (
                                 all_item_tags[0].text.strip().lower().replace(" ", "_")
@@ -660,10 +649,6 @@ class ScrapeOcre:
                                     self._add_field_value_to_dict(
                                         data_coins, field, value
                                     )
-
-                                    # >>> DEBUG >>>
-                                    # print(f"{field}\t\t{value}")
-                                    # <<< DEBUG <<<
                 else:
                     # There is not a typological section
                     # Remaining fields are None by default, therefore,
@@ -710,12 +695,6 @@ class ScrapeOcre:
                     # Remaining fields are None by default, therefore,
                     # they do not need to be updated in this clause.
                     data_coins["has_analysis"] = False
-
-                # >>> DEBUG >>>
-                # print(f"Coin #{data_query['coin_id']} at {data_query['path_uri']}:")
-                # pprint(data_coins)
-                # print()
-                # <<< DEBUG <<<
 
                 # Insert stg_coins data
                 path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
@@ -783,14 +762,6 @@ class ScrapeOcre:
                         "div", class_="gi_c"
                     ).find_all("a")
                     num_tags = len(soup_examples_images)
-                    # >>> DEBUG >>>
-                    # print(f"Example #{idx:2,d} {coin_title}")
-                    # print(data_examples["collection_name"])
-                    # print(f"Number of links: {num_tags}")
-                    # print(
-                    #     f"IIIF?: {data_examples['collection_name'] in ScrapeOcre.COLLECTIONS_WITH_IIIF}"
-                    # )
-                    # <<< DEBUG <<<
                     data_images_list = list()
                     if soup_examples_images:
                         # Example may have links in the image section
@@ -850,24 +821,12 @@ class ScrapeOcre:
                         # Do not write to stg_examples_images table
                         data_examples["has_links_section"] = False
 
-                    # >>> DEBUG >>>
-                    # print(f"Example #{idx:2,d} {coin_title}")
-                    # pprint(data_examples)
-                    # print(
-                    #     f"Image has links section?: {data_examples['has_links_section']}"
-                    # )
-
-                    # pprint(data_images_list)
-                    # print()
-                    # <<< DEBUG <<<
-
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
                     # TODO: uncommit line
                     # self._insert_using_secondary_client(
                     #     path_insert_examples, [data_examples]
                     # )
 
-                    # TODO: Check if data_images_list is empty before writing to database
                     if data_images_list:
                         path_insert_images = (
                             c.SQL_FOLDER / "insert" / "stg_examples_images.sql"
@@ -892,12 +851,6 @@ class ScrapeOcre:
             path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
             # TODO: Uncomment line
             # self._insert_using_secondary_client(path_insert_pages, [data_pages])
-
-            # >>> DEBUG >>>
-            # break
-            # if self.client.cur.rownumber > 5_000:
-            #     break
-            # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
         return None
