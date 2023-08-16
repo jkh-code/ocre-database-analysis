@@ -919,7 +919,15 @@ class ScrapeOcre:
         data_images dict, and return data_images dict for IIIF and
         non-IIIF images."""
         data_images_ = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-        data_images_.pop("examples_images_id")
+        drop_fields = (
+            "examples_images_id",
+            "tried_downloading",
+            "is_downloaded",
+            "image_dimensions",
+            "file_path",
+        )
+        # Dict comprehension not saved because not used
+        [data_images_.pop(drop_field) for drop_field in drop_fields]
         data_images_["stg_examples_id"] = examples_id
 
         # Scrape image_type field
