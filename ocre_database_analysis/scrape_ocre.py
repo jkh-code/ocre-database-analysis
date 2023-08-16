@@ -1,5 +1,4 @@
 from __future__ import annotations
-from numpy import insert
 
 import psycopg2 as pg2
 import sys
@@ -896,8 +895,8 @@ class ScrapeOcre:
 
             # >>> DEBUG >>>
             # break
-            if self.client.cur.rownumber > 5_000:
-                break
+            # if self.client.cur.rownumber > 5_000:
+            #     break
             # <<< DEBUG <<<
 
         print("Finished processing canonical URI data...")
