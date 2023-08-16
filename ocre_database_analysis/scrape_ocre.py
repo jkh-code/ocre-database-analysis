@@ -194,10 +194,6 @@ class ScrapeOcre:
         "stg_examples_id": None,
         "image_type": None,
         "link": None,
-        "tried_downloading": None,
-        "is_downloaded": None,
-        "image_dimensions": None,
-        "file_path": None,
     }
     SCHEMA_STG_URI_PAGES = {
         "uri_page_id": None,
