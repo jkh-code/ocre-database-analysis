@@ -702,8 +702,7 @@ class ScrapeOcre:
 
                 # Insert stg_coins data
                 path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
-                # TODO: Uncomment
-                # self._insert_using_secondary_client(path_insert_coins, [data_coins])
+                self._insert_using_secondary_client(path_insert_coins, [data_coins])
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
@@ -826,10 +825,9 @@ class ScrapeOcre:
                         data_examples["has_links_section"] = False
 
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
-                    # TODO: uncommit line
-                    # self._insert_using_secondary_client(
-                    #     path_insert_examples, [data_examples]
-                    # )
+                    self._insert_using_secondary_client(
+                        path_insert_examples, [data_examples]
+                    )
 
                     if data_images_list:
                         path_insert_images = (
@@ -853,8 +851,7 @@ class ScrapeOcre:
             data_pages["uri_link"] = data_query["path_uri"]
 
             path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
-            # TODO: Uncomment line
-            # self._insert_using_secondary_client(path_insert_pages, [data_pages])
+            self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
         print("Finished processing canonical URI data...")
         return None
@@ -911,7 +908,6 @@ class ScrapeOcre:
 
         return None
 
-    # TODO: Move for loop inside method and return list of dicts
     def _process_examples_images_fields(
         self, soup_a: BeautifulSoup, examples_id: int, collection_name: str
     ) -> dict:
