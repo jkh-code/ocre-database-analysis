@@ -4,6 +4,7 @@ import psycopg2 as pg2
 import sys
 from bs4 import BeautifulSoup
 import requests
+import re
 
 from pprint import pprint
 
@@ -19,6 +20,88 @@ from pathlib import PosixPath, WindowsPath
 
 class ScrapeOcre:
     """Scrape OCRE website and process HTML."""
+
+    TYPOLOGICAL_FIELD_CONVERSION = {
+        "date": "coin_date_range",
+        "date_range": "coin_date_range",
+        "denomination": "denomination",
+        "manufacture": "manufacture",
+        "material": "material",
+        "object_type": "object_type",
+        "authority_authority": "authority_name",
+        "authority_issuer": "issuer_name",
+        "authority_stated_authority": "stated_authority_name",
+        "date_on_object_date": "coin_date_range",
+        "geographic_mint": "mint",
+        "geographic_region": "region",
+        "obverse_controlmark": "obverse_controlmark",
+        "obverse_deity": "obverse_deity",
+        "obverse_legend": "obverse_legend",
+        "obverse_portrait": "obverse_portrait",
+        "obverse_state": "obverse_state",
+        "obverse_type": "obverse_type",
+        "reverse_control_marks": "reverse_control_marks",
+        "reverse_deity": "reverse_deity",
+        "reverse_dynasty": "reverse_dynasty",
+        "reverse_legend": "reverse_legend",
+        "reverse_mintmark": "reverse_mintmark",
+        "reverse_monogram": "reverse_monogram",
+        "reverse_officinamark": "reverse_officinamark",
+        "reverse_portrait": "reverse_portrait",
+        "reverse_state": "reverse_state",
+        "reverse_symbol": "reverse_symbol",
+        "reverse_type": "reverse_type",
+    }
+    EXAMPLES_FIELDS_CONVERSION = {
+        "axis": "coin_axis",
+        "collection": "collection_name",
+        "diameter": "coin_diameter",
+        "findspot": "findspot",
+        "hoard": "hoard",
+        "identifier": "identifier",
+        "weight": "coin_weight",
+    }
+    TYPOLOGICAL_ARRAY_FIELDS = [
+        "denomination",
+        "material",
+        "object_type",
+        "authority_name",
+        "issuer_name",
+        "mint",
+        "region",
+        "obverse_deity",
+        "obverse_portrait",
+        "obverse_state",
+        "reverse_deity",
+        "reverse_officinamark",
+        "reverse_portrait",
+        "reverse_state",
+        "reverse_symbol",
+    ]
+    STG_EXAMPLES_NUMERIC_FIELDS = ["coin_axis", "coin_diameter", "coin_weight"]
+    COLLECTIONS_WITH_IIIF = [
+        "American Numismatic Society",
+        "Bibliothèque nationale de France",
+        "British Museum",
+        "Coin Cabinet of the Mainz City Archives",
+        "Harvard Art Museums",
+        "J. Paul Getty Museum",
+        "Münzkabinett der Universität Göttingen",
+        "Oldenburg Municipal Museum",
+        "State Coin Collection of Munich",
+        "State Museum of Prehistory Halle",
+        "The Fralin Museum of Art",
+        "Thuringian Museum for Pre- and Early History",
+        "University of Graz",
+    ]
+    MAINZ_CITY_LIKE_LINKS = [
+        "Coin Cabinet of the Mainz City Archives",
+        "Münzkabinett der Universität Göttingen",
+        "Oldenburg Municipal Museum",
+        "State Coin Collection of Munich",
+        "State Museum of Prehistory Halle",
+        "Thuringian Museum for Pre- and Early History",
+    ]
 
     # Schemas without `ts` field
     SCHEMA_RAW_BROWSE_PAGES = {
@@ -52,6 +135,75 @@ class ScrapeOcre:
         "examples_end_id": None,
         "examples_max_id": None,
         "page_html": None,
+    }
+    SCHEMA_STG_COINS = {
+        "coin_id": None,
+        "coin_name": None,
+        "has_typological": None,
+        "has_examples": None,
+        "has_examples_pagination": None,
+        "has_analysis": None,
+        "coin_date_range": None,
+        "denomination": None,
+        "manufacture": None,
+        "material": None,
+        "object_type": None,
+        "authority_name": None,
+        "issuer_name": None,
+        "stated_authority_name": None,
+        "mint": None,
+        "region": None,
+        "obverse_controlmark": None,
+        "obverse_deity": None,
+        "obverse_legend": None,
+        "obverse_portrait": None,
+        "obverse_state": None,
+        "obverse_type": None,
+        "reverse_control_marks": None,
+        "reverse_deity": None,
+        "reverse_dynasty": None,
+        "reverse_legend": None,
+        "reverse_mintmark": None,
+        "reverse_monogram": None,
+        "reverse_officinamark": None,
+        "reverse_portrait": None,
+        "reverse_state": None,
+        "reverse_symbol": None,
+        "reverse_type": None,
+        "average_axis": None,
+        "average_diameter": None,
+        "average_weight": None,
+    }
+    SCHEMA_STG_EXAMPLES = {
+        "examples_id": None,
+        "coin_id": None,
+        "uri_page_examples_id": None,
+        "example_name": None,
+        "has_fields_section": None,
+        "has_links_section": None,
+        "coin_axis": None,
+        "collection_name": None,
+        "coin_diameter": None,
+        "findspot": None,
+        "hoard": None,
+        "identifier": None,
+        "coin_weight": None,
+    }
+    SCHEMA_STG_EXAMPLES_IMAGES = {
+        "examples_images_id": None,
+        "stg_examples_id": None,
+        "image_type": None,
+        "link": None,
+    }
+    SCHEMA_STG_URI_PAGES = {
+        "uri_page_id": None,
+        "coin_id": None,
+        "examples_pagination_id": None,
+        "examples_total_pagination": None,
+        "examples_start_id": None,
+        "examples_end_id": None,
+        "examples_max_id": None,
+        "uri_link": None,
     }
 
     def __init__(
@@ -393,8 +545,315 @@ class ScrapeOcre:
         print("Finished scraping URIs with pagination...")
         return None
 
-    def process_canonical_uris(self):
-        pass
+    def process_canonical_uris(self) -> None:
+        """Process raw_uri_pages records to populate records in
+        stg_coins, stg_examples, stg_examples_images, and stg_uri_pages
+        tables."""
+
+        print("Start processing canonical URI data...")
+        print("Querying raw_uri_pages table...")
+        path_query = c.SQL_FOLDER / "query" / "raw_uri_pages_with_path.sql"
+        self.client.query_data(path_query)
+
+        num_rows = self.client.cur.rowcount
+        print(f"Processing {num_rows:6,d} rows of data...")
+
+        examples_id = int()  # For stg_examples table
+        for row in self.client.cur:
+            data_query = ScrapeOcre.SCHEMA_RAW_URI_PAGES.copy()
+            ScrapeOcre.populate_raw_uri_pages_schema(data_query, row)
+            data_query["path_uri"] = row[-1]
+            self._print_scrape_update_periodically(
+                coin_id=data_query["coin_id"], interval=1_000
+            )
+
+            soup = BeautifulSoup(data_query["page_html"], "lxml")
+
+            # >>> Populate stg_coins >>>
+            if data_query["examples_pagination_id"] in (None, 1):
+                data_coins = ScrapeOcre.SCHEMA_STG_COINS.copy()
+                data_coins["coin_id"] = data_query["coin_id"]
+                data_coins["has_examples"] = data_query["has_examples"]
+                data_coins["has_examples_pagination"] = data_query[
+                    "has_examples_pagination"
+                ]
+                data_coins["coin_name"] = re.sub(
+                    " +",
+                    " ",
+                    soup.find("h1", id="object_title").text.strip().replace("\n", ""),
+                )
+
+                # Populate Typological data
+                soup_typological = soup.find("div", class_="metadata_section")
+
+                if soup_typological:
+                    # There is a typological section
+                    data_coins["has_typological"] = True
+
+                    raw_typo_data = soup_typological.ul
+                    raw_typo_data = [item for item in raw_typo_data if item.name]
+                    for item in raw_typo_data:
+                        all_item_tags = [i for i in item if i.name]
+
+                        if all_item_tags[0].name == "b":
+                            result_split = item.text.strip().split(": ", maxsplit=1)
+                            if len(result_split) == 1:
+                                field = result_split[0].replace(":", "")
+                                value = None
+                            else:
+                                field, value = result_split
+                                value = re.sub(" +", " ", value.replace("\n", " "))
+                            field = field.lower().replace(" ", "_")
+
+                            # Modify field name and save field and value to dict
+                            self._add_field_value_to_dict(data_coins, field, value)
+                        elif all_item_tags[0].name == "h4":
+                            section_name = (
+                                all_item_tags[0].text.strip().lower().replace(" ", "_")
+                            )
+                            for li in item.find_all("li"):
+                                if li.contents[0].name == "b":
+                                    field = (
+                                        li.contents[0]
+                                        .text.strip()
+                                        .lower()
+                                        .replace(" ", "_")
+                                        .replace(":", "")
+                                    )
+                                    field = section_name + "_" + field
+
+                                    if "symbol" in field:
+                                        value = re.sub(
+                                            " +",
+                                            " ",
+                                            li.text.strip()
+                                            .replace(" - ", " ")
+                                            .replace(",", "", 1),
+                                        )
+                                        value = value.replace("Symbol: ", "")
+                                    else:
+                                        value = (
+                                            re.sub(
+                                                " +",
+                                                " ",
+                                                li.contents[1]
+                                                .text.strip()
+                                                .replace("\n", " "),
+                                            )
+                                            if len(li.contents) > 1
+                                            else None
+                                        )
+
+                                    # Modify field name and save field
+                                    # and value to dict
+                                    self._add_field_value_to_dict(
+                                        data_coins, field, value
+                                    )
+                else:
+                    # There is not a typological section
+                    # Remaining fields are None by default, therefore,
+                    # they do not need to be updated in this clause.
+                    data_coins["has_typological"] = False
+
+                # Populate Analysis data
+                soup_analysis = soup.find("div", class_="row", id="metrical")
+                if soup_analysis:
+                    # There is an analysis section
+                    soup_analysis_data = soup_analysis.find(
+                        "dl", class_="dl-horizontal"
+                    )
+
+                    if soup_analysis_data:
+                        # Analysis section has fields
+                        data_coins["has_analysis"] = True
+                        all_dt = soup_analysis_data.find_all("dt")
+                        all_dd = soup_analysis_data.find_all("dd")
+                        for dt, dd in zip(all_dt, all_dd):
+                            field = dt.text.strip().lower().replace(" ", "")
+                            field = "average_" + field
+                            value = float(dd.text.strip())
+                            if field in data_coins.keys():
+                                data_coins[field] = value
+                            else:
+                                # This clause should not trigger for the state
+                                # of the OCRE database as of July 2023, but it
+                                # is written in case the database changes in the
+                                # future.
+                                raise KeyError(
+                                    f"KEY ERROR: Field `{field}` is not in `data_coins`"
+                                    + f"dict for coin #{data_coins['coin_id']} with "
+                                    + f"raw_uri_id #{data_query['raw_uri_id']} at URI "
+                                    + f"{data_query['path_uri']}!"
+                                )
+                    else:
+                        # Analysis section does not have fields
+                        # Remaining fields are None by default, therefore,
+                        # they do not need to be updated in this clause.
+                        data_coins["has_analysis"] = False
+                else:
+                    # There is not an analysis section
+                    # Remaining fields are None by default, therefore,
+                    # they do not need to be updated in this clause.
+                    data_coins["has_analysis"] = False
+
+                # Insert stg_coins data
+                path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
+                # TODO: Uncomment
+                # self._insert_using_secondary_client(path_insert_coins, [data_coins])
+            # <<< Populate stg_coins <<<
+
+            # Populate stg_examples and stg_examples_images
+            if data_query["has_examples"] == True:
+                soup_examples = soup.find("div", class_="row", id="examples").find_all(
+                    "div", class_="g_doc col-md-4"
+                )
+                examples_ids = range(
+                    data_query["examples_start_id"],
+                    data_query["examples_end_id"] + 1,
+                    1,
+                )
+                for idx, soup_example in zip(examples_ids, soup_examples):
+                    data_examples = ScrapeOcre.SCHEMA_STG_EXAMPLES.copy()
+                    examples_id += 1
+                    data_examples["examples_id"] = examples_id
+                    data_examples["coin_id"] = data_query["coin_id"]
+
+                    coin_title = soup_example.find(
+                        "span", class_="result_link"
+                    ).text.strip()
+                    data_examples["uri_page_examples_id"] = idx
+                    data_examples["example_name"] = coin_title
+
+                    soup_example_fields = soup_example.find(
+                        "dl", class_="dl-horizontal"
+                    )
+                    if soup_example_fields:
+                        # Example has fields
+                        data_examples["has_fields_section"] = True
+
+                        fields = soup_example_fields.find_all("dt")
+                        values = soup_example_fields.find_all("dd")
+                        for field, value in zip(fields, values):
+                            f = field.text.strip().lower().replace(" ", "_")
+                            v = value.text.strip().replace("\n", " ")
+                            v = re.sub(" +", " ", v)
+                            if f not in ScrapeOcre.EXAMPLES_FIELDS_CONVERSION.keys():
+                                # This clause should not trigger for the state
+                                # of the OCRE database as of July 2023, but it
+                                # is written in case the database changes in the
+                                # future.
+                                raise KeyError(
+                                    f"Field `{f}` not found in {coin_title} "
+                                    + f"(Example ID#{idx}) on URI page "
+                                    + f"{data_query['path_uri']}"
+                                )
+                            else:
+                                f = ScrapeOcre.EXAMPLES_FIELDS_CONVERSION[f]
+                                if f in ScrapeOcre.STG_EXAMPLES_NUMERIC_FIELDS:
+                                    v = float(v)
+                                data_examples[f] = v
+                    else:
+                        # Example does not have fields
+                        # Remaining fields are None by default, therefore,
+                        # they do not need to be updated in this clause.
+                        data_examples["has_fields_section"] = False
+
+                    soup_examples_images = soup_example.find(
+                        "div", class_="gi_c"
+                    ).find_all("a")
+                    num_tags = len(soup_examples_images)
+                    data_images_list = list()
+                    if soup_examples_images:
+                        # Example may have links in the image section
+                        # (there are exceptions depending on collection
+                        # name)
+
+                        # NOTES:
+                        # For current example coin
+                        # Collection name from data_examples["collection_name"]
+                        # Example image links in soup_examples_images
+                        collection_name = data_examples["collection_name"]
+                        if collection_name not in ScrapeOcre.COLLECTIONS_WITH_IIIF:
+                            # Not a collection that uses IIIF
+
+                            if collection_name not in (
+                                "Museu Arqueològic de Llíria",
+                                "Museu de Prehistòria de València",
+                            ):
+
+                                # Not a Spanish museum that redirects to main page
+                                self._process_image_tags(
+                                    soup_examples_images,
+                                    data_examples,
+                                    data_images_list,
+                                    examples_id,
+                                    collection_name,
+                                )
+
+                            else:
+
+                                # A Spanish museum that redirects to main page
+                                data_examples["has_links_section"] = False
+
+                        else:
+                            # A collection that may use IIIF
+
+                            if collection_name == "Harvard Art Museums":
+
+                                # Unable to scrape due to full image links
+                                # not having a logical conversion from
+                                # sample image links.
+                                data_examples["has_links_section"] = False
+
+                            else:
+
+                                self._process_image_tags(
+                                    soup_examples_images,
+                                    data_examples,
+                                    data_images_list,
+                                    examples_id,
+                                    collection_name,
+                                )
+
+                    else:
+
+                        # Example does not have links in the image section
+                        # Do not write to stg_examples_images table
+                        data_examples["has_links_section"] = False
+
+                    path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
+                    # TODO: uncommit line
+                    # self._insert_using_secondary_client(
+                    #     path_insert_examples, [data_examples]
+                    # )
+
+                    if data_images_list:
+                        path_insert_images = (
+                            c.SQL_FOLDER / "insert" / "stg_examples_images.sql"
+                        )
+                        self._insert_using_secondary_client(
+                            path_insert_images, data_images_list
+                        )
+
+            # Populate stg_uri_pages
+            data_pages = ScrapeOcre.SCHEMA_STG_URI_PAGES.copy()
+            data_pages["uri_page_id"] = data_query["raw_uri_id"]
+            data_pages["coin_id"] = data_query["coin_id"]
+            data_pages["examples_pagination_id"] = data_query["examples_pagination_id"]
+            data_pages["examples_total_pagination"] = data_query[
+                "examples_total_pagination"
+            ]
+            data_pages["examples_start_id"] = data_query["examples_start_id"]
+            data_pages["examples_end_id"] = data_query["examples_end_id"]
+            data_pages["examples_max_id"] = data_query["examples_max_id"]
+            data_pages["uri_link"] = data_query["path_uri"]
+
+            path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
+            # TODO: Uncomment line
+            # self._insert_using_secondary_client(path_insert_pages, [data_pages])
+
+        print("Finished processing canonical URI data...")
+        return None
 
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
@@ -429,6 +888,142 @@ class ScrapeOcre:
 
         if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
             print(f"Scraping coin #{coin_id} in row {curr_row} of {total_rows}...")
+        return None
+
+    def _add_field_value_to_dict(
+        self, data_dict: dict, field_name: str, field_value: str
+    ) -> None:
+        """Convert field name to schema field name and add field name
+        and value to data_dict in place for typological fields."""
+        mod_field = ScrapeOcre.TYPOLOGICAL_FIELD_CONVERSION[field_name]
+
+        if mod_field in ScrapeOcre.TYPOLOGICAL_ARRAY_FIELDS:
+            if data_dict[mod_field] == None:
+                data_dict[mod_field] = [field_value]
+            else:
+                data_dict[mod_field].append(field_value)
+        else:
+            data_dict[mod_field] = field_value
+
+        return None
+
+    # TODO: Move for loop inside method and return list of dicts
+    def _process_examples_images_fields(
+        self, soup_a: BeautifulSoup, examples_id: int, collection_name: str
+    ) -> dict:
+        """Process example's image section, populate fields of
+        data_images dict, and return data_images dict for IIIF and
+        non-IIIF images."""
+        data_images_ = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
+        data_images_.pop("examples_images_id")
+        data_images_["stg_examples_id"] = examples_id
+
+        # Scrape image_type field
+        title = soup_a["title"].lower()
+        if "obverse" in title and "reverse" in title:
+            data_images_["image_type"] = "both sides"
+        elif "obverse" in title:
+            data_images_["image_type"] = "obverse"
+        elif "reverse" in title:
+            data_images_["image_type"] = "reverse"
+        else:
+            data_images_["image_type"] = "unknown"
+
+        # Scrape link field
+        if collection_name == "American Numismatic Society":
+
+            link = soup_a.img["src"]
+            mod_link = link.split(".", maxsplit=-1)
+            mod_link = ["noscale" if "width" in i else i for i in mod_link]
+            mod_link = ".".join(mod_link)
+
+        elif collection_name == "Bibliothèque nationale de France":
+
+            link = soup_a["id"]
+            # If obverse, use "f1"; if reverse, use "f2".
+            if data_images_["image_type"] == "obverse":
+                mod_link = link + "/f1.highres"
+            elif data_images_["image_type"] == "reverse":
+                mod_link = link + "/f2.highres"
+
+        elif collection_name == "British Museum":
+
+            if soup_a["href"] == "#iiif-window":
+
+                link = soup_a.img["src"]
+                mod_link = link.replace("small_", "mid_", 1)
+
+            else:
+
+                link = soup_a["href"]
+                mod_link = link.replace("large_", "mid_", 1)
+
+        elif collection_name in ScrapeOcre.MAINZ_CITY_LIKE_LINKS:
+
+            link = soup_a.img["src"]
+            mod_link = link.replace("https://", "").replace(
+                "iiif/image", "api/v1/records"
+            )
+            mod_link = mod_link.split("/", maxsplit=-1)
+            mod_link = [
+                i + "/files/images" if ("record_" in i) and (".jpg" not in i) else i
+                for i in mod_link
+            ]
+            mod_link = ["!600,600" if "," in i else i for i in mod_link]
+            mod_link = "https://" + "/".join(mod_link)
+
+        elif collection_name == "J. Paul Getty Museum":
+
+            link = soup_a.img["src"]
+            mod_link = link.replace("https://", "")
+            mod_link = mod_link.split("/", maxsplit=-1)
+            mod_link = [
+                "600,600" if "," in i else "default.jpg" if "native" in i else i
+                for i in mod_link
+            ]
+            mod_link = "https://" + "/".join(mod_link)
+
+        elif collection_name == "The Fralin Museum of Art":
+
+            link = soup_a.img["src"]
+            mod_link = link.replace("https://", "")
+            mod_link = mod_link.split("/", maxsplit=-1)
+            mod_link = ["full" if "," in i else i for i in mod_link]
+            mod_link = "https://" + "/".join(mod_link)
+
+        elif collection_name == "University of Graz":
+
+            link = soup_a.img["src"]
+            mod_link = link.replace("iiif", "archive/get").replace("http", "https")
+            mod_link = mod_link.split("/full/", maxsplit=1)[0]
+
+        else:
+
+            # Non-IIIF collection
+            mod_link = soup_a["href"]
+
+        data_images_["link"] = mod_link
+
+        return data_images_.copy()
+
+    def _process_image_tags(
+        self,
+        soup: BeautifulSoup,
+        data_examples: dict,
+        data_images_list: list,
+        examples_id: int,
+        collection_name: str,
+    ) -> None:
+        """Scrape image tags and update data_examples dict and
+        data_images_list list in place."""
+
+        data_examples["has_links_section"] = True
+        for tag in soup:
+            data_images = self._process_examples_images_fields(
+                tag, examples_id, collection_name
+            )
+            data_images_list.append(data_images)
+
         return None
 
     @staticmethod
@@ -526,8 +1121,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
-    # pipeline = ScrapeOcre("ocre", only_found=False)
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
+    pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -541,26 +1136,26 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    try:
-        pipeline.scrape_browse_results()
-    except requests.exceptions.RequestException as err:
-        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-        print(err)
-        pipeline.disconnect_from_database()
-        sys.exit(1)
+    # try:
+    #     pipeline.scrape_browse_results()
+    # except requests.exceptions.RequestException as err:
+    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+    #     print(err)
+    #     pipeline.disconnect_from_database()
+    #     sys.exit(1)
 
     # Process Browse results pages
-    pipeline.process_browse_results()
+    # pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
     # TODO: modify script so that method below can be re-run for incomplete scrapes
-    ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
+    # ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
 
     # Scrape raw Canonical URI pages with pagination
-    ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
+    # ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
-    # pipeline.process_canonical_uris()
+    pipeline.process_canonical_uris()
 
     # Disconnect
     pipeline.disconnect_from_database()
