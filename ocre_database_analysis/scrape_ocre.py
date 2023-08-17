@@ -194,6 +194,10 @@ class ScrapeOcre:
         "stg_examples_id": None,
         "image_type": None,
         "link": None,
+        "tried_downloading": None,
+        "is_downloaded": None,
+        "image_dimensions": None,
+        "file_path": None,
     }
     SCHEMA_STG_URI_PAGES = {
         "uri_page_id": None,
@@ -698,8 +702,7 @@ class ScrapeOcre:
 
                 # Insert stg_coins data
                 path_insert_coins = c.SQL_FOLDER / "insert" / "stg_coins.sql"
-                # TODO: Uncomment
-                # self._insert_using_secondary_client(path_insert_coins, [data_coins])
+                self._insert_using_secondary_client(path_insert_coins, [data_coins])
             # <<< Populate stg_coins <<<
 
             # Populate stg_examples and stg_examples_images
@@ -822,10 +825,9 @@ class ScrapeOcre:
                         data_examples["has_links_section"] = False
 
                     path_insert_examples = c.SQL_FOLDER / "insert" / "stg_examples.sql"
-                    # TODO: uncommit line
-                    # self._insert_using_secondary_client(
-                    #     path_insert_examples, [data_examples]
-                    # )
+                    self._insert_using_secondary_client(
+                        path_insert_examples, [data_examples]
+                    )
 
                     if data_images_list:
                         path_insert_images = (
@@ -849,8 +851,7 @@ class ScrapeOcre:
             data_pages["uri_link"] = data_query["path_uri"]
 
             path_insert_pages = c.SQL_FOLDER / "insert" / "stg_uri_pages.sql"
-            # TODO: Uncomment line
-            # self._insert_using_secondary_client(path_insert_pages, [data_pages])
+            self._insert_using_secondary_client(path_insert_pages, [data_pages])
 
         print("Finished processing canonical URI data...")
         return None
@@ -907,7 +908,6 @@ class ScrapeOcre:
 
         return None
 
-    # TODO: Move for loop inside method and return list of dicts
     def _process_examples_images_fields(
         self, soup_a: BeautifulSoup, examples_id: int, collection_name: str
     ) -> dict:
@@ -915,7 +915,15 @@ class ScrapeOcre:
         data_images dict, and return data_images dict for IIIF and
         non-IIIF images."""
         data_images_ = ScrapeOcre.SCHEMA_STG_EXAMPLES_IMAGES.copy()
-        data_images_.pop("examples_images_id")
+        drop_fields = (
+            "examples_images_id",
+            "tried_downloading",
+            "is_downloaded",
+            "image_dimensions",
+            "file_path",
+        )
+        # Dict comprehension not saved because not used
+        [data_images_.pop(drop_field) for drop_field in drop_fields]
         data_images_["stg_examples_id"] = examples_id
 
         # Scrape image_type field
