@@ -1129,8 +1129,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
-    pipeline = ScrapeOcre("ocre", only_found=False)
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
+    # pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -1163,7 +1163,7 @@ if __name__ == "__main__":
     # ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
-    pipeline.process_canonical_uris()
+    # pipeline.process_canonical_uris()
 
     # Disconnect
     pipeline.disconnect_from_database()
