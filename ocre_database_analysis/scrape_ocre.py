@@ -856,6 +856,10 @@ class ScrapeOcre:
         print("Finished processing canonical URI data...")
         return None
 
+    def download_images(self):
+        """"""
+        pass
+
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
         keys in ScrapeOcre.SCHEMA_STG_COIN_SUMMARY dict."""
@@ -1164,6 +1168,9 @@ if __name__ == "__main__":
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
+
+    # Download Images
+    pipeline.download_images()
 
     # Disconnect
     pipeline.disconnect_from_database()
