@@ -209,6 +209,17 @@ class ScrapeOcre:
         "examples_max_id": None,
         "uri_link": None,
     }
+    SCHEMA_FULL_IMAGE = {
+        "coin_id": None,
+        "stg_examples_id": None,
+        "examples_images_id": None,
+        "image_type": None,
+        "link": None,
+        "tried_downloading": None,
+        "is_downloaded": None,
+        "image_dimensions": None,
+        "file_path": None,
+    }
 
     def __init__(
         self,
@@ -856,9 +867,31 @@ class ScrapeOcre:
         print("Finished processing canonical URI data...")
         return None
 
-    def download_images(self):
-        """"""
-        pass
+    def download_images(self, download_images: bool = False) -> None:
+        """Download images to local machine and update
+        stg_examples_images table."""
+
+        print("\nStart downloading images...")
+        print("Querying image records...")
+        path_query = c.SQL_FOLDER / "query" / "stg_examples_images_download_data.sql"
+        self.client.query_data(path_query)
+        num_rows = self.client.cur.rowcount
+        print(f"Processing {num_rows:7,d} rows of data...")
+
+        for row in self.client.cur:
+            data_images = ScrapeOcre.SCHEMA_FULL_IMAGE.copy()
+            ScrapeOcre.populate_full_image_schema(data_images, row)
+            # >>> DEBUG >>>
+            pprint(data_images)
+            # <<< DEBUG <<<
+
+            self._print_scrape_update_periodically(
+                coin_id=data_images["coin_id"], interval=10_000
+            )
+
+            break
+
+        return None
 
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
@@ -1102,6 +1135,23 @@ class ScrapeOcre:
         data_dict["examples_end_id"] = row_of_data[7]
         data_dict["examples_max_id"] = row_of_data[8]
         data_dict["page_html"] = row_of_data[9]
+        return None
+
+    @staticmethod
+    def populate_full_image_schema(data_dict: dict, row_of_data: Union[list, tuple]):
+        """Populate a SCHEMA_FULL_IMAGE schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        SCHEMA_FULL_IMAGE."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["stg_examples_id"] = row_of_data[1]
+        data_dict["examples_images_id"] = row_of_data[2]
+        data_dict["image_type"] = row_of_data[3]
+        data_dict["link"] = row_of_data[4]
+        data_dict["tried_downloading"] = row_of_data[5]
+        data_dict["is_downloaded"] = row_of_data[6]
+        data_dict["image_dimensions"] = row_of_data[7]
+        data_dict["file_path"] = row_of_data[8]
         return None
 
     @staticmethod
