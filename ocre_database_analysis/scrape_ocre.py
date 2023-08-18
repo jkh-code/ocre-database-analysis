@@ -5,6 +5,8 @@ import sys
 from bs4 import BeautifulSoup
 import requests
 import re
+import numpy as np
+import cv2
 
 from pprint import pprint
 
@@ -888,6 +890,17 @@ class ScrapeOcre:
             self._print_scrape_update_periodically(
                 coin_id=data_images["coin_id"], interval=10_000
             )
+
+            r = requests.get(data_images["link"], timeout=60.0, allow_redirects=False)
+            if r.status_code == requests.codes.ok:
+                # Successful request
+                arr = np.asarray(bytearray(r.content), dtype=np.uint8)
+                img = cv2.imdecode(arr, -1)
+                print(img.shape[:2])  # height, width
+                # cv2.imwrite("./images/coins/temp.png", img)
+            else:
+                # Unsuccessful request
+                pass
 
             break
 
