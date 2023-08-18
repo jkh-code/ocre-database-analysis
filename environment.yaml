@@ -22,3 +22,5 @@ dependencies:
 - selenium
 - matplotlib
 - pre-commit
+- opencv
+prefix: /Users/jamal/opt/anaconda3/envs/datasci
