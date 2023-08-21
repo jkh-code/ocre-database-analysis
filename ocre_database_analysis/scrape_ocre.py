@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import numpy as np
-import cv2
+from cv2 import imdecode, imwrite
 
 from pprint import pprint
 
@@ -896,9 +896,9 @@ class ScrapeOcre:
             if r.status_code == requests.codes.ok:
                 # Successful request
                 arr = np.asarray(bytearray(r.content), dtype=np.uint8)
-                img = cv2.imdecode(arr, -1)
+                img = imdecode(arr, -1)
                 print(img.shape[:2])  # height, width
-                # cv2.imwrite("./images/coins/temp.png", img)
+                # imwrite("./images/coins/temp.png", img)
             else:
                 # Unsuccessful request
                 pass
