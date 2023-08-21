@@ -219,7 +219,8 @@ class ScrapeOcre:
         "link": None,
         "tried_downloading": None,
         "is_downloaded": None,
-        "image_dimensions": None,
+        "image_height": None,
+        "image_width": None,
         "file_path": None,
     }
 
@@ -1163,8 +1164,9 @@ class ScrapeOcre:
         data_dict["link"] = row_of_data[4]
         data_dict["tried_downloading"] = row_of_data[5]
         data_dict["is_downloaded"] = row_of_data[6]
-        data_dict["image_dimensions"] = row_of_data[7]
-        data_dict["file_path"] = row_of_data[8]
+        data_dict["image_height"] = row_of_data[7]
+        data_dict["image_width"] = row_of_data[8]
+        data_dict["file_path"] = row_of_data[9]
         return None
 
     @staticmethod
