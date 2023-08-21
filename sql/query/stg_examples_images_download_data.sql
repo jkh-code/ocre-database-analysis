@@ -6,7 +6,8 @@ SELECT
     , i.link
     , i.tried_downloading
     , i.is_downloaded
-    , i.image_dimensions
+    , i.image_height
+    , i.image_width
     , i.file_path
 FROM
     stg_web_scrape.stg_examples AS e

@@ -11,7 +11,8 @@ CREATE TABLE stg_web_scrape.stg_examples_images (
     link VARCHAR NOT NULL,
     tried_downloading BOOLEAN NOT NULL DEFAULT FALSE,
     is_downloaded BOOLEAN NOT NULL DEFAULT FALSE,
-    image_dimensions NUMERIC[] NULL,
+    image_height INTEGER NULL,
+    image_width INTEGER NULL,
     file_path VARCHAR NULL,
     ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (examples_images_id)
