@@ -956,6 +956,9 @@ class ScrapeOcre:
             drop_fields = ("coin_id", "stg_examples_id", "image_type", "link")
             [data_images.pop(key) for key in drop_fields]
             path_update = c.SQL_FOLDER / "update" / "stg_examples_images.sql"
+            # Using insert method to update table because the insert
+            # method runs the pg2 executemany() method and is not
+            # specific to inserting.
             self._insert_using_secondary_client(path_update, [data_images])
 
             # >>> DEBUG >>>
