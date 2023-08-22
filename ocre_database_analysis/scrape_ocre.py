@@ -965,7 +965,11 @@ class ScrapeOcre:
             pprint(data_images)
             # <<< DEBUG <<<
 
-            break
+            # >>> DEBUG >>>
+            # break
+            if self.client.cur.rownumber > 50:
+                break
+            # <<< DEBUG <<<
 
         return None
 
