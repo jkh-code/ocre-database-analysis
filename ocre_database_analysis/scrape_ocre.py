@@ -875,6 +875,16 @@ class ScrapeOcre:
         stg_examples_images table."""
 
         print("\nStart downloading images...")
+
+        print("Querying maximum ID values for file names...")
+        path_query = c.SQL_FOLDER / "query" / "stg_examples_images_max_ids.sql"
+        self.client.query_data(path_query)
+        (
+            max_coin_id,
+            max_stg_examples_id,
+            max_examples_images_id,
+        ) = self.client.cur.fetchone()
+
         print("Querying image records...")
         path_query = c.SQL_FOLDER / "query" / "stg_examples_images_download_data.sql"
         self.client.query_data(path_query)
@@ -884,9 +894,6 @@ class ScrapeOcre:
         for row in self.client.cur:
             data_images = ScrapeOcre.SCHEMA_FULL_IMAGE.copy()
             ScrapeOcre.populate_full_image_schema(data_images, row)
-            # >>> DEBUG >>>
-            pprint(data_images)
-            # <<< DEBUG <<<
 
             self._print_scrape_update_periodically(
                 coin_id=data_images["coin_id"], interval=10_000
@@ -896,9 +903,46 @@ class ScrapeOcre:
             if r.status_code == requests.codes.ok:
                 # Successful request
                 arr = np.asarray(bytearray(r.content), dtype=np.uint8)
-                img = imdecode(arr, -1)
-                print(img.shape[:2])  # height, width
-                # imwrite("./images/coins/temp.png", img)
+                img = imdecode(arr, -1)  # Returns image array
+
+                if img.any():
+                    # Image (array) is not empty
+
+                    # Define file name using zero padding and max ID lengths
+                    str_coin_id = str(data_images["coin_id"]).zfill(
+                        len(str(max_coin_id))
+                    )
+                    str_stg_examples_id = str(data_images["stg_examples_id"]).zfill(
+                        len(str(max_stg_examples_id))
+                    )
+                    str_examples_images_id = str(
+                        data_images["examples_images_id"]
+                    ).zfill(len(str(max_examples_images_id)))
+                    file_name = (
+                        f"{str_coin_id}_{str_stg_examples_id}_"
+                        + f"{str_examples_images_id}_{data_images['image_type']}.png"
+                    )
+                    path_image = c.COIN_FOLDER / file_name
+
+                    imwrite(str(path_image), img)
+
+                    data_images["tried_downloading"] = True
+                    data_images["is_downloaded"] = True
+                    (
+                        data_images["image_height"],
+                        data_images["image_width"],
+                    ) = img.shape[:2]
+                    data_images["file_path"] = str(path_image)
+
+                    # >>> DEBUG >>>
+                    pprint(data_images)
+                    # print(path_image)
+                    # print(img.shape[:2])  # height, width
+                    # imwrite("./images/coins/temp.png", img)
+                    # <<< DEBUG <<<
+                else:
+                    # Image (array) is empty
+                    pass
             else:
                 # Unsuccessful request
                 pass
