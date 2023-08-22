@@ -938,13 +938,21 @@ class ScrapeOcre:
                 else:
 
                     # Image (array) is empty
-                    pass
+
+                    # image_height, image_width, and file_path are
+                    # already None and is_downloaded already False
+                    data_images["tried_downloading"] = True
 
             else:
 
                 # Unsuccessful request
-                pass
 
+                # image_height, image_width, and file_path are already
+                # None and is_downloaded already False
+                data_images["tried_downloading"] = True
+
+            # TODO: Write code to update stg_examples_images table with
+            # new data_images data
             # >>> DEBUG >>>
             pprint(data_images)
             # <<< DEBUG <<<
