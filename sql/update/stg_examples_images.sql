@@ -1,4 +1,4 @@
-UPDATE stg_examples_images
+UPDATE stg_web_scrape.stg_examples_images
 SET
     tried_downloading = %(tried_downloading)s
     , is_downloaded = %(is_downloaded)s
