@@ -906,6 +906,7 @@ class ScrapeOcre:
                 img = imdecode(arr, -1)  # Returns image array
 
                 if img.any():
+
                     # Image (array) is not empty
 
                     # Define file name using zero padding and max ID lengths
@@ -934,18 +935,19 @@ class ScrapeOcre:
                     ) = img.shape[:2]
                     data_images["file_path"] = str(path_image)
 
-                    # >>> DEBUG >>>
-                    pprint(data_images)
-                    # print(path_image)
-                    # print(img.shape[:2])  # height, width
-                    # imwrite("./images/coins/temp.png", img)
-                    # <<< DEBUG <<<
                 else:
+
                     # Image (array) is empty
                     pass
+
             else:
+
                 # Unsuccessful request
                 pass
+
+            # >>> DEBUG >>>
+            pprint(data_images)
+            # <<< DEBUG <<<
 
             break
 
