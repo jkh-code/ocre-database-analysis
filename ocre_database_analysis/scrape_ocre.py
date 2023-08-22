@@ -953,6 +953,11 @@ class ScrapeOcre:
 
             # TODO: Write code to update stg_examples_images table with
             # new data_images data
+            drop_fields = ("coin_id", "stg_examples_id", "image_type", "link")
+            [data_images.pop(key) for key in drop_fields]
+            path_update = c.SQL_FOLDER / "update" / "stg_examples_images.sql"
+            self._insert_using_secondary_client(path_update, [data_images])
+
             # >>> DEBUG >>>
             pprint(data_images)
             # <<< DEBUG <<<
