@@ -911,31 +911,40 @@ class ScrapeOcre:
 
                     # Image (array) is not empty
 
-                    # Define file name using zero padding and max ID lengths
-                    str_coin_id = str(data_images["coin_id"]).zfill(
-                        len(str(max_coin_id))
-                    )
-                    str_stg_examples_id = str(data_images["stg_examples_id"]).zfill(
-                        len(str(max_stg_examples_id))
-                    )
-                    str_examples_images_id = str(
-                        data_images["examples_images_id"]
-                    ).zfill(len(str(max_examples_images_id)))
-                    file_name = (
-                        f"{str_coin_id}_{str_stg_examples_id}_"
-                        + f"{str_examples_images_id}_{data_images['image_type']}.png"
-                    )
-                    path_image = c.COIN_FOLDER / file_name
+                    if download_images:
 
-                    imwrite(str(path_image), img)
+                        # Define file name using zero padding and max ID lengths
+                        str_coin_id = str(data_images["coin_id"]).zfill(
+                            len(str(max_coin_id))
+                        )
+                        str_stg_examples_id = str(data_images["stg_examples_id"]).zfill(
+                            len(str(max_stg_examples_id))
+                        )
+                        str_examples_images_id = str(
+                            data_images["examples_images_id"]
+                        ).zfill(len(str(max_examples_images_id)))
+                        file_name = (
+                            f"{str_coin_id}_{str_stg_examples_id}_"
+                            + f"{str_examples_images_id}_{data_images['image_type']}.png"
+                        )
+                        path_image = c.COIN_FOLDER / file_name
+
+                        imwrite(str(path_image), img)
+
+                        data_images["is_downloaded"] = True
+                        data_images["file_path"] = str(path_image)
+
+                    else:
+
+                        data_images["is_downloaded"] = False
+                        data_images["file_path"] = None
 
                     data_images["tried_downloading"] = True
-                    data_images["is_downloaded"] = True
+                    data_images["can_download"] = True
                     (
                         data_images["image_height"],
                         data_images["image_width"],
                     ) = img.shape[:2]
-                    data_images["file_path"] = str(path_image)
 
                 else:
 
@@ -944,6 +953,7 @@ class ScrapeOcre:
                     # image_height, image_width, and file_path are
                     # already None and is_downloaded already False
                     data_images["tried_downloading"] = True
+                    data_images["can_download"] = False
 
             else:
 
@@ -952,6 +962,7 @@ class ScrapeOcre:
                 # image_height, image_width, and file_path are already
                 # None and is_downloaded already False
                 data_images["tried_downloading"] = True
+                data_images["can_download"] = False
 
             # TODO: Write code to update stg_examples_images table with
             # new data_images data
@@ -1305,7 +1316,7 @@ if __name__ == "__main__":
     # pipeline.process_canonical_uris()
 
     # Download Images
-    pipeline.download_images()
+    pipeline.download_images(download_images=False)
 
     # Disconnect
     pipeline.disconnect_from_database()
