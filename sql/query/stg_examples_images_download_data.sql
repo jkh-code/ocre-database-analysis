@@ -5,6 +5,7 @@ SELECT
     , i.image_type
     , i.link
     , i.tried_downloading
+    , i.can_download
     , i.is_downloaded
     , i.image_height
     , i.image_width
