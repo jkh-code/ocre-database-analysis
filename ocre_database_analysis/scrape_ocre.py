@@ -899,7 +899,7 @@ class ScrapeOcre:
                 coin_id=data_images["coin_id"], interval=10_000
             )
 
-            r = requests.get(data_images["link"], timeout=60.0, allow_redirects=False)
+            r = requests.get(data_images["link"], timeout=30.0, allow_redirects=True)
             if r.status_code == requests.codes.ok:
                 # Successful request
                 arr = np.asarray(bytearray(r.content), dtype=np.uint8)
