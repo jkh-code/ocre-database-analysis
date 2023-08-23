@@ -197,6 +197,7 @@ class ScrapeOcre:
         "image_type": None,
         "link": None,
         "tried_downloading": None,
+        "can_download": None,
         "is_downloaded": None,
         "image_dimensions": None,
         "file_path": None,
@@ -218,6 +219,7 @@ class ScrapeOcre:
         "image_type": None,
         "link": None,
         "tried_downloading": None,
+        "can_download": None,
         "is_downloaded": None,
         "image_height": None,
         "image_width": None,
@@ -1035,6 +1037,7 @@ class ScrapeOcre:
         drop_fields = (
             "examples_images_id",
             "tried_downloading",
+            "can_download",
             "is_downloaded",
             "image_dimensions",
             "file_path",
@@ -1229,10 +1232,11 @@ class ScrapeOcre:
         data_dict["image_type"] = row_of_data[3]
         data_dict["link"] = row_of_data[4]
         data_dict["tried_downloading"] = row_of_data[5]
-        data_dict["is_downloaded"] = row_of_data[6]
-        data_dict["image_height"] = row_of_data[7]
-        data_dict["image_width"] = row_of_data[8]
-        data_dict["file_path"] = row_of_data[9]
+        data_dict["can_download"] = row_of_data[6]
+        data_dict["is_downloaded"] = row_of_data[7]
+        data_dict["image_height"] = row_of_data[8]
+        data_dict["image_width"] = row_of_data[9]
+        data_dict["file_path"] = row_of_data[10]
         return None
 
     @staticmethod
