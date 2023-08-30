@@ -901,7 +901,27 @@ class ScrapeOcre:
                 coin_id=data_images["coin_id"], interval=10_000
             )
 
-            r = requests.get(data_images["link"], timeout=15.0, allow_redirects=True)
+            # https://stackoverflow.com/questions/27068163/python-requests-not-handling-missing-intermediate-certificate-only-from-one-mach/66111417#66111417
+            # temp = "/Users/jamal/opt/anaconda3/envs/datasci/ssl/cacert.pem"
+            # temp = "/Users/jamal/opt/anaconda3/lib/python3.9/site-packages/certifi/cacert.pem"
+
+            have_ssl_error = bool()
+            try:
+                r = requests.get(
+                    data_images["link"], timeout=15.0, allow_redirects=True
+                )
+            except requests.exceptions.SSLError as err:
+                # Unable to resolve SSL Error ("certificate verify
+                # failed: unable to get local issuer certificate")
+                # encountered on British Museum links as of 8/25/2023.
+                # Will define these links as returning bad requests
+                # until a better solution can be found.
+                r.status_code = 404
+                # TODO: integrate have_ssl_error into code below and
+                # remove exit function call
+                have_ssl_error = True
+                sys.exit(1)
+
             if r.status_code == requests.codes.ok:
                 # Successful request
                 arr = np.asarray(bytearray(r.content), dtype=np.uint8)
@@ -958,11 +978,13 @@ class ScrapeOcre:
             else:
 
                 # Unsuccessful request
-
                 # image_height, image_width, and file_path are already
                 # None and is_downloaded already False
                 data_images["tried_downloading"] = True
                 data_images["can_download"] = False
+                if have_ssl_error:
+                    # TODO: Remove file_path assignment after debugging
+                    data_images["file_path"] = None
 
             # TODO: Write code to update stg_examples_images table with
             # new data_images data
