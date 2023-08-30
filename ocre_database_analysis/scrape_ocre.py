@@ -917,10 +917,7 @@ class ScrapeOcre:
                 # Will define these links as returning bad requests
                 # until a better solution can be found.
                 r.status_code = 404
-                # TODO: integrate have_ssl_error into code below and
-                # remove exit function call
                 have_ssl_error = True
-                sys.exit(1)
 
             if r.status_code == requests.codes.ok:
                 # Successful request
