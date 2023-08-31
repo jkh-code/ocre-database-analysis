@@ -911,6 +911,10 @@ class ScrapeOcre:
             # temp = "/Users/jamal/opt/anaconda3/envs/datasci/ssl/cacert.pem"
             # temp = "/Users/jamal/opt/anaconda3/lib/python3.9/site-packages/certifi/cacert.pem"
 
+            # Does user agent need to be set to prevent any kind of exceptions?
+            # Most common user agents:
+            # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
+
             have_ssl_error = bool()
             have_error = bool()
             try:
