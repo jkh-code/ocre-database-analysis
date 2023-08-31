@@ -19,9 +19,6 @@ from pprint import pprint
 import time
 
 
-# TODO: Replace print statements with logging
-
-
 class ScrapeOcre:
     """Scrape OCRE website and process HTML."""
 
