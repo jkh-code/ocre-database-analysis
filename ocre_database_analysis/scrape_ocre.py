@@ -8,13 +8,15 @@ import re
 import numpy as np
 from cv2 import imdecode, imwrite
 
-from pprint import pprint
-
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
 
 from typing import Union, Callable
 from pathlib import PosixPath, WindowsPath
+
+# TODO: delme when done with development
+from pprint import pprint
+import time
 
 
 # TODO: Replace print statements with logging
@@ -876,6 +878,10 @@ class ScrapeOcre:
         """Download images to local machine and update
         stg_examples_images table."""
 
+        # >>> DEBUG >>>
+        start_time = time.time()
+        # <<< DEBUG <<<
+
         print("\nStart downloading images...")
 
         print("Querying maximum ID values for file names...")
@@ -994,15 +1000,22 @@ class ScrapeOcre:
             self._insert_using_secondary_client(path_update, [data_images])
 
             # >>> DEBUG >>>
-            pprint(data_images)
+            # pprint(data_images)
             # <<< DEBUG <<<
 
             # >>> DEBUG >>>
             # break
-            if self.client.cur.rownumber > 50:
-                break
+            # if self.client.cur.rownumber > 50:
+            #     break
             # <<< DEBUG <<<
 
+        # >>> DEBUG >>>
+        end_time = time.time()
+        seconds = end_time - start_time
+        print("\n\n------------- Time in S/M/H -------------")
+        print(f"{seconds} / {round(seconds/60, 0)} / {round(seconds/(60*60))}")
+        print("------------- Time in S/M/H -------------\n\n")
+        # <<< DEBUG <<<
         return None
 
     def _convert_dt(self, tag: str) -> str:
