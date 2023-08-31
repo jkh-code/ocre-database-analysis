@@ -912,8 +912,6 @@ class ScrapeOcre:
             # Most common user agents:
             # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
 
-            have_ssl_error = bool()
-            have_error = bool()
             try:
                 r = requests.get(
                     data_images["link"], timeout=15.0, allow_redirects=True
@@ -925,12 +923,10 @@ class ScrapeOcre:
                 # Will define these links as returning bad requests
                 # until a better solution can be found.
                 r.status_code = 404
-                have_ssl_error = True
             except Exception as err:
                 # TODO: Clean up this section
                 error_msg = str(err)
                 r.status_code = 404
-                have_error = True
 
             if r.status_code == requests.codes.ok:
                 # Successful request
@@ -992,15 +988,7 @@ class ScrapeOcre:
                 # None and is_downloaded already False
                 data_images["tried_downloading"] = True
                 data_images["can_download"] = False
-                if have_ssl_error:
-                    # TODO: Remove file_path assignment after debugging
-                    data_images["file_path"] = "SSL ERROR"
-                if have_error:
-                    # TODO: remove after debugging
-                    data_images["file_path"] = error_msg
 
-            # TODO: Write code to update stg_examples_images table with
-            # new data_images data
             drop_fields = ("coin_id", "stg_examples_id", "image_type", "link")
             [data_images.pop(key) for key in drop_fields]
             path_update = c.SQL_FOLDER / "update" / "stg_examples_images.sql"
