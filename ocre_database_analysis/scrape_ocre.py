@@ -874,7 +874,7 @@ class ScrapeOcre:
         print("Finished processing canonical URI data...")
         return None
 
-    def download_images(self, download_images: bool = False) -> None:
+    def download_images(self, local_download: bool = False) -> None:
         """Download images to local machine and update
         stg_examples_images table."""
 
@@ -944,7 +944,7 @@ class ScrapeOcre:
 
                     # Image (array) is not empty
 
-                    if download_images:
+                    if local_download:
 
                         # Define file name using zero padding and max ID lengths
                         str_coin_id = str(data_images["coin_id"]).zfill(
@@ -1361,7 +1361,7 @@ if __name__ == "__main__":
     # pipeline.process_canonical_uris()
 
     # Download Images
-    pipeline.download_images(download_images=False)
+    pipeline.download_images(local_download=False)
 
     # Disconnect
     pipeline.disconnect_from_database()
