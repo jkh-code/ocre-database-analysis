@@ -912,6 +912,7 @@ class ScrapeOcre:
             # temp = "/Users/jamal/opt/anaconda3/lib/python3.9/site-packages/certifi/cacert.pem"
 
             have_ssl_error = bool()
+            have_error = bool()
             try:
                 r = requests.get(
                     data_images["link"], timeout=15.0, allow_redirects=True
@@ -924,6 +925,11 @@ class ScrapeOcre:
                 # until a better solution can be found.
                 r.status_code = 404
                 have_ssl_error = True
+            except Exception as err:
+                # TODO: Clean up this section
+                error_msg = str(err)
+                r.status_code = 404
+                have_error = True
 
             if r.status_code == requests.codes.ok:
                 # Successful request
@@ -988,6 +994,9 @@ class ScrapeOcre:
                 if have_ssl_error:
                     # TODO: Remove file_path assignment after debugging
                     data_images["file_path"] = "SSL ERROR"
+                if have_error:
+                    # TODO: remove after debugging
+                    data_images["file_path"] = error_msg
 
             # TODO: Write code to update stg_examples_images table with
             # new data_images data
