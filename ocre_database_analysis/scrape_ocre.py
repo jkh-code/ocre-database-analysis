@@ -1321,9 +1321,5 @@ if __name__ == "__main__":
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
 
-    # TODO: Remove this block of code and add warning on method
-    # Download Images
-    # pipeline.download_images(local_download=False)
-
     # Disconnect
     pipeline.disconnect_from_database()
