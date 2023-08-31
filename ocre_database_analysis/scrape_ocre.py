@@ -924,8 +924,8 @@ class ScrapeOcre:
                 # until a better solution can be found.
                 r.status_code = 404
             except Exception as err:
-                # TODO: Clean up this section
-                error_msg = str(err)
+                # Catch all other exceptions raised while requesting
+                # images.
                 r.status_code = 404
 
             if r.status_code == requests.codes.ok:
