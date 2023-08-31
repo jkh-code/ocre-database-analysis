@@ -20,7 +20,7 @@ import ocre_database_analysis.constants as c
 class Topsy:
     """Client for working with PostgreSQL databases."""
 
-    def __init__(self, dbname: Union[None, str] = None, silent: bool = False) -> None:
+    def __init__(self, dbname: Union[None, str] = None) -> None:
         """Initialize client."""
 
         # Creating connection parameters
@@ -38,7 +38,6 @@ class Topsy:
             "host": environ["PGDS_HOST"],
             "port": environ["PGDS_PORT"],
         }
-        self.silent = silent
 
         self.conn = None
         self.cur = None
@@ -47,9 +46,6 @@ class Topsy:
         return None
 
     def _open_connections(self) -> None:
-        if not self.silent:
-            print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
-
         self.conn = pg2.connect(
             dbname=self.conn_parameters["dbname"],
             user=self.conn_parameters["username"],
@@ -58,10 +54,6 @@ class Topsy:
             port=self.conn_parameters["port"],
         )
 
-        if not self.silent:
-            print(
-                f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
-            )
         self.cur = self.conn.cursor()
 
         # Setting autocommit to avoid ActiveSqlTransaction error
@@ -71,16 +63,8 @@ class Topsy:
 
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
-        if not self.silent:
-            print("\nClosing the cursor object...")
-
         self.cur.close()
-
-        if not self.silent:
-            print(f"Closing the connecting to `{self.conn_parameters['dbname']}`...")
-
         self.conn.close()
-
         return None
 
     def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
