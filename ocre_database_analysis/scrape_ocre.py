@@ -875,6 +875,12 @@ class ScrapeOcre:
         """Download images to local machine and update
         stg_examples_images table."""
 
+        # DO NOT USE THIS METHOD
+        # Using this method in its current state will take over 72 hours
+        # (3 days) to scrape all 228k images in the stg_examples_images
+        # table. Before this method can be used in production it will
+        # need to be modified to become more efficient.
+
         print("\nStart downloading images...")
 
         print("Querying maximum ID values for file names...")
