@@ -981,7 +981,7 @@ class ScrapeOcre:
                 data_images["can_download"] = False
                 if have_ssl_error:
                     # TODO: Remove file_path assignment after debugging
-                    data_images["file_path"] = None
+                    data_images["file_path"] = "SSL ERROR"
 
             # TODO: Write code to update stg_examples_images table with
             # new data_images data
