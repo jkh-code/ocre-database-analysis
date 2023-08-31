@@ -1294,7 +1294,7 @@ class ScrapeOcre:
 
     @staticmethod
     def try_except_with_retry(
-        instance_method: Callable[[], None], retry_limit: int = 50
+        instance_method: Callable[[], None], retry_limit: int = 100
     ) -> None:
         """Run method from ScrapeOcre on an instance with try-except
         clauses and a retry limit."""
@@ -1348,7 +1348,6 @@ if __name__ == "__main__":
     # pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
-    # TODO: modify script so that method below can be re-run for incomplete scrapes
     # ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
 
     # Scrape raw Canonical URI pages with pagination
