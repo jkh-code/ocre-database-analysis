@@ -72,7 +72,7 @@ class Topsy:
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
         if not self.silent:
-            print("Closing the cursor object...")
+            print("\nClosing the cursor object...")
 
         self.cur.close()
 

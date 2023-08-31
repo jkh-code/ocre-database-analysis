@@ -157,3 +157,5 @@ cython_debug/
 .vscode
 ~$*.xlsx
 delme*
+images/coins/*
+!images/coins/.gitkeep

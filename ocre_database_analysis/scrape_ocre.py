@@ -5,8 +5,8 @@ import sys
 from bs4 import BeautifulSoup
 import requests
 import re
-
-from pprint import pprint
+import numpy as np
+from cv2 import imdecode, imwrite
 
 from ocre_database_analysis.utilities.topsy import Topsy
 import ocre_database_analysis.constants as c
@@ -14,8 +14,9 @@ import ocre_database_analysis.constants as c
 from typing import Union, Callable
 from pathlib import PosixPath, WindowsPath
 
-
-# TODO: Replace print statements with logging
+# TODO: delme when done with development
+from pprint import pprint
+import time
 
 
 class ScrapeOcre:
@@ -195,6 +196,7 @@ class ScrapeOcre:
         "image_type": None,
         "link": None,
         "tried_downloading": None,
+        "can_download": None,
         "is_downloaded": None,
         "image_dimensions": None,
         "file_path": None,
@@ -208,6 +210,19 @@ class ScrapeOcre:
         "examples_end_id": None,
         "examples_max_id": None,
         "uri_link": None,
+    }
+    SCHEMA_FULL_IMAGE = {
+        "coin_id": None,
+        "stg_examples_id": None,
+        "examples_images_id": None,
+        "image_type": None,
+        "link": None,
+        "tried_downloading": None,
+        "can_download": None,
+        "is_downloaded": None,
+        "image_height": None,
+        "image_width": None,
+        "file_path": None,
     }
 
     def __init__(
@@ -856,6 +871,128 @@ class ScrapeOcre:
         print("Finished processing canonical URI data...")
         return None
 
+    def download_images(self, local_download: bool = False) -> None:
+        """Download images to local machine and update
+        stg_examples_images table."""
+
+        # DO NOT USE THIS METHOD
+        # Using this method in its current state will take over 72 hours
+        # (3 days) to scrape all 228k images in the stg_examples_images
+        # table. Before this method can be used in production it will
+        # need to be modified to become more efficient.
+
+        print("\nStart downloading images...")
+
+        print("Querying maximum ID values for file names...")
+        path_query = c.SQL_FOLDER / "query" / "stg_examples_images_max_ids.sql"
+        self.client.query_data(path_query)
+        (
+            max_coin_id,
+            max_stg_examples_id,
+            max_examples_images_id,
+        ) = self.client.cur.fetchone()
+
+        print("Querying image records...")
+        path_query = c.SQL_FOLDER / "query" / "stg_examples_images_download_data.sql"
+        self.client.query_data(path_query)
+        num_rows = self.client.cur.rowcount
+        print(f"Processing {num_rows:7,d} rows of data...")
+
+        for row in self.client.cur:
+            data_images = ScrapeOcre.SCHEMA_FULL_IMAGE.copy()
+            ScrapeOcre.populate_full_image_schema(data_images, row)
+
+            self._print_scrape_update_periodically(
+                coin_id=data_images["coin_id"], interval=10_000
+            )
+
+            try:
+                r = requests.get(
+                    data_images["link"], timeout=15.0, allow_redirects=True
+                )
+            except requests.exceptions.SSLError as err:
+                # Unable to resolve SSL Error ("certificate verify
+                # failed: unable to get local issuer certificate")
+                # encountered on British Museum links as of 8/25/2023.
+                # Will define these links as returning bad requests
+                # until a better solution can be found.
+                r.status_code = 404
+            except Exception as err:
+                # Catch all other exceptions raised while requesting
+                # images.
+                r.status_code = 404
+
+            if r.status_code == requests.codes.ok:
+                # Successful request
+                arr = np.asarray(bytearray(r.content), dtype=np.uint8)
+                img = imdecode(arr, -1)  # Returns image array
+
+                if img.any():
+
+                    # Image (array) is not empty
+
+                    if local_download:
+
+                        # Define file name using zero padding and max ID lengths
+                        str_coin_id = str(data_images["coin_id"]).zfill(
+                            len(str(max_coin_id))
+                        )
+                        str_stg_examples_id = str(data_images["stg_examples_id"]).zfill(
+                            len(str(max_stg_examples_id))
+                        )
+                        str_examples_images_id = str(
+                            data_images["examples_images_id"]
+                        ).zfill(len(str(max_examples_images_id)))
+                        file_name = (
+                            f"{str_coin_id}_{str_stg_examples_id}_"
+                            + f"{str_examples_images_id}_{data_images['image_type']}.png"
+                        )
+                        path_image = c.COIN_FOLDER / file_name
+
+                        imwrite(str(path_image), img)
+
+                        data_images["is_downloaded"] = True
+                        data_images["file_path"] = str(path_image)
+
+                    else:
+
+                        data_images["is_downloaded"] = False
+                        data_images["file_path"] = None
+
+                    data_images["tried_downloading"] = True
+                    data_images["can_download"] = True
+                    (
+                        data_images["image_height"],
+                        data_images["image_width"],
+                    ) = img.shape[:2]
+
+                else:
+
+                    # Image (array) is empty
+
+                    # image_height, image_width, and file_path are
+                    # already None and is_downloaded already False
+                    data_images["tried_downloading"] = True
+                    data_images["can_download"] = False
+
+            else:
+
+                # Unsuccessful request
+                # image_height, image_width, and file_path are already
+                # None and is_downloaded already False
+                data_images["tried_downloading"] = True
+                data_images["can_download"] = False
+
+            drop_fields = ("coin_id", "stg_examples_id", "image_type", "link")
+            [data_images.pop(key) for key in drop_fields]
+            path_update = c.SQL_FOLDER / "update" / "stg_examples_images.sql"
+            # Using insert method to update table because the insert
+            # method runs the pg2 executemany() method and is not
+            # specific to inserting.
+            self._insert_using_secondary_client(path_update, [data_images])
+
+        return None
+
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
         keys in ScrapeOcre.SCHEMA_STG_COIN_SUMMARY dict."""
@@ -918,6 +1055,7 @@ class ScrapeOcre:
         drop_fields = (
             "examples_images_id",
             "tried_downloading",
+            "can_download",
             "is_downloaded",
             "image_dimensions",
             "file_path",
@@ -1101,8 +1239,27 @@ class ScrapeOcre:
         return None
 
     @staticmethod
+    def populate_full_image_schema(data_dict: dict, row_of_data: Union[list, tuple]):
+        """Populate a SCHEMA_FULL_IMAGE schema in place with data from
+        row_of_data, where the order of the items in row_of_data
+        corresponds to the ordinal position of columns from
+        SCHEMA_FULL_IMAGE."""
+        data_dict["coin_id"] = row_of_data[0]
+        data_dict["stg_examples_id"] = row_of_data[1]
+        data_dict["examples_images_id"] = row_of_data[2]
+        data_dict["image_type"] = row_of_data[3]
+        data_dict["link"] = row_of_data[4]
+        data_dict["tried_downloading"] = row_of_data[5]
+        data_dict["can_download"] = row_of_data[6]
+        data_dict["is_downloaded"] = row_of_data[7]
+        data_dict["image_height"] = row_of_data[8]
+        data_dict["image_width"] = row_of_data[9]
+        data_dict["file_path"] = row_of_data[10]
+        return None
+
+    @staticmethod
     def try_except_with_retry(
-        instance_method: Callable[[], None], retry_limit: int = 50
+        instance_method: Callable[[], None], retry_limit: int = 100
     ) -> None:
         """Run method from ScrapeOcre on an instance with try-except
         clauses and a retry limit."""
@@ -1129,8 +1286,8 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
-    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=40, only_found=False)
-    pipeline = ScrapeOcre("ocre", only_found=False)
+    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
+    # pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -1156,14 +1313,13 @@ if __name__ == "__main__":
     # pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
-    # TODO: modify script so that method below can be re-run for incomplete scrapes
     # ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
 
     # Scrape raw Canonical URI pages with pagination
     # ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
-    pipeline.process_canonical_uris()
+    # pipeline.process_canonical_uris()
 
     # Disconnect
     pipeline.disconnect_from_database()
