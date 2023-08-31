@@ -875,10 +875,6 @@ class ScrapeOcre:
         """Download images to local machine and update
         stg_examples_images table."""
 
-        # >>> DEBUG >>>
-        start_time = time.time()
-        # <<< DEBUG <<<
-
         print("\nStart downloading images...")
 
         print("Querying maximum ID values for file names...")
@@ -903,14 +899,6 @@ class ScrapeOcre:
             self._print_scrape_update_periodically(
                 coin_id=data_images["coin_id"], interval=10_000
             )
-
-            # https://stackoverflow.com/questions/27068163/python-requests-not-handling-missing-intermediate-certificate-only-from-one-mach/66111417#66111417
-            # temp = "/Users/jamal/opt/anaconda3/envs/datasci/ssl/cacert.pem"
-            # temp = "/Users/jamal/opt/anaconda3/lib/python3.9/site-packages/certifi/cacert.pem"
-
-            # Does user agent need to be set to prevent any kind of exceptions?
-            # Most common user agents:
-            # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
 
             try:
                 r = requests.get(
@@ -997,23 +985,6 @@ class ScrapeOcre:
             # specific to inserting.
             self._insert_using_secondary_client(path_update, [data_images])
 
-            # >>> DEBUG >>>
-            # pprint(data_images)
-            # <<< DEBUG <<<
-
-            # >>> DEBUG >>>
-            # break
-            # if self.client.cur.rownumber > 50:
-            #     break
-            # <<< DEBUG <<<
-
-        # >>> DEBUG >>>
-        end_time = time.time()
-        seconds = end_time - start_time
-        print("\n\n------------- Time in S/M/H -------------")
-        print(f"{seconds} / {round(seconds/60, 0)} / {round(seconds/(60*60))}")
-        print("------------- Time in S/M/H -------------\n\n")
-        # <<< DEBUG <<<
         return None
 
     def _convert_dt(self, tag: str) -> str:
