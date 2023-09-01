@@ -1301,25 +1301,25 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    # try:
-    #     pipeline.scrape_browse_results()
-    # except requests.exceptions.RequestException as err:
-    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-    #     print(err)
-    #     pipeline.disconnect_from_database()
-    #     sys.exit(1)
+    try:
+        pipeline.scrape_browse_results()
+    except requests.exceptions.RequestException as err:
+        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+        print(err)
+        pipeline.disconnect_from_database()
+        sys.exit(1)
 
     # Process Browse results pages
-    # pipeline.process_browse_results()
+    pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
-    # ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
+    ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
 
     # Scrape raw Canonical URI pages with pagination
-    # ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
+    ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
-    # pipeline.process_canonical_uris()
+    pipeline.process_canonical_uris()
 
     # Disconnect
     pipeline.disconnect_from_database()
