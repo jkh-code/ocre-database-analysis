@@ -210,6 +210,9 @@ class Topsy:
 
     @staticmethod
     def try_postgres_connection(db_name: str) -> Topsy:
+        """Try to connect to a postgres database and handle exceptions
+        that may occur."""
+
         client = None  # Defined here to turn off false positive error from pylance
         try:
             client = Topsy(db_name)
