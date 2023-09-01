@@ -240,11 +240,13 @@ class ScrapeOcre:
 
     def connect_to_database(self) -> None:
         """Connect to database using Topsy instance."""
+        print(f"Connecting to `{self.db_name}` database...")
         self.client = Topsy(self.db_name)
         return None
 
     def disconnect_from_database(self) -> None:
         """Disconnect from database"""
+        print(f"Disconnecting from `{self.db_name}` database...")
         self.client.close_connection()
         return None
 
