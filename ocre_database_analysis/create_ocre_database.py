@@ -18,7 +18,7 @@ TABLE_CREATION_ORDER = [
 
 
 def create_ocre_database(db_to_create_name: str) -> None:
-    # Initial log in is to `postgres` database to create database
+    print(f"Logging in to `postgres` database to create new database...")
     try:
         client = Topsy("postgres")
     except ValueError as err:
@@ -29,15 +29,22 @@ def create_ocre_database(db_to_create_name: str) -> None:
         Topsy.print_pg2_exception(err)
         sys.exit(1)
 
+    print(f"Creating and switching to `{db_to_create_name}` database...")
     client.create_new_database([db_to_create_name], switch=True)
-    client.create_new_schema(SCHEMA_NAMES)
+    print("Creating schemas:")
+    for schema in SCHEMA_NAMES:
+        print(f"Creating `{schema}` schema...")
+        client.create_new_schema([schema])
 
     path_create = c.SQL_FOLDER / "create"
+    print("Creating tables:")
     for table in TABLE_CREATION_ORDER:
         path_create_file = path_create / (table + ".sql")
+        print(f"Creating `{table}` table...")
         client.create_new_table(path_create_file)
 
     client.close_connection()
+    print("Connection closed.")
 
     return None
 
