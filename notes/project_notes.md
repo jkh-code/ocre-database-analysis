@@ -8,3 +8,4 @@
 ## Next steps
 - Replace print statements with logging.
 - Current design will take over 72 hours (3 days) to scape all 228k images. Implement multiprocessing to reduce this time. Until multiprocessing is implemented, images will not be downloaded in final script.
+-

@@ -63,6 +63,7 @@ class Topsy:
 
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
+
         self.cur.close()
         self.conn.close()
         return None
@@ -70,7 +71,7 @@ class Topsy:
     def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
         """Create new database with option to switch to newly created
         database."""
-        print("Creating new databases...")
+
         num_dbs = len(db_names)
 
         if type(db_names) != list:
@@ -83,14 +84,12 @@ class Topsy:
             )
 
         for name in db_names:
-            print(f"Dropping existing database with the name `{name}`...")
             query_drop_db = "DROP DATABASE IF EXISTS {database_name};"
             query_drop_db = sql.SQL(query_drop_db).format(
                 database_name=sql.Identifier(name)
             )
             self.cur.execute(query_drop_db)
 
-            print(f"Creating new database with name `{name}`...")
             query_create_db = "CREATE DATABASE {database_name};"
             query_create_db = sql.SQL(query_create_db).format(
                 database_name=sql.Identifier(name)
@@ -99,17 +98,14 @@ class Topsy:
 
         if switch:
             db_name = db_names[0]
-            print(f"Switching to `{db_name}`...")
             self.close_connection()
             self.conn_parameters["dbname"] = db_name
             self._open_connections()
-            print(f"Connected to `{self.conn.info.dbname}`...")
 
         return None
 
     def create_new_schema(self, schema_names: list[str]) -> None:
         """Create new schemas in active database."""
-        print("Trying to create new schema(s)...")
 
         if (type(schema_names) != list) or (not schema_names):
             raise ValueError("VALUE ERROR: `schema_names` must be a non-empty list.")
@@ -119,7 +115,6 @@ class Topsy:
             )
 
         for name in schema_names:
-            print(f"Creating schema `{name}` in `{self.conn.info.dbname}`...")
             query_create_schema = "CREATE SCHEMA IF NOT EXISTS {schema_name};"
             query_create_schema = sql.SQL(query_create_schema).format(
                 schema_name=sql.Identifier(name)
@@ -130,7 +125,6 @@ class Topsy:
 
     def create_new_table(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Create new SQL table from file path."""
-        print("Trying to create new table...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -141,19 +135,17 @@ class Topsy:
         if file_path.suffix != ".sql":
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
-        print(f"Creating new table defined in {file_path.name}...")
         with open(file_path, "r", encoding="UTF-8") as f:
             query = f.read()
 
         self.cur.execute(query)
-        print(f"Table created...")
-
         return None
 
     def insert_data(
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
+
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
                 "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
@@ -179,9 +171,6 @@ class Topsy:
         """Query data using specified file and save results to cursor object.
         Use the `params` argument when the query has parameters to pass to
         it."""
-        print(
-            f"Trying to query `{self.conn_parameters['dbname']}` using {file_path.name}..."
-        )
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -200,7 +189,6 @@ class Topsy:
             self.cur.execute(query, params)
         else:
             self.cur.execute(query)
-        print(f"Query complete...")
 
         return None
 
@@ -208,6 +196,7 @@ class Topsy:
     def print_pg2_exception(err: Exception) -> None:
         """Print line number, error, SQLSTATE code, and PG message to
         console."""
+
         _, _, err_traceback = sys.exc_info()
         line_num = err_traceback.tb_lineno
 
