@@ -330,21 +330,30 @@ class ScrapeOcre:
         # Query data
         print("Retrieving data from `raw_browse_pages` table...")
         path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
-        print(path_query)
         self.client.query_data(path_query)
 
+        total_rows = self.client.cur.rowcount
         for row in self.client.cur:
             raw_browse_data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
             ScrapeOcre.populate_raw_browse_pages_schema(raw_browse_data, row)
 
-            print(f"Processing data for `page_id` {raw_browse_data['page_id']}...")
+            interval = 2_000
+            curr_row = self.client.cur.rownumber
+            if curr_row == 1:
+                print(
+                    f"Going into periodical updates, which are at every {interval}..."
+                )
+            if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
+                print(
+                    f"Processing data for `page_id` {raw_browse_data['page_id']}"
+                    + f" in row #{curr_row} of {total_rows}..."
+                )
             soup = BeautifulSoup(raw_browse_data["page_html"], "lxml")
             all_page_coins = soup.find_all("div", class_="row result-doc")
             all_coin_ids = range(
                 raw_browse_data["start_coin_id"], raw_browse_data["end_coin_id"] + 1
             )
             for coin_id, coin in zip(all_coin_ids, all_page_coins):
-                print(f"Processing data for `coin_id` {coin_id}...")
                 processed_browse_data = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
 
                 processed_browse_data["coin_id"] = coin_id
@@ -1312,13 +1321,13 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Scrape Browse results pages
-    try:
-        pipeline.scrape_browse_results()
-    except requests.exceptions.RequestException as err:
-        print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
-        print(err)
-        pipeline.disconnect_from_database()
-        sys.exit(1)
+    # try:
+    #     pipeline.scrape_browse_results()
+    # except requests.exceptions.RequestException as err:
+    #     print(f"\nREQUEST ERROR: Encountered error trying to connect to webpage.")
+    #     print(err)
+    #     pipeline.disconnect_from_database()
+    #     sys.exit(1)
 
     # Process Browse results pages
     pipeline.process_browse_results()
