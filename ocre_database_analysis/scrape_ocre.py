@@ -252,26 +252,23 @@ class ScrapeOcre:
 
     def scrape_browse_results(self) -> None:
         """Scrape Browse results and save HTML to database."""
+        print("Scraping data from Browse tab of OCRE database...")
+
         curr_page_id = 1
         max_num_pages = None
         break_loop = False
 
+        # TODO: Update messages in this method
         while not break_loop:
             url_start_idx = (curr_page_id - 1) * 20
             url_page = c.OCRE_BROWSE_PAGE + str(url_start_idx)
 
-            # Scraping HTML
-            print(f"\nWorking on page #{curr_page_id} ...")
-            print(f"Extracting HTML from {url_page} ...")
+            # Scraping HTML and converting into soup
             response = requests.get(url_page)
             response.raise_for_status()
-
-            # Convert HTML into soup
-            print("Converting HTML into Soup...")
             soup = BeautifulSoup(response.text, "lxml")
 
             # Extract display records data
-            print("Extracting displayed records data...")
             data_display_records = (
                 soup.find("div", class_="paging_div row")
                 .contents[0]
@@ -293,8 +290,17 @@ class ScrapeOcre:
             else:
                 start_coin_id, end_coin_id, _ = data_display_records
 
+            # Periodic update messages
+            interval = 2_000
+            if curr_page_id == 1:
+                print(
+                    f"Going into periodical updates, which are at every {interval} page..."
+                )
+            if (curr_page_id in (1, max_coin_id)) or (curr_page_id % interval == 0):
+                print(f"Scraping page #{curr_page_id} of {max_coin_id} pages...")
+                print(f"Extracting HTML from {url_page} ...")
+
             # Save raw data to postgres database
-            print("Saving data to database...")
             data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
             scraped_values = (
                 curr_page_id,
@@ -314,13 +320,15 @@ class ScrapeOcre:
             # Increment page index
             curr_page_id += 1
 
-        print("\nFinished scraping Browse results...")
+        print("Finished scraping Browse results...")
         return None
 
     def process_browse_results(self) -> None:
         """Process and save Browse results data."""
+        print("\nProcessing data from Browse tab of OCRE database...")
+
         # Query data
-        print("Retrieving data from `raw_web_scrape` table...")
+        print("Retrieving data from `raw_browse_pages` table...")
         path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
         print(path_query)
         self.client.query_data(path_query)
@@ -1288,6 +1296,7 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
+    print("Running data pipeline to scrape and process OCRE data...")
     pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
     # pipeline = ScrapeOcre("ocre", only_found=False)
 
