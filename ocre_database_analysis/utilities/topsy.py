@@ -13,14 +13,12 @@ import ocre_database_analysis.constants as c
 
 
 # TODO: Document class with docstring (https://realpython.com/documenting-python-code/#class-docstrings)
-# TODO: Replace print statements with logging
-# TODO: Remove print/logging statements from Topsy and move to scripts that use Topsy
 
 
 class Topsy:
     """Client for working with PostgreSQL databases."""
 
-    def __init__(self, dbname: Union[None, str] = None, silent: bool = False) -> None:
+    def __init__(self, dbname: Union[None, str] = None) -> None:
         """Initialize client."""
 
         # Creating connection parameters
@@ -38,7 +36,6 @@ class Topsy:
             "host": environ["PGDS_HOST"],
             "port": environ["PGDS_PORT"],
         }
-        self.silent = silent
 
         self.conn = None
         self.cur = None
@@ -47,9 +44,6 @@ class Topsy:
         return None
 
     def _open_connections(self) -> None:
-        if not self.silent:
-            print(f"Connecting to database `{self.conn_parameters['dbname']}`...")
-
         self.conn = pg2.connect(
             dbname=self.conn_parameters["dbname"],
             user=self.conn_parameters["username"],
@@ -58,10 +52,6 @@ class Topsy:
             port=self.conn_parameters["port"],
         )
 
-        if not self.silent:
-            print(
-                f"Creating cursor object in database `{self.conn_parameters['dbname']}`..."
-            )
         self.cur = self.conn.cursor()
 
         # Setting autocommit to avoid ActiveSqlTransaction error
@@ -71,22 +61,15 @@ class Topsy:
 
     def close_connection(self) -> None:
         """Close cursor and connection objects."""
-        if not self.silent:
-            print("\nClosing the cursor object...")
 
         self.cur.close()
-
-        if not self.silent:
-            print(f"Closing the connecting to `{self.conn_parameters['dbname']}`...")
-
         self.conn.close()
-
         return None
 
     def create_new_database(self, db_names: list[str], switch: bool = False) -> None:
         """Create new database with option to switch to newly created
         database."""
-        print("Creating new databases...")
+
         num_dbs = len(db_names)
 
         if type(db_names) != list:
@@ -99,14 +82,12 @@ class Topsy:
             )
 
         for name in db_names:
-            print(f"Dropping existing database with the name `{name}`...")
             query_drop_db = "DROP DATABASE IF EXISTS {database_name};"
             query_drop_db = sql.SQL(query_drop_db).format(
                 database_name=sql.Identifier(name)
             )
             self.cur.execute(query_drop_db)
 
-            print(f"Creating new database with name `{name}`...")
             query_create_db = "CREATE DATABASE {database_name};"
             query_create_db = sql.SQL(query_create_db).format(
                 database_name=sql.Identifier(name)
@@ -115,17 +96,14 @@ class Topsy:
 
         if switch:
             db_name = db_names[0]
-            print(f"Switching to `{db_name}`...")
             self.close_connection()
             self.conn_parameters["dbname"] = db_name
             self._open_connections()
-            print(f"Connected to `{self.conn.info.dbname}`...")
 
         return None
 
     def create_new_schema(self, schema_names: list[str]) -> None:
         """Create new schemas in active database."""
-        print("Trying to create new schema(s)...")
 
         if (type(schema_names) != list) or (not schema_names):
             raise ValueError("VALUE ERROR: `schema_names` must be a non-empty list.")
@@ -135,7 +113,6 @@ class Topsy:
             )
 
         for name in schema_names:
-            print(f"Creating schema `{name}` in `{self.conn.info.dbname}`...")
             query_create_schema = "CREATE SCHEMA IF NOT EXISTS {schema_name};"
             query_create_schema = sql.SQL(query_create_schema).format(
                 schema_name=sql.Identifier(name)
@@ -146,7 +123,6 @@ class Topsy:
 
     def create_new_table(self, file_path: Union[PosixPath, WindowsPath]) -> None:
         """Create new SQL table from file path."""
-        print("Trying to create new table...")
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -157,19 +133,17 @@ class Topsy:
         if file_path.suffix != ".sql":
             raise ValueError("VALUE ERROR: `file_path` must be a SQL file.")
 
-        print(f"Creating new table defined in {file_path.name}...")
         with open(file_path, "r", encoding="UTF-8") as f:
             query = f.read()
 
         self.cur.execute(query)
-        print(f"Table created...")
-
         return None
 
     def insert_data(
         self, file_path: Union[PosixPath, WindowsPath], data: list[dict]
     ) -> None:
         """Insert data into specified table."""
+
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
                 "VALUE ERROR: `file_path` must be a `PosixPath` or `WindowsPath`."
@@ -195,9 +169,6 @@ class Topsy:
         """Query data using specified file and save results to cursor object.
         Use the `params` argument when the query has parameters to pass to
         it."""
-        print(
-            f"Trying to query `{self.conn_parameters['dbname']}` using {file_path.name}..."
-        )
 
         if type(file_path) not in (PosixPath, WindowsPath):
             raise ValueError(
@@ -216,7 +187,6 @@ class Topsy:
             self.cur.execute(query, params)
         else:
             self.cur.execute(query)
-        print(f"Query complete...")
 
         return None
 
@@ -224,6 +194,7 @@ class Topsy:
     def print_pg2_exception(err: Exception) -> None:
         """Print line number, error, SQLSTATE code, and PG message to
         console."""
+
         _, _, err_traceback = sys.exc_info()
         line_num = err_traceback.tb_lineno
 
@@ -237,6 +208,9 @@ class Topsy:
 
     @staticmethod
     def try_postgres_connection(db_name: str) -> Topsy:
+        """Try to connect to a postgres database and handle exceptions
+        that may occur."""
+
         client = None  # Defined here to turn off false positive error from pylance
         try:
             client = Topsy(db_name)

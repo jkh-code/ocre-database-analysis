@@ -240,16 +240,20 @@ class ScrapeOcre:
 
     def connect_to_database(self) -> None:
         """Connect to database using Topsy instance."""
+        print(f"Connecting to `{self.db_name}` database...")
         self.client = Topsy(self.db_name)
         return None
 
     def disconnect_from_database(self) -> None:
         """Disconnect from database"""
+        print(f"Disconnecting from `{self.db_name}` database...")
         self.client.close_connection()
         return None
 
     def scrape_browse_results(self) -> None:
         """Scrape Browse results and save HTML to database."""
+        print("Scraping data from Browse tab of OCRE database...")
+
         curr_page_id = 1
         max_num_pages = None
         break_loop = False
@@ -258,18 +262,12 @@ class ScrapeOcre:
             url_start_idx = (curr_page_id - 1) * 20
             url_page = c.OCRE_BROWSE_PAGE + str(url_start_idx)
 
-            # Scraping HTML
-            print(f"\nWorking on page #{curr_page_id} ...")
-            print(f"Extracting HTML from {url_page} ...")
+            # Scraping HTML and converting into soup
             response = requests.get(url_page)
             response.raise_for_status()
-
-            # Convert HTML into soup
-            print("Converting HTML into Soup...")
             soup = BeautifulSoup(response.text, "lxml")
 
             # Extract display records data
-            print("Extracting displayed records data...")
             data_display_records = (
                 soup.find("div", class_="paging_div row")
                 .contents[0]
@@ -291,8 +289,17 @@ class ScrapeOcre:
             else:
                 start_coin_id, end_coin_id, _ = data_display_records
 
+            # Periodic update messages
+            interval = 2_000
+            if curr_page_id == 1:
+                print(
+                    f"Going into periodical updates, which are at every {interval} page..."
+                )
+            if (curr_page_id in (1, max_coin_id)) or (curr_page_id % interval == 0):
+                print(f"Scraping page #{curr_page_id} of {max_coin_id} pages...")
+                print(f"Extracting HTML from {url_page} ...")
+
             # Save raw data to postgres database
-            print("Saving data to database...")
             data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
             scraped_values = (
                 curr_page_id,
@@ -312,29 +319,40 @@ class ScrapeOcre:
             # Increment page index
             curr_page_id += 1
 
-        print("\nFinished scraping Browse results...")
+        print("Finished scraping Browse results...")
         return None
 
     def process_browse_results(self) -> None:
         """Process and save Browse results data."""
+        print("\nProcessing data from Browse tab of OCRE database...")
+
         # Query data
-        print("Retrieving data from `raw_web_scrape` table...")
+        print("Retrieving data from `raw_browse_pages` table...")
         path_query = c.SQL_FOLDER / "query" / "raw_browse_pages.sql"
-        print(path_query)
         self.client.query_data(path_query)
 
+        total_rows = self.client.cur.rowcount
         for row in self.client.cur:
             raw_browse_data = ScrapeOcre.SCHEMA_RAW_BROWSE_PAGES.copy()
             ScrapeOcre.populate_raw_browse_pages_schema(raw_browse_data, row)
 
-            print(f"Processing data for `page_id` {raw_browse_data['page_id']}...")
+            interval = 2_000
+            curr_row = self.client.cur.rownumber
+            if curr_row == 1:
+                print(
+                    f"Going into periodical updates, which are at every {interval}..."
+                )
+            if (curr_row in (1, total_rows)) or (curr_row % interval == 0):
+                print(
+                    f"Processing data for `page_id` {raw_browse_data['page_id']}"
+                    + f" in row #{curr_row} of {total_rows}..."
+                )
             soup = BeautifulSoup(raw_browse_data["page_html"], "lxml")
             all_page_coins = soup.find_all("div", class_="row result-doc")
             all_coin_ids = range(
                 raw_browse_data["start_coin_id"], raw_browse_data["end_coin_id"] + 1
             )
             for coin_id, coin in zip(all_coin_ids, all_page_coins):
-                print(f"Processing data for `coin_id` {coin_id}...")
                 processed_browse_data = ScrapeOcre.SCHEMA_STG_COIN_SUMMARY.copy()
 
                 processed_browse_data["coin_id"] = coin_id
@@ -384,6 +402,8 @@ class ScrapeOcre:
         """Use processed `stg_coin_summaries` table data to scrape
         canonical URI pages and store raw data in `raw_uri_pages`
         table."""
+        # TODO: Update to make scraping more efficient
+        print("\nScraping canonical URIs...")
 
         # Determine coin_id to start at
         print("Determining coin_id to start scraping URI pages at...")
@@ -503,7 +523,8 @@ class ScrapeOcre:
     def scrape_uris_pagination(self) -> None:
         """Scrape URI pages with pagination in the examples section and
         store in raw_uri_pages table."""
-        print("Scraping URI pages with pagination in examples section...")
+        # TODO: Update to make scraping more efficient
+        print("\nScraping URI pages with pagination in examples section...")
 
         # Query URI pages with pagination
         print("Querying URI pages with pagination...")
@@ -569,7 +590,7 @@ class ScrapeOcre:
         stg_coins, stg_examples, stg_examples_images, and stg_uri_pages
         tables."""
 
-        print("Start processing canonical URI data...")
+        print("\nStart processing canonical URI data...")
         print("Querying raw_uri_pages table...")
         path_query = c.SQL_FOLDER / "query" / "raw_uri_pages_with_path.sql"
         self.client.query_data(path_query)
@@ -875,6 +896,7 @@ class ScrapeOcre:
         """Download images to local machine and update
         stg_examples_images table."""
 
+        # TODO: Update to make more efficient
         # DO NOT USE THIS METHOD
         # Using this method in its current state will take over 72 hours
         # (3 days) to scrape all 228k images in the stg_examples_images
@@ -1008,7 +1030,7 @@ class ScrapeOcre:
     ) -> None:
         """Insert data into database using secondary client to preserve
         existing client."""
-        client_temp = Topsy(self.db_name, silent=True)
+        client_temp = Topsy(self.db_name)
         client_temp.insert_data(path, data)
         client_temp.close_connection()
         return None
@@ -1286,6 +1308,7 @@ class ScrapeOcre:
 
 
 if __name__ == "__main__":
+    print("Running data pipeline to scrape and process OCRE data...")
     pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
     # pipeline = ScrapeOcre("ocre", only_found=False)
 
