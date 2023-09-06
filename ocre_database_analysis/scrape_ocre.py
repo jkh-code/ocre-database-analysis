@@ -402,6 +402,7 @@ class ScrapeOcre:
         """Use processed `stg_coin_summaries` table data to scrape
         canonical URI pages and store raw data in `raw_uri_pages`
         table."""
+        # TODO: Update to make scraping more efficient
         print("\nScraping canonical URIs...")
 
         # Determine coin_id to start at
