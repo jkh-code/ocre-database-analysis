@@ -1018,7 +1018,7 @@ class ScrapeOcre:
     ) -> None:
         """Insert data into database using secondary client to preserve
         existing client."""
-        client_temp = Topsy(self.db_name, silent=True)
+        client_temp = Topsy(self.db_name)
         client_temp.insert_data(path, data)
         client_temp.close_connection()
         return None
