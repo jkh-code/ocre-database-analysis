@@ -1333,16 +1333,16 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     # Process Browse results pages
-    pipeline.process_browse_results()
+    # pipeline.process_browse_results()
 
     # Scrape raw Canonical URI pages
-    ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
+    # ScrapeOcre.try_except_with_retry(pipeline.scrape_canonical_uris)
 
     # Scrape raw Canonical URI pages with pagination
-    ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
+    # ScrapeOcre.try_except_with_retry(pipeline.scrape_uris_pagination)
 
     # Process Canonical URI pages
-    pipeline.process_canonical_uris()
+    # pipeline.process_canonical_uris()
 
     # Disconnect
     pipeline.disconnect_from_database()
