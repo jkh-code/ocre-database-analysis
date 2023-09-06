@@ -7,5 +7,5 @@
 
 ## Next steps
 - Replace print statements with logging.
-- Current design will take over 72 hours (3 days) to scape all 228k images. Implement multiprocessing to reduce this time. Until multiprocessing is implemented, images will not be downloaded in final script.
--
+- Current design will take over 72 hours (3 days) to scape all 228k images using `download_images` method. Implement multiprocessing to reduce this time. Until multiprocessing is implemented, images will not be downloaded in final script.
+- Redesign `scrape_uris_pagination` method to scrape pages in less time.
