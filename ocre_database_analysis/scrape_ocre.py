@@ -258,7 +258,6 @@ class ScrapeOcre:
         max_num_pages = None
         break_loop = False
 
-        # TODO: Update messages in this method
         while not break_loop:
             url_start_idx = (curr_page_id - 1) * 20
             url_page = c.OCRE_BROWSE_PAGE + str(url_start_idx)
@@ -523,7 +522,8 @@ class ScrapeOcre:
     def scrape_uris_pagination(self) -> None:
         """Scrape URI pages with pagination in the examples section and
         store in raw_uri_pages table."""
-        print("Scraping URI pages with pagination in examples section...")
+        # TODO: Update to make scraping more efficient
+        print("\nScraping URI pages with pagination in examples section...")
 
         # Query URI pages with pagination
         print("Querying URI pages with pagination...")
@@ -589,7 +589,7 @@ class ScrapeOcre:
         stg_coins, stg_examples, stg_examples_images, and stg_uri_pages
         tables."""
 
-        print("Start processing canonical URI data...")
+        print("\nStart processing canonical URI data...")
         print("Querying raw_uri_pages table...")
         path_query = c.SQL_FOLDER / "query" / "raw_uri_pages_with_path.sql"
         self.client.query_data(path_query)
@@ -895,6 +895,7 @@ class ScrapeOcre:
         """Download images to local machine and update
         stg_examples_images table."""
 
+        # TODO: Update to make more efficient
         # DO NOT USE THIS METHOD
         # Using this method in its current state will take over 72 hours
         # (3 days) to scrape all 228k images in the stg_examples_images
