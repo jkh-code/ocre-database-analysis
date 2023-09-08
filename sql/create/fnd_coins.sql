@@ -1,5 +1,5 @@
--- DROP TABLE IF EXISTS fnd_web_scrape.fnd_coins;
--- CREATE TABLE fnd_web_scrape.fnd_coins AS
+DROP TABLE IF EXISTS fnd_web_scrape.fnd_coins;
+CREATE TABLE fnd_web_scrape.fnd_coins AS
 WITH raw_stg_coins_data AS (
     SELECT
         /* Not importing the following fields into fnd_coins:
