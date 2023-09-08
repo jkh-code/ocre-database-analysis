@@ -30,14 +30,30 @@ WITH raw_stg_coins_data AS (
         , c.average_diameter
         , c.average_weight
         , REPLACE(u.uri_link, '?page=1', '') AS coin_uri_link
-        , CURRENT_TIMESTAMP AS ts
     FROM
         stg_web_scrape.stg_coins AS c
         LEFT JOIN stg_web_scrape.stg_uri_pages AS u
         ON c.coin_id = u.coin_id
         AND (u.examples_pagination_id = 1 OR u.examples_pagination_id IS NULL)
 )
-SELECT *
+SELECT
+    coin_id
+    , coin_name
+    , has_typological
+    , has_examples
+    , has_examples_pagination
+    , has_analysis
+    , coin_date_range
+    , object_type
+    , obverse_legend
+    , obverse_type
+    , reverse_legend
+    , reverse_type
+    , average_axis
+    , average_diameter
+    , average_weight
+    , coin_uri_link
+    , CURRENT_TIMESTAMP AS ts
 FROM raw_stg_coins_data
 WHERE
     object_type NOT LIKE '%Tessera%'
