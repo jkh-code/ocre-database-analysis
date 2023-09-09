@@ -44,4 +44,5 @@ SELECT
         ELSE FALSE
     END AS is_uncertain
     , coin_uri_link
+    , CURRENT_TIMESTAMP AS ts
 FROM combined_data;
