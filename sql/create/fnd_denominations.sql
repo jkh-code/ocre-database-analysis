@@ -1,5 +1,5 @@
---DROP TABLE IF EXISTS fnd_web_scrape.fnd_denominations;
---CREATE TABLE fnd_web_scrape.fnd_denominations AS
+DROP TABLE IF EXISTS fnd_web_scrape.fnd_denominations;
+CREATE TABLE fnd_web_scrape.fnd_denominations AS
 WITH raw_stg_coins_data AS (
     SELECT
         c.coin_id
