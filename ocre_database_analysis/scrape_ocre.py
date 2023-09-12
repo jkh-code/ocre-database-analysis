@@ -1015,6 +1015,20 @@ class ScrapeOcre:
 
         return None
 
+    def process_stg_data(self) -> None:
+        """Process data in stg_web_scrape schema by creating 'processed'
+        tables in the same schema."""
+        pass
+
+        return None
+
+    def make_fnd_data(self) -> None:
+        """Process data in stg_web_scape schema to create tables in
+        fnd_web_scrape schema."""
+        pass
+
+        return None
+
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
         keys in ScrapeOcre.SCHEMA_STG_COIN_SUMMARY dict."""
