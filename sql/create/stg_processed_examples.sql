@@ -6,7 +6,11 @@ SELECT
     , REPLACE(u.uri_link, '?page=1', '') AS coin_uri_link
     , e.examples_id
     , e.uri_page_examples_id
-    , e.example_name
+    , CASE
+        WHEN e.example_name LIKE '%[%'
+            THEN REPLACE(REPLACE(e.example_name, '[', ''), ']', '')
+        ELSE e.example_name
+    END AS example_name
     , u.uri_link AS example_uri_link
     , e.has_fields_section
     , e.has_links_section
