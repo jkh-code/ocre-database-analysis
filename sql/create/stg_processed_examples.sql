@@ -21,4 +21,4 @@ FROM
     ON c.coin_id = e.coin_id
     LEFT JOIN stg_web_scrape.stg_uri_pages AS u
     ON c.coin_id = u.coin_id
-    AND e.uri_page_examples_id BETWEEN u.examples_start_id AND u.examples_end_id
+    AND e.uri_page_examples_id BETWEEN u.examples_start_id AND u.examples_end_id;
