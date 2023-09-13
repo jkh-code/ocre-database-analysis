@@ -1029,6 +1029,7 @@ class ScrapeOcre:
             "stg_processed_mints",
             "stg_processed_regions",
             "stg_processed_entities",
+            "stg_processed_examples",
         ]
         for table in TABLE_PROCESS_ORDER:
             print(f"Processing `{table}` table...")
