@@ -1018,8 +1018,24 @@ class ScrapeOcre:
     def process_stg_data(self) -> None:
         """Process data in stg_web_scrape schema by creating 'processed'
         tables in the same schema."""
-        pass
 
+        print("\nProcessing data in stg layer...")
+        TABLE_PROCESS_ORDER = [
+            "stg_processed_coins",
+            "stg_processed_denominations",
+            "stg_processed_materials",
+            "stg_processed_authority_names",
+            "stg_processed_issuer_names",
+            "stg_processed_mints",
+            "stg_processed_regions",
+            "stg_processed_entities",
+        ]
+        for table in TABLE_PROCESS_ORDER:
+            print(f"Processing `{table}` table...")
+            path = c.SQL_FOLDER / "create" / (table + ".sql")
+            self.client.create_new_table(path)
+
+        print("Finished processing data in stg layer...")
         return None
 
     def make_fnd_data(self) -> None:
@@ -1323,8 +1339,8 @@ class ScrapeOcre:
 
 if __name__ == "__main__":
     print("Running data pipeline to scrape and process OCRE data...")
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
-    # pipeline = ScrapeOcre("ocre", only_found=False)
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
+    pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -1357,6 +1373,8 @@ if __name__ == "__main__":
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
+
+    pipeline.process_stg_data()
 
     # Disconnect
     pipeline.disconnect_from_database()
