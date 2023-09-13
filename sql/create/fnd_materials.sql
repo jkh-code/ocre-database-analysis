@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS fnd_web_scrape.fnd_materials;
-CREATE TABLE fnd_web_scrape.fnd_materials AS
+DROP TABLE IF EXISTS stg_web_scrape.stg_processed_materials;
+CREATE TABLE stg_web_scrape.stg_processed_materials AS
 WITH raw_stg_coins_data AS (
     SELECT
         c.coin_id
