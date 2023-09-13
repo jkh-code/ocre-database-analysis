@@ -19,6 +19,7 @@ SELECT
     , e.coin_diameter
     , e.identifier
     , e.coin_weight
+    , CURRENT_TIMESTAMP AS ts
 FROM
     stg_web_scrape.stg_coins AS c
     INNER JOIN stg_web_scrape.stg_examples AS e

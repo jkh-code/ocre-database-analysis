@@ -172,6 +172,7 @@ SELECT
     , comb.entity_name
     , comb.is_uncertain
     , coin.coin_uri_link
+    , CURRENT_TIMESTAMP AS ts
 FROM
     raw_stg_coins_data AS coin
     INNER JOIN combined_data AS comb

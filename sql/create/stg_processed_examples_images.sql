@@ -12,6 +12,7 @@ SELECT
     , i.examples_images_id
     , i.image_type
     , i.link AS image_link
+    , CURRENT_TIMESTAMP AS ts
 FROM
     stg_web_scrape.stg_processed_examples AS e
     INNER JOIN stg_web_scrape.stg_examples_images AS i
