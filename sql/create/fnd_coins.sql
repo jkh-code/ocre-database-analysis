@@ -47,6 +47,35 @@ regions_data AS (
     FROM stg_web_scrape.stg_processed_regions
     WHERE region != 'Uncertain'
     GROUP BY coin_id
+),
+entities_data AS (
+    SELECT
+        coin_id
+        , COUNT(coin_id) AS num_entities
+        , SUM(CASE WHEN face = 'obverse' THEN 1 ELSE 0 END) AS num_obverse_entities
+        , SUM(CASE WHEN face = 'reverse' THEN 1 ELSE 0 END) AS num_reverse_entities
+        , SUM(
+            CASE WHEN face = 'obverse' AND entity_type = 'deity' THEN 1 ELSE 0 END
+        ) AS num_obverse_deities
+        , SUM(
+            CASE WHEN face = 'obverse' AND entity_type = 'portrait' THEN 1 ELSE 0 END
+        ) AS num_obverse_portraits
+        , SUM(
+            CASE WHEN face = 'reverse' AND entity_type = 'deity' THEN 1 ELSE 0 END
+        ) AS num_reverse_deities
+        , SUM(
+            CASE WHEN face = 'reverse' AND entity_type = 'portrait' THEN 1 ELSE 0 END
+        ) AS num_reverse_portraits
+    FROM stg_web_scrape.stg_processed_entities
+    WHERE entity_name != 'Uncertain'
+    GROUP BY coin_id
+),
+examples_data AS (
+    SELECT
+        coin_id
+        , COUNT(coin_id) AS num_examples
+    FROM stg_web_scrape.stg_processed_examples
+    GROUP BY coin_id
 )
 SELECT
     coin.coin_id
@@ -71,6 +100,14 @@ SELECT
     , COALESCE(iss.num_issuer_names, 0) AS num_issuer_names
     , COALESCE(min.num_mints, 0) AS num_mints
     , COALESCE(reg.num_regions, 0) AS num_regions
+    , COALESCE(ent.num_entities, 0) AS num_entities
+    , COALESCE(ent.num_obverse_entities, 0) AS num_obverse_entities
+    , COALESCE(ent.num_obverse_deities, 0) AS num_obverse_deities
+    , COALESCE(ent.num_obverse_portraits, 0) AS num_obverse_portraits
+    , COALESCE(ent.num_reverse_entities, 0) AS num_reverse_entities
+    , COALESCE(ent.num_reverse_deities, 0) AS num_reverse_deities
+    , COALESCE(ent.num_reverse_portraits, 0) AS num_reverse_portraits
+    , COALESCE(exa.num_examples, 0) AS num_examples
     , CURRENT_TIMESTAMP AS ts
 FROM
     stg_web_scrape.stg_processed_coins AS coin
@@ -85,5 +122,8 @@ FROM
     LEFT JOIN mints_data AS min
     ON coin.coin_id = min.coin_id
     LEFT JOIN regions_data AS reg
-    ON coin.coin_id = reg.coin_id;
--- SELECT * FROM denomination_data;
+    ON coin.coin_id = reg.coin_id
+    LEFT JOIN entities_data AS ent
+    ON coin.coin_id = ent.coin_id
+    LEFT JOIN examples_data AS exa
+    ON coin.coin_id = exa.coin_id;
