@@ -1040,11 +1040,29 @@ class ScrapeOcre:
         print("Finished processing data in stg layer...")
         return None
 
-    def make_fnd_data(self) -> None:
+    def make_fnd_tables(self) -> None:
         """Process data in stg_web_scape schema to create tables in
         fnd_web_scrape schema."""
-        pass
 
+        print("\nCreating tables in fnd layer...")
+        TABLE_CREATE_ORDER = [
+            "fnd_coins",
+            "fnd_denominations",
+            "fnd_materials",
+            "fnd_authority_names",
+            "fnd_issuer_names",
+            "fnd_mints",
+            "fnd_regions",
+            "fnd_entities",
+            "fnd_examples",
+            "fnd_examples_images",
+        ]
+        for table in TABLE_CREATE_ORDER:
+            print(f"Creating `{table}` table...")
+            path = c.SQL_FOLDER / "create" / (table + ".sql")
+            self.client.create_new_table(path)
+
+        print("Finished creating tables in fnd layer...")
         return None
 
     def _convert_dt(self, tag: str) -> str:
@@ -1377,6 +1395,7 @@ if __name__ == "__main__":
     # pipeline.process_canonical_uris()
 
     pipeline.process_stg_data()
+    pipeline.make_fnd_tables()
 
     # Disconnect
     pipeline.disconnect_from_database()
