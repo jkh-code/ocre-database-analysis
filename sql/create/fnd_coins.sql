@@ -23,6 +23,30 @@ authority_names_data AS (
     FROM stg_web_scrape.stg_processed_authority_names
     WHERE authority_name != 'Uncertain'
     GROUP BY coin_id
+),
+issuer_names_data AS (
+    SELECT
+        coin_id
+        , COUNT(coin_id) AS num_issuer_names
+    FROM stg_web_scrape.stg_processed_issuer_names
+    WHERE issuer_name != 'Uncertain'
+    GROUP BY coin_id
+),
+mints_data AS (
+    SELECT
+        coin_id
+        , COUNT(coin_id) AS num_mints
+    FROM stg_web_scrape.stg_processed_mints
+    WHERE mint != 'Uncertain'
+    GROUP BY coin_id
+),
+regions_data AS (
+    SELECT
+        coin_id
+        , COUNT(coin_id) AS num_regions
+    FROM stg_web_scrape.stg_processed_regions
+    WHERE region != 'Uncertain'
+    GROUP BY coin_id
 )
 SELECT
     coin.coin_id
@@ -44,6 +68,9 @@ SELECT
     , COALESCE(den.num_denominations, 0) AS num_denominations
     , COALESCE(mat.num_materials, 0) AS num_materials
     , COALESCE(auth.num_authority_names, 0) AS num_authority_names
+    , COALESCE(iss.num_issuer_names, 0) AS num_issuer_names
+    , COALESCE(min.num_mints, 0) AS num_mints
+    , COALESCE(reg.num_regions, 0) AS num_regions
     , CURRENT_TIMESTAMP AS ts
 FROM
     stg_web_scrape.stg_processed_coins AS coin
@@ -52,5 +79,11 @@ FROM
     LEFT JOIN materials_data AS mat
     ON coin.coin_id = mat.coin_id
     LEFT JOIN authority_names_data AS auth
-    ON coin.coin_id = auth.coin_id;
+    ON coin.coin_id = auth.coin_id
+    LEFT JOIN issuer_names_data AS iss
+    ON coin.coin_id = iss.coin_id
+    LEFT JOIN mints_data AS min
+    ON coin.coin_id = min.coin_id
+    LEFT JOIN regions_data AS reg
+    ON coin.coin_id = reg.coin_id;
 -- SELECT * FROM denomination_data;
