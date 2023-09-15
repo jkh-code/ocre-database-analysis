@@ -191,7 +191,7 @@ class Topsy:
 
         return None
 
-    def table_to_pd(schema_name: str, table_name: str) -> pd.DataFrame:
+    def table_to_pd(self, schema_name: str, table_name: str) -> pd.DataFrame:
         """"""
         pass
 
