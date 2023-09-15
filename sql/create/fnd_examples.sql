@@ -1,5 +1,5 @@
--- DROP TABLE IF EXISTS fnd_web_scrape.fnd_examples;
--- CREATE TABLE fnd_web_scrape.fnd_examples AS
+DROP TABLE IF EXISTS fnd_web_scrape.fnd_examples;
+CREATE TABLE fnd_web_scrape.fnd_examples AS
 WITH images_data AS (
     SELECT
         examples_id
