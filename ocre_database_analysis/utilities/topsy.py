@@ -6,6 +6,7 @@ from os import environ
 import sys
 from pathlib import Path
 from pathlib import PosixPath, WindowsPath
+import pandas as pd
 
 from typing import Union
 
@@ -189,6 +190,10 @@ class Topsy:
             self.cur.execute(query)
 
         return None
+
+    def table_to_pd(schema_name: str, table_name: str) -> pd.DataFrame:
+        """"""
+        pass
 
     @staticmethod
     def print_pg2_exception(err: Exception) -> None:
