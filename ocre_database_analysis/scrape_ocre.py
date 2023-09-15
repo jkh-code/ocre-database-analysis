@@ -1015,6 +1015,56 @@ class ScrapeOcre:
 
         return None
 
+    def process_stg_data(self) -> None:
+        """Process data in stg_web_scrape schema by creating 'processed'
+        tables in the same schema."""
+
+        print("\nProcessing data in stg layer...")
+        TABLE_PROCESS_ORDER = [
+            "stg_processed_coins",
+            "stg_processed_denominations",
+            "stg_processed_materials",
+            "stg_processed_authority_names",
+            "stg_processed_issuer_names",
+            "stg_processed_mints",
+            "stg_processed_regions",
+            "stg_processed_entities",
+            "stg_processed_examples",
+            "stg_processed_examples_images",
+        ]
+        for table in TABLE_PROCESS_ORDER:
+            print(f"Processing `{table}` table...")
+            path = c.SQL_FOLDER / "create" / (table + ".sql")
+            self.client.create_new_table(path)
+
+        print("Finished processing data in stg layer...")
+        return None
+
+    def make_fnd_tables(self) -> None:
+        """Process data in stg_web_scape schema to create tables in
+        fnd_web_scrape schema."""
+
+        print("\nCreating tables in fnd layer...")
+        TABLE_CREATE_ORDER = [
+            "fnd_coins",
+            "fnd_denominations",
+            "fnd_materials",
+            "fnd_authority_names",
+            "fnd_issuer_names",
+            "fnd_mints",
+            "fnd_regions",
+            "fnd_entities",
+            "fnd_examples",
+            "fnd_examples_images",
+        ]
+        for table in TABLE_CREATE_ORDER:
+            print(f"Creating `{table}` table...")
+            path = c.SQL_FOLDER / "create" / (table + ".sql")
+            self.client.create_new_table(path)
+
+        print("Finished creating tables in fnd layer...")
+        return None
+
     def _convert_dt(self, tag: str) -> str:
         """Process "dt" tags from raw_browse_pages coins for use as
         keys in ScrapeOcre.SCHEMA_STG_COIN_SUMMARY dict."""
@@ -1309,8 +1359,8 @@ class ScrapeOcre:
 
 if __name__ == "__main__":
     print("Running data pipeline to scrape and process OCRE data...")
-    pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
-    # pipeline = ScrapeOcre("ocre", only_found=False)
+    # pipeline = ScrapeOcre("delme_ocre", pages_to_sample=100, only_found=False)
+    pipeline = ScrapeOcre("ocre", only_found=False)
 
     # Connect
     try:
@@ -1343,6 +1393,9 @@ if __name__ == "__main__":
 
     # Process Canonical URI pages
     # pipeline.process_canonical_uris()
+
+    pipeline.process_stg_data()
+    pipeline.make_fnd_tables()
 
     # Disconnect
     pipeline.disconnect_from_database()
