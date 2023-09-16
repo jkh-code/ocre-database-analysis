@@ -159,3 +159,5 @@ cython_debug/
 delme*
 images/coins/*
 !images/coins/.gitkeep
+data/export/*
+!data/export/.gitkeep

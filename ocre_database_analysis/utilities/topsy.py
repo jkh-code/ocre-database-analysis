@@ -6,6 +6,7 @@ from os import environ
 import sys
 from pathlib import Path
 from pathlib import PosixPath, WindowsPath
+import pandas as pd
 
 from typing import Union
 
@@ -189,6 +190,38 @@ class Topsy:
             self.cur.execute(query)
 
         return None
+
+    def table_to_pd(self, schema_name: str, table_name: str) -> pd.DataFrame:
+        """Export table from postgres database and return as pandas
+        DataFrame."""
+
+        if type(schema_name) != str:
+            raise ValueError("VALUE ERROR: `schema_name` is not a string.")
+        if type(table_name) != str:
+            raise ValueError("VALUE ERROR: `table_name` is not a string.")
+
+        col_query = """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE
+            table_schema = %(schema_name)s
+            AND table_name = %(table_name)s
+        ORDER BY ordinal_position ASC;
+        """
+        self.cur.execute(
+            col_query, {"schema_name": schema_name, "table_name": table_name}
+        )
+        cols = [row[0] for row in self.cur.fetchall()]
+
+        table_query = "SELECT * FROM {schema_name}.{table_name};"
+        table_query = sql.SQL(table_query).format(
+            schema_name=sql.Identifier(schema_name),
+            table_name=sql.Identifier(table_name),
+        )
+        self.cur.execute(table_query)
+        df = pd.DataFrame(self.cur.fetchall(), columns=cols)
+
+        return df
 
     @staticmethod
     def print_pg2_exception(err: Exception) -> None:
